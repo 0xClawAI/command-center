@@ -5,12 +5,12 @@
   "lastUpdated": "2026-02-09T21:00:00.000Z",
   "progress": {
     "total": 34,
-    "done": 33,
+    "done": 34,
     "inProgress": 0,
     "testing": 0,
     "failed": 0,
     "blocked": 0,
-    "todo": 1
+    "todo": 0
   },
   "milestones": [
     {
@@ -134,7 +134,7 @@
       ],
       "progress": {
         "total": 1,
-        "done": 0
+        "done": 1
       }
     }
   ],
@@ -466,7 +466,7 @@
       "id": "D-008",
       "title": "Final Review & Ship",
       "type": "ops",
-      "status": "todo",
+      "status": "done",
       "milestone": "M9",
       "assignee": null,
       "depends": []

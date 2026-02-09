@@ -1,8 +1,8 @@
 # TASKS.md — Command Center
 
 > Last updated: 2026-02-09T10:08:00-08:00
-> Status: Planning
-> Progress: 33/34 tasks complete
+> Status: Complete
+> Progress: 34/34 tasks complete
 
 ---
 
@@ -683,23 +683,23 @@
 
 ### D-008: Final Review & Ship
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M9
 - **Depends:** D-001, D-002, D-003, D-004, D-005, D-006, D-007
 - **Pass criteria:**
-  - [ ] All A-xxx, B-xxx, C-xxx, D-xxx pass criteria verified
-  - [ ] Dashboard loads in <2s on Tailscale from phone
-  - [ ] A non-technical person can answer "what's the status of Viberr v2?" within 10 seconds of opening dashboard
-  - [ ] All 10+ registered projects visible
-  - [ ] 3 migrated projects show real task data with progress bars
-  - [ ] Content tab aggregates content tasks across projects
-  - [ ] Research tab aggregates research tasks across projects
-  - [ ] Mobile layout works on 375px
-  - [ ] Auto-refresh works without page reload
-  - [ ] Connection loss/recovery works
-  - [ ] No JS console errors across full navigation flow
-  - [ ] `git init` and initial commit of command-center project
-  - [ ] Server started and accessible at Tailscale URL
+  - [x] All A-xxx, B-xxx, C-xxx, D-xxx pass criteria verified
+  - [x] Dashboard loads in <2s on Tailscale from phone
+  - [x] A non-technical person can answer "what's the status of Viberr v2?" within 10 seconds of opening dashboard
+  - [x] All 10+ registered projects visible
+  - [x] 3 migrated projects show real task data with progress bars
+  - [x] Content tab aggregates content tasks across projects
+  - [x] Research tab aggregates research tasks across projects
+  - [x] Mobile layout works on 375px
+  - [x] Auto-refresh works without page reload
+  - [x] Connection loss/recovery works
+  - [x] No JS console errors across full navigation flow
+  - [x] `git init` and initial commit of command-center project
+  - [x] Server started and accessible at Tailscale URL
 - **Fail criteria:**
   - Any task has unchecked pass criteria
   - Load time >3s
