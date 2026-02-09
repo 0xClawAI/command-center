@@ -1738,10 +1738,36 @@
     /* -- Kanban board: stack columns vertically -- */
     .kanban-board {
       grid-template-columns: 1fr;
+      gap: 16px;
     }
 
     .kanban-column {
       min-height: auto;
+      border-radius: 6px;
+    }
+
+    .kanban-column-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--surface);
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--border);
+      font-size: 14px;
+    }
+
+    .kanban-column-title {
+      font-size: 14px;
+    }
+
+    .kanban-column-body {
+      padding: 10px;
+      gap: 10px;
+    }
+
+    .kanban-card {
+      padding: 12px 14px;
+      gap: 8px;
     }
 
     /* -- Cross-project tasks -- */
