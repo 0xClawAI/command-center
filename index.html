@@ -1388,6 +1388,37 @@
     border-color: var(--blue);
   }
 
+  /* ── Connection Lost Banner ── */
+  .conn-banner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(248, 81, 73, 0.12);
+    border-bottom: 1px solid rgba(248, 81, 73, 0.25);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .conn-banner.visible {
+    display: flex;
+  }
+
+  .conn-banner-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: conn-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes conn-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
   /* ── Responsive: Mobile (max-width: 768px) ── */
   @media (max-width: 768px) {
 
@@ -1721,6 +1752,12 @@
   </div>
 </nav>
 
+<!-- ── Connection Lost Banner ── -->
+<div class="conn-banner" id="conn-banner">
+  <span class="conn-banner-dot"></span>
+  <span>Connection lost — retrying...</span>
+</div>
+
 <!-- ── Main Content Area ── -->
 <main class="content">
 
@@ -1877,6 +1914,39 @@
   }
   updateClock();
   setInterval(updateClock, 1000);
+
+  // ══════════════════════════════════════════
+  // ── Connection State Tracking ──
+  // ══════════════════════════════════════════
+
+  var _connected = true;
+  var _connBannerEl = document.getElementById('conn-banner');
+
+  function onFetchSuccess() {
+    if (!_connected) {
+      _connected = true;
+      _connBannerEl.classList.remove('visible');
+    }
+  }
+
+  function onFetchError() {
+    if (_connected) {
+      _connected = false;
+      _connBannerEl.classList.add('visible');
+    }
+  }
+
+  // Wrap global fetch to track connection state automatically
+  var _origFetch = window.fetch;
+  window.fetch = function() {
+    return _origFetch.apply(this, arguments).then(function(response) {
+      onFetchSuccess();
+      return response;
+    }, function(err) {
+      onFetchError();
+      throw err;
+    });
+  };
 
   // ══════════════════════════════════════════
   // ── Polling Timer Management System ──
