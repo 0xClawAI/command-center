@@ -387,6 +387,60 @@
     border-color: var(--blue);
   }
 
+  .project-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    margin-top: 16px;
+    margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+
+  .project-group-header:first-child {
+    margin-top: 0;
+  }
+
+  .project-group-header:hover {
+    border-color: var(--border-hover);
+  }
+
+  .project-group-chevron {
+    font-size: 10px;
+    transition: transform 0.2s;
+  }
+
+  .project-group-header.collapsed .project-group-chevron {
+    transform: rotate(-90deg);
+  }
+
+  .project-group-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .project-group-content.collapsed {
+    display: none;
+  }
+
+  .project-last-activity {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
   .project-row .proj-name {
     font-size: 14px;
     font-weight: 600;
@@ -2281,6 +2335,25 @@
     return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
   }
 
+  function formatRelativeTime(t) {
+    if (!t) return '';
+    var d = new Date(t);
+    if (isNaN(d.getTime())) return '';
+    var now = new Date();
+    var diff = now.getTime() - d.getTime();
+    var minutes = Math.floor(diff / 60000);
+    var hours = Math.floor(diff / 3600000);
+    var days = Math.floor(diff / 86400000);
+    var weeks = Math.floor(diff / 604800000);
+
+    if (minutes < 1) return 'just now';
+    if (minutes < 60) return minutes + 'm ago';
+    if (hours < 24) return hours + 'h ago';
+    if (days < 7) return days + 'd ago';
+    if (weeks < 4) return weeks + 'w ago';
+    return Math.floor(weeks / 4) + 'mo ago';
+  }
+
   // Smart stat card update — updates individual values instead of replacing all
   function renderStats(ov) {
     var el = document.getElementById('overview-stats');
@@ -2301,43 +2374,118 @@
     }
   }
 
-  // Smart project list update — updates each row in-place if structure matches
+  // Smart project list update — groups projects by status with collapsible headers
   function renderProjects(projects, stateMap) {
     var el = document.getElementById('overview-projects');
     if (!projects || projects.length === 0) {
       el.innerHTML = '<div class="attention-ok">No projects registered</div>';
       return;
     }
-    var html = '';
+
+    // Group projects by status
+    var statusGroups = {
+      active: { name: 'Active', projects: [] },
+      paused: { name: 'Paused', projects: [] },
+      complete: { name: 'Complete', projects: [] },
+      archived: { name: 'Archived', projects: [] }
+    };
+
     for (var i = 0; i < projects.length; i++) {
-      try {
-        var p = projects[i];
-        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        var state = stateMap[slug];
-        html += '<a class="project-row" href="#/projects/' + escHtml(slug) + '">';
-        html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
-        html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
-        if (state && state._error === 'dir_not_found') {
-          html += '<span class="proj-dir-warning">\u26A0\uFE0F Directory not found</span>';
-        } else if (state && state._error === 'malformed') {
-          html += '<span class="proj-error">Error loading project data</span>';
-        } else if (state && !state._error) {
-          var done = (state.progress && state.progress.done) || 0;
-          var total = (state.progress && state.progress.total) || 0;
-          var pct = total > 0 ? Math.round((done / total) * 100) : 0;
-          html += '<span class="proj-bar-wrap">';
-          html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
-          html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
-          html += '</span>';
-        } else {
-          html += '<span class="proj-not-migrated">Not migrated</span>';
-        }
-        html += '</a>';
-      } catch (e) {
-        html += '<div class="project-row"><span class="proj-error">Error loading project data</span></div>';
+      var p = projects[i];
+      var status = p.status || 'active';
+      if (statusGroups[status]) {
+        statusGroups[status].projects.push(p);
       }
     }
+
+    var html = '';
+    var statusOrder = ['active', 'paused', 'complete', 'archived'];
+
+    for (var j = 0; j < statusOrder.length; j++) {
+      var statusKey = statusOrder[j];
+      var group = statusGroups[statusKey];
+
+      if (group.projects.length === 0) continue; // Hide empty groups
+
+      // Determine if group should be expanded by default (active = expanded, others = collapsed)
+      var isExpanded = statusKey === 'active';
+      var chevron = isExpanded ? '▼' : '▶';
+      var collapsedClass = isExpanded ? '' : ' collapsed';
+
+      // Group header
+      html += '<div class="project-group-header' + collapsedClass + '" onclick="toggleProjectGroup(this)">';
+      html += '<span class="project-group-chevron">' + chevron + '</span>';
+      html += '<span>' + group.name + ' (' + group.projects.length + ')</span>';
+      html += '</div>';
+
+      // Group content
+      html += '<div class="project-group-content' + collapsedClass + '">';
+
+      for (var k = 0; k < group.projects.length; k++) {
+        try {
+          var p = group.projects[k];
+          var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          var state = stateMap[slug];
+
+          // Get last activity timestamp
+          var lastActivity = '';
+          if (state && state.lastUpdated) {
+            lastActivity = formatRelativeTime(state.lastUpdated);
+          } else if (p.lastActive) {
+            lastActivity = formatRelativeTime(p.lastActive);
+          }
+
+          html += '<a class="project-row" href="#/projects/' + escHtml(slug) + '">';
+          html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
+          html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
+
+          if (state && state._error === 'dir_not_found') {
+            html += '<span class="proj-dir-warning">\u26A0\uFE0F Directory not found</span>';
+          } else if (state && state._error === 'malformed') {
+            html += '<span class="proj-error">Error loading project data</span>';
+          } else if (state && !state._error) {
+            var done = (state.progress && state.progress.done) || 0;
+            var total = (state.progress && state.progress.total) || 0;
+            var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            html += '<span class="proj-bar-wrap">';
+            html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
+            html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
+            html += '</span>';
+          } else {
+            html += '<span class="proj-not-migrated">Not migrated</span>';
+          }
+
+          // Add last activity timestamp
+          if (lastActivity) {
+            html += '<span class="project-last-activity">Last activity: ' + lastActivity + '</span>';
+          }
+
+          html += '</a>';
+        } catch (e) {
+          html += '<div class="project-row"><span class="proj-error">Error loading project data</span></div>';
+        }
+      }
+
+      html += '</div>'; // Close project-group-content
+    }
+
     updateHtmlSmart(el, html);
+  }
+
+  // Toggle project group visibility
+  function toggleProjectGroup(headerEl) {
+    var contentEl = headerEl.nextElementSibling;
+    var chevronEl = headerEl.querySelector('.project-group-chevron');
+
+    if (headerEl.classList.contains('collapsed')) {
+      headerEl.classList.remove('collapsed');
+      contentEl.classList.remove('collapsed');
+      chevronEl.textContent = '▼';
+    } else {
+      headerEl.classList.add('collapsed');
+      contentEl.classList.add('collapsed');
+      chevronEl.textContent = '▶';
+    }
   }
 
   function renderAttentionHtml(items) {
