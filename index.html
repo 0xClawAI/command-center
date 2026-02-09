@@ -1076,6 +1076,22 @@
     border-color: var(--blue);
   }
 
+  .cross-tab-multiselect {
+    height: auto;
+    min-height: 34px;
+    max-height: 90px;
+    overflow-y: auto;
+  }
+
+  .cross-tab-multiselect option {
+    padding: 3px 6px;
+  }
+
+  .cross-tab-multiselect option:checked {
+    background: var(--blue);
+    color: var(--text);
+  }
+
   .cross-tab-toggle-label {
     display: flex;
     align-items: center;
@@ -1392,7 +1408,7 @@
     </div>
     <div id="content-main" style="display:none">
       <div class="cross-tab-filters" id="content-filters">
-        <select class="cross-tab-select" id="content-filter-project"><option value="">All Projects</option></select>
+        <select class="cross-tab-select cross-tab-multiselect" id="content-filter-project" multiple><option value="">All Projects</option></select>
         <select class="cross-tab-select" id="content-filter-type">
           <option value="">All Types</option>
           <option value="content">Content</option>
@@ -1418,7 +1434,7 @@
     </div>
     <div id="research-main" style="display:none">
       <div class="cross-tab-filters" id="research-filters">
-        <select class="cross-tab-select" id="research-filter-project"><option value="">All Projects</option></select>
+        <select class="cross-tab-select cross-tab-multiselect" id="research-filter-project" multiple><option value="">All Projects</option></select>
         <select class="cross-tab-select" id="research-filter-type">
           <option value="">All Types</option>
           <option value="research">Research</option>
@@ -2312,7 +2328,10 @@
         projects[t.slug] = t.project;
       }
     }
-    var currentVal = projectSelect.value;
+    var currentVals = [];
+    for (var cv = 0; cv < projectSelect.options.length; cv++) {
+      if (projectSelect.options[cv].selected) currentVals.push(projectSelect.options[cv].value);
+    }
     projectSelect.innerHTML = '<option value="">All Projects</option>';
     var slugs = Object.keys(projects).sort();
     for (var s = 0; s < slugs.length; s++) {
@@ -2321,17 +2340,22 @@
       opt.textContent = projects[slugs[s]];
       projectSelect.appendChild(opt);
     }
-    projectSelect.value = currentVal;
+    for (var rv = 0; rv < projectSelect.options.length; rv++) {
+      if (currentVals.indexOf(projectSelect.options[rv].value) !== -1) projectSelect.options[rv].selected = true;
+    }
 
     // Apply filters
-    var filterProject = document.getElementById('content-filter-project').value;
+    var selectedProjects = [];
+    for (var sp = 0; sp < projectSelect.options.length; sp++) {
+      if (projectSelect.options[sp].selected && projectSelect.options[sp].value) selectedProjects.push(projectSelect.options[sp].value);
+    }
     var filterType = document.getElementById('content-filter-type').value;
     var hideDone = document.getElementById('content-hide-done').checked;
 
     var filtered = [];
     for (var f = 0; f < contentTasks.length; f++) {
       var task = contentTasks[f];
-      if (filterProject && task.slug !== filterProject) continue;
+      if (selectedProjects.length > 0 && selectedProjects.indexOf(task.slug) === -1) continue;
       if (filterType && task.type !== filterType) continue;
       if (hideDone && task.status === 'done') continue;
       filtered.push(task);
@@ -2442,7 +2466,10 @@
         projects[t.slug] = t.project;
       }
     }
-    var currentVal = projectSelect.value;
+    var currentVals = [];
+    for (var cv = 0; cv < projectSelect.options.length; cv++) {
+      if (projectSelect.options[cv].selected) currentVals.push(projectSelect.options[cv].value);
+    }
     projectSelect.innerHTML = '<option value="">All Projects</option>';
     var slugs = Object.keys(projects).sort();
     for (var s = 0; s < slugs.length; s++) {
@@ -2451,17 +2478,22 @@
       opt.textContent = projects[slugs[s]];
       projectSelect.appendChild(opt);
     }
-    projectSelect.value = currentVal;
+    for (var rv = 0; rv < projectSelect.options.length; rv++) {
+      if (currentVals.indexOf(projectSelect.options[rv].value) !== -1) projectSelect.options[rv].selected = true;
+    }
 
     // Apply filters
-    var filterProject = document.getElementById('research-filter-project').value;
+    var selectedProjects = [];
+    for (var sp = 0; sp < projectSelect.options.length; sp++) {
+      if (projectSelect.options[sp].selected && projectSelect.options[sp].value) selectedProjects.push(projectSelect.options[sp].value);
+    }
     var filterType = document.getElementById('research-filter-type').value;
     var hideDone = document.getElementById('research-hide-done').checked;
 
     var filtered = [];
     for (var f = 0; f < researchTasks.length; f++) {
       var task = researchTasks[f];
-      if (filterProject && task.slug !== filterProject) continue;
+      if (selectedProjects.length > 0 && selectedProjects.indexOf(task.slug) === -1) continue;
       if (filterType && task.type !== filterType) continue;
       if (hideDone && task.status === 'done') continue;
       filtered.push(task);

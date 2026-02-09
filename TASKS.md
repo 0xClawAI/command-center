@@ -453,14 +453,14 @@
 
 ### C-005: Content Tab
 - **Type:** code
-- **Status:** ❌ failed
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
   - [x] Shows all tasks with type `content` or `marketing` from `/api/overview` `crossProjectTasks.content`
   - [x] Tasks grouped by status: Todo → In Progress → Testing → Done
   - [x] Each task shows: source project name as badge, task title, type badge (content vs marketing)
-  - [ ] Filter dropdown to filter by project (multi-select)
+  - [x] Filter dropdown to filter by project (multi-select)
   - [x] Filter by type (content vs marketing)
   - [x] "Hide completed" toggle that hides done tasks
   - [x] Clicking project badge navigates to `#/projects/<slug>`
@@ -491,15 +491,15 @@
 
 ### C-007: Agents Tab
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** A-006
 - **Pass criteria:**
-  - [ ] "0xClaw — Lead Orchestrator" card always visible with green status dot
-  - [ ] "Active Workers" section shows workers from all projects' state.json `workers` arrays
-  - [ ] Each worker card shows: name, status dot (green=active, yellow=idle, gray=offline), project name, current task ID
-  - [ ] "No active workers" message when no workers found
-  - [ ] "Department Agents (Coming Soon)" placeholder section with 4 placeholder cards: Engineering, Content, Research, QA
+  - [x] "0xClaw — Lead Orchestrator" card always visible with green status dot
+  - [x] "Active Workers" section shows workers from all projects' state.json `workers` arrays
+  - [x] Each worker card shows: name, status dot (green=active, yellow=idle, gray=offline), project name, current task ID
+  - [x] "No active workers" message when no workers found
+  - [x] "Department Agents (Coming Soon)" placeholder section with 4 placeholder cards: Engineering, Content, Research, QA
 - **Fail criteria:**
   - 0xClaw card missing
   - Workers from different projects not aggregated
@@ -510,24 +510,24 @@
 
 ### C-008: Ideas System — Global & Per-Project
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ❌ failed
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
-  - [ ] `GET /api/ideas` endpoint returns aggregated ideas from `~/.openclaw/workspace/IDEAS.md` (global) and each project's `IDEAS.md`
-  - [ ] Each idea parsed with: text, status (open/blocked/done), tags, source project (or "global")
-  - [ ] Ideas tab or section in Overview shows all ideas grouped by: Global, then by project
-  - [ ] Ideas with `#blocked:reason` show the blocker visually
-  - [ ] Ideas with `#done:date` show as completed with date
+  - [x] `GET /api/ideas` endpoint returns aggregated ideas from `~/.openclaw/workspace/IDEAS.md` (global) and each project's `IDEAS.md`
+  - [x] Each idea parsed with: text, status (open/blocked/done), tags, source project (or "global")
+  - [x] Ideas tab or section in Overview shows all ideas grouped by: Global, then by project
+  - [x] Ideas with `#blocked:reason` show the blocker visually
+  - [x] Ideas with `#done:date` show as completed with date
   - [ ] Ideas with `#project:name` tagged to a project show under that project's section
-  - [ ] Empty IDEAS.md files handled gracefully (no crash, show "No ideas yet")
-  - [ ] Template `IDEAS.md` created at `~/.openclaw/workspace/IDEAS.md` with format docs
+  - [x] Empty IDEAS.md files handled gracefully (no crash, show "No ideas yet")
+  - [x] Template `IDEAS.md` created at `~/.openclaw/workspace/IDEAS.md` with format docs
 - **Fail criteria:**
   - Crashes on missing IDEAS.md files
   - Tags not parsed (shown as raw text)
   - No visual distinction between global and per-project ideas
 - **Files:** `~/projects/command-center/server.js`, `~/projects/command-center/index.html`, `~/.openclaw/workspace/IDEAS.md`
-- **Notes:** Lightweight — just markdown parsing. IDEAS.md format: `- [ ] **Title** — description #tag1 #tag2`
+- **Notes:** Lightweight — just markdown parsing. IDEAS.md format: `- [ ] **Title** — description #tag1 #tag2`. **Supervisor note:** #project:name ideas from global IDEAS.md stay in Global group — need server or client to reroute them to the named project's section.
 
 ### C-009: Phase 3 Review
 - **Type:** ops

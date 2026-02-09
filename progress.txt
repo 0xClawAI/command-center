@@ -601,3 +601,169 @@ Fail criteria:
    ✓ Not oldest-first — .reverse() applied
    ✓ Visual separation present — cards with border, bg, gap
    ✓ No crash on empty — guard clause + fetch .catch() fallback
+
+================================================================================
+[2026-02-09T19:30:00-08:00] SUPERVISOR VERIFICATION — C-005: Content Tab — ❌ FAILED
+================================================================================
+
+7/8 pass criteria verified. 1 FAILURE.
+
+1. Shows content/marketing tasks from crossProjectTasks.content: ✅ PASS
+   - Server line 156: `if (t.type === 'content' || t.type === 'marketing') content.push(entry)`
+   - Client line 2279: `contentTasks = (d.crossProjectTasks && d.crossProjectTasks.content) || []`
+   - Live: 1 content task (D-007, type=content, project=Command Center). No leaks.
+
+2. Tasks grouped by status Todo → In Progress → Testing → Done: ✅ PASS
+   - Line 2341: `statusOrder = ['todo', 'in_progress', 'testing', 'done']`
+   - Groups iterated in this order. Failed/blocked mapped to todo (line 2350).
+
+3. Each task shows project badge, title, type badge: ✅ PASS
+   - Line 2370: `<a class="cross-tab-project-badge">` with project name
+   - Line 2371: `<span class="cross-tab-task-title">` with title
+   - Line 2372: `<span class="cross-tab-type-badge">` with type
+
+4. Filter dropdown to filter by project (multi-select): ❌ FAIL
+   - Line 1395: `<select class="cross-tab-select" id="content-filter-project">`
+   - This is a SINGLE-SELECT dropdown. No `multiple` attribute.
+   - Spec requires multi-select. Users cannot select multiple projects simultaneously.
+   - Fix: Add `multiple` attribute to the <select> element.
+
+5. Filter by type (content vs marketing): ✅ PASS
+   - Lines 1396-1400: dropdown with "All Types", "Content", "Marketing"
+   - Line 2335: `if (filterType && task.type !== filterType) continue`
+   - Event listener at line 2387.
+
+6. "Hide completed" toggle: ✅ PASS
+   - Line 1401: `<input type="checkbox" id="content-hide-done"> Hide completed`
+   - Line 2336: `if (hideDone && task.status === 'done') continue`
+
+7. Clicking project badge navigates to #/projects/<slug>: ✅ PASS
+   - Line 2370: `<a href="#/projects/' + escHtml(tk.slug) + '">`
+   - Standard anchor tag, navigates hash on click.
+
+8. Empty state "No content tasks found": ✅ PASS
+   - Lines 1388-1391: content-empty div with "No content tasks found"
+   - Shown when contentTasks.length === 0 (line 2297)
+   - Filter-empty state at line 2362 also shows "No content tasks found"
+
+Fail criteria check:
+   ✓ Does NOT show non-content/marketing tasks — server filters at source
+   ✓ Filters work (project single-select, type, hide-done all functional)
+   ✓ Empty state message present (both zero-tasks and zero-filtered-results)
+   ✓ Project badge click navigates (anchor tag with href)
+
+VERDICT: ❌ FAILED — project filter is single-select, spec requires multi-select.
+Action required: Add `multiple` attribute to content-filter-project select element
+and update filter logic to handle multiple selected values.
+
+================================================================================
+[2026-02-09T19:45:00-08:00] SUPERVISOR VERIFICATION — C-007: Agents Tab — ✅ PASS
+================================================================================
+
+5/5 pass criteria verified. 0/4 fail criteria triggered.
+
+1. 0xClaw Lead Orchestrator card with green dot: ✅ PASS
+   - Hardcoded HTML (lines 1444-1452): agent-card with agent-dot (green via CSS var(--green))
+   - Always visible — not dependent on API calls or JS rendering
+
+2. Active Workers aggregated from all projects: ✅ PASS
+   - loadAgentsTab() fetches /api/projects (all 16), then fans out to /api/project/:slug/state
+   - Each project's workers[] merged into allWorkers[] (line 2553)
+   - Pending counter ensures renderWorkers() called after all fetches resolve
+
+3. Worker card fields (name, status dot, project, task ID): ✅ PASS
+   - Status dot: active=green, idle=yellow, offline=gray (CSS lines 271-273)
+   - Card renders: name (h4), project (span), taskId (span.worker-task, monospace)
+   - All 4 fields present per card (lines 2585-2594)
+
+4. "No active workers" message: ✅ PASS
+   - renderWorkers() guard: if (!workers || workers.length === 0) → "No active workers"
+   - Currently live — all 4 migrated projects have workers: []
+
+5. Department Agents Coming Soon with 4 cards: ✅ PASS
+   - Section header: "Department Agents" + badge-coming-soon "Coming Soon" (line 1459)
+   - 4 placeholder cards: Engineering, Content, Research, QA (lines 1461-1477)
+
+Fail criteria:
+   ✓ 0xClaw card not missing — hardcoded HTML, always renders
+   ✓ Workers aggregated across projects — iterates all 16 projects
+   ✓ Coming Soon section present — 4 cards with badge
+   ✓ No crash on empty workers — null guards, .catch() handlers, pending counter
+================================================================================
+[2026-02-09 11:34 PST] SUPERVISOR VERIFICATION — C-008 Ideas System
+Archetype: Supervisor (verify, never build)
+--------------------------------------------------------------------------------
+Task: C-008 Ideas System — Global & Per-Project
+Verdict: ❌ FAILED (7/8 pass criteria met, 1 failed)
+
+Pass criteria results:
+1. GET /api/ideas endpoint returns aggregated ideas: ✅ PASS
+   - Returns {"ideas":[...]} with 16 ideas from global IDEAS.md
+   - Server iterates all projects for per-project IDEAS.md (none exist currently)
+   - Note: server needed restart — running process was stale (old code without /api/ideas route)
+
+2. Each idea parsed with text, status, tags, source: ✅ PASS
+   - All 16 ideas have: text, title, description, status, tags (array), source
+   - Tags correctly parsed as arrays, not raw strings
+   - Status correctly derived: open (7), blocked (9)
+
+3. Ideas tab grouped by Global then by project: ✅ PASS
+   - Dedicated Ideas tab in navbar (6th tab)
+   - Groups by source field, sorts global first then alphabetical
+   - Global group header: "🌐 Global"
+
+4. #blocked:reason shows blocker visually: ✅ PASS
+   - CSS: .idea-card.blocked has red left border (3px solid var(--red))
+   - Icon: 🚫 for blocked ideas
+   - Blocker text: "⛔ Blocked: <reason>" rendered below description
+   - Tag badge: red border for #blocked:* tags
+   - All 9 blocked ideas have blocker field populated
+
+5. #done:date shows as completed with date: ✅ PASS
+   - Tested by injecting #done:2026-02-01 idea — doneDate field populated
+   - Renders: "✓ Completed: <date>" text, ✅ icon, opacity 0.6 card styling
+   - Green border on done tag badges
+
+6. #project:name ideas show under that project's section: ❌ FAIL
+   - 4 ideas tagged #project:command-center (Notification system, Cost tracking,
+     Auto state.json regeneration, Cross-project dependency tracking)
+   - All have source="global" because they originate from global IDEAS.md
+   - Rendering groups by source field, NOT by #project: tag
+   - These ideas appear under "🌐 Global" section, not "command-center" section
+   - Neither server (parseIdeasMd) nor client (renderIdeasTab) reroutes based on #project: tag
+   - Fix needed: server should override source with #project:name value, OR client should
+     regroup ideas that have #project: tags into the named project's section
+
+7. Empty IDEAS.md handled gracefully: ✅ PASS
+   - Tested by removing global IDEAS.md — returns {"ideas":[]}, no crash
+   - Client shows: "No ideas yet" with instructions to add to IDEAS.md
+   - readSafe() returns null for missing files, parseIdeasMd(null, ...) returns []
+
+8. Template IDEAS.md at ~/.openclaw/workspace/IDEAS.md: ✅ PASS
+   - File exists with format documentation header
+   - Format: `- [ ] **Title** — description #tag1 #tag2`
+   - Tag reference: #blocked:reason, #ready, #done:date, #project:name
+
+Fail criteria check:
+   ✓ No crashes on missing IDEAS.md files
+   ✓ Tags parsed correctly (not shown as raw text)
+   ✓ Visual distinction exists between global and per-project groups
+
+================================================================================
+[2026-02-09 11:40 PST] C-005: Fix project filter to multi-select
+Worker: code-worker (Opus)
+--------------------------------------------------------------------------------
+Supervisor failed C-005 because the project filter was a single-select <select>.
+Spec requires multi-select so users can filter by multiple projects at once.
+
+Fix applied to both Content tab and Research tab (C-006 had the same issue):
+- Added `multiple` attribute to project filter <select> elements
+- Added `.cross-tab-multiselect` CSS class for sizing (height:auto, max-height:90px)
+- Updated filter logic: reads all selected options into an array, filters tasks
+  against the array (indexOf check) instead of single string comparison
+- Preserves selected values when dropdown options are repopulated on re-render
+- "All Projects" option (value="") acts as default when nothing else is selected
+
+Files changed: index.html (HTML selects, CSS, JS filter logic for both tabs)
+Status: 🧪 testing
+================================================================================
