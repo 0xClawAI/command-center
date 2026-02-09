@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 25/34 tasks complete
+> Progress: 26/34 tasks complete
 
 ---
 
@@ -531,14 +531,14 @@
 
 ### C-009: Phase 3 Review
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M8
 - **Depends:** C-001, C-002, C-003, C-004, C-005, C-006, C-007, C-008
 - **Pass criteria:**
-  - [ ] All C-xxx pass criteria verified and checked off
-  - [ ] All 5 tabs fully functional with real data
-  - [ ] Cross-project views (Content, Research) aggregate correctly
-  - [ ] No JS console errors navigating all tabs
+  - [x] All C-xxx pass criteria verified and checked off
+  - [x] All 5 tabs fully functional with real data
+  - [x] Cross-project views (Content, Research) aggregate correctly
+  - [x] No JS console errors navigating all tabs
 - **Fail criteria:**
   - Any C-xxx task has unchecked pass criteria
   - Console errors present
