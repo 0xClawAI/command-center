@@ -417,15 +417,15 @@
 
 ### C-003: Projects Tab — Kanban View
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** C-001
 - **Pass criteria:**
-  - [ ] Toggle to switch between Milestones and Kanban views (button or tab)
-  - [ ] 4 columns: Todo, In Progress, Testing, Done
-  - [ ] Each task card shows: ID, title, type badge, milestone name
-  - [ ] Cards in correct column based on task status (failed → shown in Todo with red badge, blocked → shown in Todo with purple badge)
-  - [ ] Column headers show count of tasks in that column
+  - [x] Toggle to switch between Milestones and Kanban views (button or tab)
+  - [x] 4 columns: Todo, In Progress, Testing, Done
+  - [x] Each task card shows: ID, title, type badge, milestone name
+  - [x] Cards in correct column based on task status (failed → shown in Todo with red badge, blocked → shown in Todo with purple badge)
+  - [x] Column headers show count of tasks in that column
 - **Fail criteria:**
   - Tasks in wrong columns
   - No toggle between views
@@ -435,15 +435,15 @@
 
 ### C-004: Projects Tab — Progress Log View
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** C-001
 - **Pass criteria:**
-  - [ ] Toggle to view progress log (third view option alongside Milestones/Kanban)
-  - [ ] Fetches data from `/api/project/:slug/progress`
-  - [ ] Entries rendered newest first
-  - [ ] Each entry visually separated (card or divider)
-  - [ ] Empty progress log shows "No progress entries yet" placeholder
+  - [x] Toggle to view progress log (third view option alongside Milestones/Kanban)
+  - [x] Fetches data from `/api/project/:slug/progress`
+  - [x] Entries rendered newest first
+  - [x] Each entry visually separated (card or divider)
+  - [x] Empty progress log shows "No progress entries yet" placeholder
 - **Fail criteria:**
   - Entries shown oldest first
   - No visual separation between entries

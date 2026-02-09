@@ -515,3 +515,13 @@ All pass criteria verified:
 4. failed → Todo (red badge), blocked → Todo (purple badge) ✓
 5. Column headers show task count ✓
 ================================================================================
+
+================================================================================
+[2026-02-09T19:13:12Z] C-003: Kanban View — ✅ PASSED (supervisor)
+- Toggle between Milestones/Kanban: view-toggle buttons with active state switching
+- 4 columns (Todo, In Progress, Testing, Done) via grid layout
+- Cards show ID, title, type badge, milestone name
+- failed→Todo (red badge), blocked→Todo (purple badge), unknown statuses→Todo fallback
+- Column headers show task count via kanban-column-count
+================================================================================
+

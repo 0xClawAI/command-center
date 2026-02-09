@@ -848,6 +848,10 @@
     border-radius: 6px 0 0 6px;
   }
 
+  .view-toggle-btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
   .view-toggle-btn:last-child {
     border-radius: 0 6px 6px 0;
   }
@@ -984,6 +988,165 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /* ── Cross-Project Task Tab (Content / Research) ── */
+  .cross-tab-filters {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .cross-tab-select,
+  .cross-tab-toggle-label {
+    font-family: inherit;
+    font-size: 13px;
+  }
+
+  .cross-tab-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .cross-tab-select:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+
+  .cross-tab-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .cross-tab-toggle-label input[type="checkbox"] {
+    accent-color: var(--blue);
+  }
+
+  .cross-tab-group {
+    margin-bottom: 24px;
+  }
+
+  .cross-tab-group-header {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cross-tab-group-count {
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text-dim);
+    background: var(--surface2);
+    padding: 1px 8px;
+    border-radius: 10px;
+  }
+
+  .cross-tab-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    transition: border-color 0.15s;
+  }
+
+  .cross-tab-task + .cross-tab-task {
+    margin-top: 6px;
+  }
+
+  .cross-tab-task:hover {
+    border-color: var(--blue);
+  }
+
+  .cross-tab-project-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--blue);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+
+  .cross-tab-project-badge:hover {
+    border-color: var(--blue);
+  }
+
+  .cross-tab-task-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cross-tab-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-dim);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* ── Progress Log ── */
+  .progress-log {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .progress-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text-dim);
+  }
+
+  .progress-empty {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-dim);
+    font-size: 14px;
+    font-style: italic;
+  }
 </style>
 </head>
 <body>
@@ -1043,10 +1206,27 @@
 
   <!-- Content Tab -->
   <div class="tab-panel" id="panel-content">
-    <div class="empty-state">
+    <div id="content-loading" class="empty-state">
       <div class="empty-state-icon">📝</div>
       <div class="empty-state-title">Loading content tasks...</div>
       <div class="empty-state-text">Cross-project content and marketing tasks will appear here.</div>
+    </div>
+    <div id="content-empty" class="empty-state" style="display:none">
+      <div class="empty-state-icon">📝</div>
+      <div class="empty-state-title">No content tasks found</div>
+      <div class="empty-state-text">No content or marketing tasks exist across your projects.</div>
+    </div>
+    <div id="content-main" style="display:none">
+      <div class="cross-tab-filters" id="content-filters">
+        <select class="cross-tab-select" id="content-filter-project"><option value="">All Projects</option></select>
+        <select class="cross-tab-select" id="content-filter-type">
+          <option value="">All Types</option>
+          <option value="content">Content</option>
+          <option value="marketing">Marketing</option>
+        </select>
+        <label class="cross-tab-toggle-label"><input type="checkbox" id="content-hide-done"> Hide completed</label>
+      </div>
+      <div id="content-groups"></div>
     </div>
   </div>
 
@@ -1567,18 +1747,19 @@
 
     html += '</div>'; // .project-info-card
 
-    // View toggle (only show if we have tasks)
-    if (state && state.tasks && state.tasks.length > 0) {
-      html += '<div class="view-toggle" id="view-toggle">';
-      html += '<button class="view-toggle-btn' + (currentProjectView === 'milestones' ? ' active' : '') + '" data-view="milestones">Milestones</button>';
-      html += '<button class="view-toggle-btn' + (currentProjectView === 'kanban' ? ' active' : '') + '" data-view="kanban">Kanban</button>';
-      html += '</div>';
-    }
+    // View toggle
+    html += '<div class="view-toggle" id="view-toggle">';
+    html += '<button class="view-toggle-btn' + (currentProjectView === 'milestones' ? ' active' : '') + '" data-view="milestones">Milestones</button>';
+    html += '<button class="view-toggle-btn' + (currentProjectView === 'kanban' ? ' active' : '') + '" data-view="kanban">Kanban</button>';
+    html += '<button class="view-toggle-btn' + (currentProjectView === 'progress' ? ' active' : '') + '" data-view="progress">Progress</button>';
+    html += '</div>';
 
     // Render the active view
     html += '<div id="project-view-container">';
     if (currentProjectView === 'kanban' && state && state.tasks && state.tasks.length > 0) {
       html += renderKanban(state);
+    } else if (currentProjectView === 'progress') {
+      html += '<div class="progress-log" id="progress-log-container"><div class="progress-empty">Loading progress log...</div></div>';
     } else {
       html += renderMilestones(state);
     }
@@ -1608,6 +1789,9 @@
         var container = document.getElementById('project-view-container');
         if (view === 'kanban') {
           container.innerHTML = renderKanban(currentProjectState);
+        } else if (view === 'progress') {
+          container.innerHTML = '<div class="progress-log" id="progress-log-container"><div class="progress-empty">Loading progress log...</div></div>';
+          loadProgressLog(selectedSlug);
         } else {
           container.innerHTML = renderMilestones(currentProjectState);
           // Re-attach milestone toggle handlers
@@ -1620,6 +1804,11 @@
           }
         }
       });
+    }
+
+    // Load progress log if that's the active view
+    if (currentProjectView === 'progress' && selectedSlug) {
+      loadProgressLog(selectedSlug);
     }
 
     // Attach milestone toggle handlers (for initial render)
@@ -1807,6 +1996,32 @@
 
     html += '</div>'; // .kanban-board
     return html;
+  }
+
+  function renderProgressLog(entries) {
+    if (!entries || entries.length === 0) {
+      return '<div class="progress-empty">No progress entries yet</div>';
+    }
+    // Entries come oldest-first from API; reverse for newest-first
+    var reversed = entries.slice().reverse();
+    var html = '';
+    for (var i = 0; i < reversed.length; i++) {
+      html += '<div class="progress-entry">' + escHtml(reversed[i].trim()) + '</div>';
+    }
+    return html;
+  }
+
+  function loadProgressLog(slug) {
+    var container = document.getElementById('progress-log-container');
+    if (!container) return;
+    fetch('/api/project/' + encodeURIComponent(slug) + '/progress')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        container.innerHTML = renderProgressLog(d.entries);
+      })
+      .catch(function() {
+        container.innerHTML = '<div class="progress-empty">Failed to load progress log</div>';
+      });
   }
 
   function renderTaskRow(task) {
