@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 6/42 tasks complete
+> Progress: 9/42 tasks complete
 
 ---
 
@@ -149,16 +149,16 @@
 
 ### A-007: Overview Tab — Summary Stats & Project List
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M2
 - **Depends:** A-004, A-006
 - **Pass criteria:**
-  - [ ] Top bar shows: Active count, Paused count, Complete count, Total count — matching `/api/overview` data
-  - [ ] Each active project shows progress bar with `done/total tasks` label
-  - [ ] Progress bar width = `(done / total) * 100%` — verified visually for at least 2 projects
-  - [ ] Projects with 0 total tasks show `0/0 tasks` with empty bar (no division by zero crash)
-  - [ ] Projects without state.json show "Not migrated" text instead of progress bar
-  - [ ] Clicking a project navigates to `#/projects/<slug>` (Projects tab with that project selected)
+  - [x] Top bar shows: Active count, Paused count, Complete count, Total count — matching `/api/overview` data
+  - [x] Each active project shows progress bar with `done/total tasks` label
+  - [x] Progress bar width = `(done / total) * 100%` — verified visually for at least 2 projects
+  - [x] Projects with 0 total tasks show `0/0 tasks` with empty bar (no division by zero crash)
+  - [x] Projects without state.json show "Not migrated" text instead of progress bar
+  - [x] Clicking a project navigates to `#/projects/<slug>` (Projects tab with that project selected)
 - **Fail criteria:**
   - Stats don't match actual projects.json data
   - Division by zero error when project has 0 tasks
@@ -169,15 +169,15 @@
 
 ### A-008: Overview Tab — Needs Attention Section
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M2
 - **Depends:** A-007
 - **Pass criteria:**
-  - [ ] Section displays when `/api/overview` has non-empty `needsAttention` array
-  - [ ] Each attention item shows: severity icon (🔴 high, 🟡 medium, 🔵 info), project name, reason text
-  - [ ] Items sorted by severity: high → medium → info
-  - [ ] When `needsAttention` is empty, shows "Nothing needs attention 🎉" message
-  - [ ] Section is not rendered/hidden when all projects are healthy (displays the 🎉 message)
+  - [x] Section displays when `/api/overview` has non-empty `needsAttention` array
+  - [x] Each attention item shows: severity icon (🔴 high, 🟡 medium, 🔵 info), project name, reason text
+  - [x] Items sorted by severity: high → medium → info
+  - [x] When `needsAttention` is empty, shows "Nothing needs attention 🎉" message
+  - [x] Section is not rendered/hidden when all projects are healthy (displays the 🎉 message)
 - **Fail criteria:**
   - Empty section with no message when nothing needs attention
   - Attention items unsorted
@@ -187,15 +187,15 @@
 
 ### A-009: Overview Tab — Recent Activity Feed
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M2
 - **Depends:** A-007
 - **Pass criteria:**
-  - [ ] Shows activity entries from `/api/overview` `recentActivity` array
-  - [ ] Each entry shows: time (HH:MM format), project name, message, status icon
-  - [ ] Entries sorted newest first
-  - [ ] When no activity exists, shows "No recent activity" placeholder
-  - [ ] Maximum 20 entries displayed (no infinite scroll needed)
+  - [x] Shows activity entries from `/api/overview` `recentActivity` array
+  - [x] Each entry shows: time (HH:MM format), project name, message, status icon
+  - [x] Entries sorted newest first
+  - [x] When no activity exists, shows "No recent activity" placeholder
+  - [x] Maximum 20 entries displayed (no infinite scroll needed)
 - **Fail criteria:**
   - Shows oldest first
   - Crashes on empty activity array
@@ -205,7 +205,7 @@
 
 ### A-010: Phase 1 Review
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M6
 - **Depends:** A-001, A-002, A-003, A-004, A-005, A-006, A-007, A-008, A-009
 - **Pass criteria:**

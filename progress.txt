@@ -161,3 +161,27 @@ Key decisions:
 - Hooked into activateTab() to start/stop polling on tab change
 - All CSS uses design system variables (no hardcoded colors)
 ================================================================================
+
+================================================================================
+[2026-02-09T10:28:00-08:00] Supervisor verification: A-007, A-008, A-009
+
+A-007 ✅ PASS — Summary Stats & Project List
+  - renderStats() renders 4 stat cards from /api/overview (active=3, paused=3, complete=2, total=8)
+  - renderProjects() shows progress bars with width=(done/total)*100%
+  - 0/0 handling: `total > 0 ? ... : 0` prevents division by zero
+  - "Not migrated" fallback rendered when state is null
+  - Click navigates via <a href="#/projects/slug">
+
+A-008 ✅ PASS — Needs Attention Section
+  - SEVERITY_ICONS: high=🔴, medium=🟡, info=🔵
+  - Sorted by SEVERITY_ORDER: high(0) → medium(1) → info(3)
+  - Empty state: "Nothing needs attention 🎉"
+  - Live data shows 2 medium items (Blob Social, DeFi Tools not migrated)
+
+A-009 ✅ PASS — Recent Activity Feed
+  - renderActivity() sorts by `tb - ta` (newest first)
+  - formatTime() returns HH:MM format
+  - Max 20 entries: `Math.min(sorted.length, 20)`
+  - Empty placeholder: "No recent activity"
+  - Live data: 33 activity entries from Viberr v2 and Polymarket Edge
+================================================================================
