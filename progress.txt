@@ -65,7 +65,7 @@ Clock in top-right shows current date/time, updates every second.
 ================================================================================
 [2026-02-09 14:30 PST] A-001,A-002,A-003,A-004 (API Server — All Endpoints) — COMPLETED
 Worker: server-worker
-Commit: pending "[A-001,A-002,A-003,A-004] API server with all endpoints"
+Commit: a2e052a "[A-001,A-002,A-003,A-004] API server with all endpoints"
 Files: server.js
 --------------------------------------------------------------------------------
 Built server.js — the complete API server for Command Center. 210 lines, Node.js
@@ -108,4 +108,56 @@ Key decisions:
 - decodeURIComponent on pathname before routing (catches encoded traversal)
 - Regex route matching for /api/project/:slug/:resource pattern
 - Synchronous file reads (simplicity over throughput — this is a low-traffic dashboard)
+================================================================================
+
+================================================================================
+[2026-02-09 10:25 PST] SUPERVISOR VERIFICATION — A-001 through A-006
+Supervisor: supervisor-1
+--------------------------------------------------------------------------------
+A-001: PASS — server.js 210 lines, starts on 3400, PORT=4999 tested OK, binds 0.0.0.0, GET / returns text/html 200, no node_modules, port-in-use error+exit verified
+A-002: PASS — /api/projects returns JSON array, /api/project/viberr-v2/{state,progress,tasks} all return correct shapes, nonexistent slug → 404 {"error":"Project not found"}, progress splits on 80+ = chars with 50 limit, 500 on malformed projects.json (code verified)
+A-003: PASS — ..%2F..%2Fetc%2Fpasswd → 404, ../../etc/passwd → 404, slug lookup via projects.json only (findBySlug), ALLOWED_EXT whitelist (.json/.txt/.md), safePath uses path.resolve with startsWith check
+A-004: PASS — /api/overview returns all 7 required fields, totalProjects=8 matches projects.json, active=3 correct, needsAttention shows unmigrated active projects (medium), failed task detection in code (high), stale detection in code (>7 days), crossProjectTasks.content and .research present, response time 0.001s
+A-005: PASS — index.html exists, single file inline CSS/JS, 6 tabs (5 specified + Ideas from C-008), hash routing with hashchange listener, invalid hash → #/overview, back/forward via hashchange, direct URL load works
+A-006: PASS — All 11 CSS custom properties match exactly, all hex colors only in :root block (verified grep), font-family correct, monospace correct, status colors use var() consistently (in_progress=blue, done=green, testing=yellow, failed=red, blocked=purple, todo=text-dim)
+
+All 6 tasks PASSED. No failures.
+Note: A-005 has 6 tabs instead of specified 5 (Ideas tab added early from C-008). Not a breaking issue.
+================================================================================
+
+================================================================================
+[2026-02-09 16:00 PST] A-007,A-008,A-009: Overview Tab — Stats, Attention, Activity Feed
+Lead: code-worker (Opus)
+--------------------------------------------------------------------------------
+Made the Overview tab live with real data from /api/overview and /api/projects.
+
+A-007 (Summary Stats & Project List):
+- Top stats bar: 4 cards showing Active/Paused/Complete/Total counts
+- Each project rendered as a clickable row with status dot and progress bar
+- Progress bar width = (done/total)*100%, handles 0/0 (no division by zero)
+- Projects without state.json show "Not migrated" in yellow italic
+- Clicking a project navigates to #/projects/<slug>
+- Fetches /api/overview, /api/projects, and /api/project/:slug/state per project
+
+A-008 (Needs Attention):
+- Renders needsAttention array with severity icons (🔴 high, 🟡 medium, 🔵 info)
+- Sorted by severity: high → medium → info
+- Shows project name + reason text per item
+- When empty: "Nothing needs attention 🎉" message
+
+A-009 (Recent Activity Feed):
+- Renders recentActivity from /api/overview, max 20 entries
+- Each entry: HH:MM time, status icon, project name, message
+- Sorted newest first
+- Empty state: "No recent activity" placeholder
+- Activity type icons: ✅ complete, 🚀 start, ℹ️ status, 🔍 audit, ⚡ spawn, 📋 phase
+
+Auto-refresh: Polls every 10 seconds while Overview tab is active.
+Stops polling when user navigates to another tab.
+
+Key decisions:
+- Parallel fetch of overview + projects data, then fan-out state fetches per project
+- HTML escaping via escHtml() for all user-facing strings
+- Hooked into activateTab() to start/stop polling on tab change
+- All CSS uses design system variables (no hardcoded colors)
 ================================================================================

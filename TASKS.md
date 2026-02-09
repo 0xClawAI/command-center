@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 0/42 tasks complete
+> Progress: 6/42 tasks complete
 
 ---
 
@@ -26,18 +26,18 @@
 
 ### A-001: API Server — Core HTTP + Static Serving
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M1
 - **Depends:** none
 - **Pass criteria:**
-  - [ ] File `server.js` exists at `~/projects/command-center/server.js`
-  - [ ] `node server.js` starts without errors and listens on port 3400
-  - [ ] Port is configurable via `PORT` env var (e.g., `PORT=4000 node server.js` listens on 4000)
-  - [ ] Server binds to `0.0.0.0` (verified: `lsof -i :3400` shows `*:3400`)
-  - [ ] `GET /` returns contents of `index.html` with `Content-Type: text/html`
-  - [ ] Server uses only Node.js stdlib (no `node_modules/` directory exists)
-  - [ ] Server code is <300 lines (verified: `wc -l server.js`)
-  - [ ] If port is already in use, server prints error message containing the port number and exits with non-zero code
+  - [x] File `server.js` exists at `~/projects/command-center/server.js`
+  - [x] `node server.js` starts without errors and listens on port 3400
+  - [x] Port is configurable via `PORT` env var (e.g., `PORT=4000 node server.js` listens on 4000)
+  - [x] Server binds to `0.0.0.0` (verified: `lsof -i :3400` shows `*:3400`)
+  - [x] `GET /` returns contents of `index.html` with `Content-Type: text/html`
+  - [x] Server uses only Node.js stdlib (no `node_modules/` directory exists)
+  - [x] Server code is <300 lines (verified: `wc -l server.js`)
+  - [x] If port is already in use, server prints error message containing the port number and exits with non-zero code
 - **Fail criteria:**
   - Requires `npm install` or any external dependency
   - Server silently fails when port is taken
@@ -48,17 +48,17 @@
 
 ### A-002: API Server — Project Endpoints
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M1
 - **Depends:** A-001
 - **Pass criteria:**
-  - [ ] `GET /api/projects` returns JSON array matching contents of `~/.openclaw/workspace/projects.json`
-  - [ ] `GET /api/project/viberr-v2/state` returns JSON contents of Viberr's `state.json` (or 404 with `{"error":"..."}` if file missing)
-  - [ ] `GET /api/project/viberr-v2/progress` returns `{"entries":[...]}` from `progress.txt` (or `{"entries":[]}` if missing)
-  - [ ] `GET /api/project/viberr-v2/tasks` returns `{"content":"..."}` with raw TASKS.md string (or 404 if missing)
-  - [ ] `GET /api/project/nonexistent-slug/state` returns HTTP 404 with `{"error":"Project not found"}`
-  - [ ] progress.txt parsing splits on lines of 80+ `=` characters; only last 50 entries returned
-  - [ ] Malformed `projects.json` returns HTTP 500 with error message (test: temporarily corrupt the file)
+  - [x] `GET /api/projects` returns JSON array matching contents of `~/.openclaw/workspace/projects.json`
+  - [x] `GET /api/project/viberr-v2/state` returns JSON contents of Viberr's `state.json` (or 404 with `{"error":"..."}` if file missing)
+  - [x] `GET /api/project/viberr-v2/progress` returns `{"entries":[...]}` from `progress.txt` (or `{"entries":[]}` if missing)
+  - [x] `GET /api/project/viberr-v2/tasks` returns `{"content":"..."}` with raw TASKS.md string (or 404 if missing)
+  - [x] `GET /api/project/nonexistent-slug/state` returns HTTP 404 with `{"error":"Project not found"}`
+  - [x] progress.txt parsing splits on lines of 80+ `=` characters; only last 50 entries returned
+  - [x] Malformed `projects.json` returns HTTP 500 with error message (test: temporarily corrupt the file)
 - **Fail criteria:**
   - Returns HTML or stack traces instead of JSON error responses
   - Crashes on missing files instead of returning appropriate status codes
@@ -68,15 +68,15 @@
 
 ### A-003: API Server — Path Traversal Prevention
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M1
 - **Depends:** A-002
 - **Pass criteria:**
-  - [ ] `GET /api/project/..%2F..%2Fetc%2Fpasswd/state` returns 404, NOT file contents
-  - [ ] `GET /api/project/../../etc/passwd/state` returns 404
-  - [ ] Server resolves slug to path ONLY via projects.json lookup (not string concatenation with user input)
-  - [ ] Only `.json`, `.txt`, `.md` file extensions are served
-  - [ ] Resolved file path is verified to start with the registered project path (using `path.resolve`)
+  - [x] `GET /api/project/..%2F..%2Fetc%2Fpasswd/state` returns 404, NOT file contents
+  - [x] `GET /api/project/../../etc/passwd/state` returns 404
+  - [x] Server resolves slug to path ONLY via projects.json lookup (not string concatenation with user input)
+  - [x] Only `.json`, `.txt`, `.md` file extensions are served
+  - [x] Resolved file path is verified to start with the registered project path (using `path.resolve`)
 - **Fail criteria:**
   - Any request returns contents of files outside registered project directories
   - Extension whitelist is missing (could serve arbitrary files)
@@ -86,19 +86,19 @@
 
 ### A-004: API Server — Overview Endpoint
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M1
 - **Depends:** A-002
 - **Pass criteria:**
-  - [ ] `GET /api/overview` returns JSON matching the schema in PRD (totalProjects, activeProjects, pausedProjects, completeProjects, needsAttention, recentActivity, crossProjectTasks)
-  - [ ] `totalProjects` equals number of entries in projects.json
-  - [ ] `activeProjects` count matches entries with `status: "active"`
-  - [ ] `needsAttention` includes projects with failed tasks (severity: high)
-  - [ ] `needsAttention` includes active projects with no state.json update in >7 days (severity: medium)
-  - [ ] `needsAttention` includes active projects with no state.json at all (severity: medium)
-  - [ ] `crossProjectTasks.content` contains all tasks with type `content` or `marketing` across all projects
-  - [ ] `crossProjectTasks.research` contains all tasks with type `research` or `analysis` across all projects
-  - [ ] Response time <500ms (test: `time curl localhost:3400/api/overview`)
+  - [x] `GET /api/overview` returns JSON matching the schema in PRD (totalProjects, activeProjects, pausedProjects, completeProjects, needsAttention, recentActivity, crossProjectTasks)
+  - [x] `totalProjects` equals number of entries in projects.json
+  - [x] `activeProjects` count matches entries with `status: "active"`
+  - [x] `needsAttention` includes projects with failed tasks (severity: high)
+  - [x] `needsAttention` includes active projects with no state.json update in >7 days (severity: medium)
+  - [x] `needsAttention` includes active projects with no state.json at all (severity: medium)
+  - [x] `crossProjectTasks.content` contains all tasks with type `content` or `marketing` across all projects
+  - [x] `crossProjectTasks.research` contains all tasks with type `research` or `analysis` across all projects
+  - [x] Response time <500ms (test: `time curl localhost:3400/api/overview`)
 - **Fail criteria:**
   - Crashes if any single project's state.json is missing or invalid
   - Omits projects that lack state.json from the count
@@ -108,19 +108,19 @@
 
 ### A-005: HTML Shell — Tab Navigation & Routing
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M2
 - **Depends:** A-001
 - **Pass criteria:**
-  - [ ] File `index.html` exists at `~/projects/command-center/index.html`
-  - [ ] Single HTML file with inline CSS and JS (no external files besides API calls)
-  - [ ] Five tabs visible: Overview, Projects, Content, Research, Agents
-  - [ ] Clicking a tab changes the visible content area and updates `location.hash`
-  - [ ] `#/overview` → Overview tab, `#/projects` → Projects tab, `#/content` → Content, `#/research` → Research, `#/agents` → Agents
-  - [ ] No hash or `#/` defaults to Overview
-  - [ ] Invalid hash (e.g., `#/garbage`) redirects to `#/overview`
-  - [ ] Browser back/forward navigates between previously viewed tabs
-  - [ ] Pasting URL with `#/content` directly loads Content tab
+  - [x] File `index.html` exists at `~/projects/command-center/index.html`
+  - [x] Single HTML file with inline CSS and JS (no external files besides API calls)
+  - [x] Five tabs visible: Overview, Projects, Content, Research, Agents
+  - [x] Clicking a tab changes the visible content area and updates `location.hash`
+  - [x] `#/overview` → Overview tab, `#/projects` → Projects tab, `#/content` → Content, `#/research` → Research, `#/agents` → Agents
+  - [x] No hash or `#/` defaults to Overview
+  - [x] Invalid hash (e.g., `#/garbage`) redirects to `#/overview`
+  - [x] Browser back/forward navigates between previously viewed tabs
+  - [x] Pasting URL with `#/content` directly loads Content tab
 - **Fail criteria:**
   - Multiple HTML/CSS/JS files (must be single file)
   - Tabs require page reload to switch
@@ -131,15 +131,15 @@
 
 ### A-006: HTML Shell — Design System & Dark Theme
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M2
 - **Depends:** A-005
 - **Pass criteria:**
-  - [ ] CSS custom properties defined: `--bg: #0d1117`, `--surface: #161b22`, `--surface2: #1c2128`, `--border: #30363d`, `--text: #e6edf3`, `--text-dim: #8b949e`, `--blue: #58a6ff`, `--green: #3fb950`, `--yellow: #d29922`, `--red: #f85149`, `--purple: #bc8cff`
-  - [ ] No hardcoded color values outside CSS custom properties (search: all `#` color codes appear only in `:root` block)
-  - [ ] Font stack is `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
-  - [ ] Monospace font for task IDs: `'SF Mono', 'Fira Code', monospace`
-  - [ ] Status colors consistent: in_progress=blue, done=green, testing=yellow, failed=red, blocked=purple, todo=gray
+  - [x] CSS custom properties defined: `--bg: #0d1117`, `--surface: #161b22`, `--surface2: #1c2128`, `--border: #30363d`, `--text: #e6edf3`, `--text-dim: #8b949e`, `--blue: #58a6ff`, `--green: #3fb950`, `--yellow: #d29922`, `--red: #f85149`, `--purple: #bc8cff`
+  - [x] No hardcoded color values outside CSS custom properties (search: all `#` color codes appear only in `:root` block)
+  - [x] Font stack is `-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
+  - [x] Monospace font for task IDs: `'SF Mono', 'Fira Code', monospace`
+  - [x] Status colors consistent: in_progress=blue, done=green, testing=yellow, failed=red, blocked=purple, todo=gray
 - **Fail criteria:**
   - Hardcoded colors scattered through CSS
   - Light background anywhere
@@ -149,7 +149,7 @@
 
 ### A-007: Overview Tab — Summary Stats & Project List
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M2
 - **Depends:** A-004, A-006
 - **Pass criteria:**
@@ -169,7 +169,7 @@
 
 ### A-008: Overview Tab — Needs Attention Section
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M2
 - **Depends:** A-007
 - **Pass criteria:**
@@ -187,7 +187,7 @@
 
 ### A-009: Overview Tab — Recent Activity Feed
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M2
 - **Depends:** A-007
 - **Pass criteria:**

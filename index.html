@@ -265,6 +265,219 @@
     margin-left: 8px;
     vertical-align: middle;
   }
+
+  /* ── Overview: Stats Bar ── */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 24px;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value.active { color: var(--green); }
+  .stat-value.paused { color: var(--yellow); }
+  .stat-value.complete { color: var(--blue); }
+  .stat-value.total { color: var(--text); }
+
+  /* ── Overview: Project List ── */
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .project-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .project-row:hover {
+    border-color: var(--blue);
+  }
+
+  .project-row .proj-name {
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 140px;
+    flex-shrink: 0;
+  }
+
+  .project-row .proj-bar-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .proj-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .proj-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .proj-bar-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .proj-not-migrated {
+    font-size: 12px;
+    color: var(--yellow);
+    font-style: italic;
+  }
+
+  .proj-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .proj-status-dot.active { background: var(--green); }
+  .proj-status-dot.paused { background: var(--yellow); }
+  .proj-status-dot.complete { background: var(--blue); }
+  .proj-status-dot.archived { background: var(--text-dim); }
+
+  /* ── Overview: Needs Attention ── */
+  .attention-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .attention-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .attention-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .attention-project {
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .attention-reason {
+    color: var(--text-dim);
+  }
+
+  .attention-ok {
+    text-align: center;
+    padding: 24px;
+    font-size: 15px;
+    color: var(--text-dim);
+  }
+
+  /* ── Overview: Activity Feed ── */
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: background 0.1s;
+  }
+
+  .activity-item:hover {
+    background: var(--surface);
+  }
+
+  .activity-time {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+
+  .activity-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .activity-project {
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .activity-msg {
+    color: var(--text-dim);
+    min-width: 0;
+  }
+
+  .activity-empty {
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
 </style>
 </head>
 <body>
@@ -295,10 +508,19 @@
 
   <!-- Overview Tab -->
   <div class="tab-panel active" id="panel-overview">
-    <div class="empty-state">
+    <div id="overview-loading" class="empty-state">
       <div class="empty-state-icon">📊</div>
       <div class="empty-state-title">Loading overview data...</div>
       <div class="empty-state-text">Summary stats, project progress, and attention items will appear here.</div>
+    </div>
+    <div id="overview-content" style="display:none">
+      <div id="overview-stats" class="stats-bar"></div>
+      <div class="section-header">Projects</div>
+      <div id="overview-projects" class="project-list"></div>
+      <div class="section-header">Needs Attention</div>
+      <div id="overview-attention"></div>
+      <div class="section-header">Recent Activity</div>
+      <div id="overview-activity"></div>
     </div>
   </div>
 
@@ -461,6 +683,203 @@
     location.replace('#/overview');
   } else {
     activateTab(initialTab);
+  }
+
+  // ── Overview Tab Logic ──
+  var overviewTimer = null;
+
+  var ACTIVITY_ICONS = {
+    complete: '✅', start: '🚀', status: 'ℹ️', audit: '🔍',
+    spawn: '⚡', phase: '📋', error: '❌'
+  };
+
+  var SEVERITY_ICONS = { high: '🔴', medium: '🟡', info: '🔵' };
+  var SEVERITY_ORDER = { high: 0, medium: 1, low: 2, info: 3 };
+
+  function escHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function formatTime(t) {
+    if (!t) return '--:--';
+    var d = new Date(t);
+    if (isNaN(d.getTime())) return t.slice(0, 5); // already HH:MM
+    var h = d.getHours(), m = d.getMinutes();
+    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+  }
+
+  function renderStats(ov) {
+    var el = document.getElementById('overview-stats');
+    el.innerHTML =
+      '<div class="stat-card"><div class="stat-value active">' + ov.activeProjects + '</div><div class="stat-label">Active</div></div>' +
+      '<div class="stat-card"><div class="stat-value paused">' + ov.pausedProjects + '</div><div class="stat-label">Paused</div></div>' +
+      '<div class="stat-card"><div class="stat-value complete">' + ov.completeProjects + '</div><div class="stat-label">Complete</div></div>' +
+      '<div class="stat-card"><div class="stat-value total">' + ov.totalProjects + '</div><div class="stat-label">Total</div></div>';
+  }
+
+  function renderProjects(projects, stateMap) {
+    var el = document.getElementById('overview-projects');
+    var html = '';
+    for (var i = 0; i < projects.length; i++) {
+      var p = projects[i];
+      var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      var state = stateMap[slug];
+      html += '<a class="project-row" href="#/projects/' + escHtml(slug) + '">';
+      html += '<span class="proj-status-dot ' + escHtml(p.status) + '"></span>';
+      html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
+      if (state) {
+        var done = (state.progress && state.progress.done) || 0;
+        var total = (state.progress && state.progress.total) || 0;
+        var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+        html += '<span class="proj-bar-wrap">';
+        html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
+        html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
+        html += '</span>';
+      } else {
+        html += '<span class="proj-not-migrated">Not migrated</span>';
+      }
+      html += '</a>';
+    }
+    el.innerHTML = html;
+  }
+
+  function renderAttention(items) {
+    var el = document.getElementById('overview-attention');
+    if (!items || items.length === 0) {
+      el.innerHTML = '<div class="attention-ok">Nothing needs attention 🎉</div>';
+      return;
+    }
+    var sorted = items.slice().sort(function(a, b) {
+      return (SEVERITY_ORDER[a.severity] || 9) - (SEVERITY_ORDER[b.severity] || 9);
+    });
+    var html = '<div class="attention-list">';
+    for (var i = 0; i < sorted.length; i++) {
+      var it = sorted[i];
+      var icon = SEVERITY_ICONS[it.severity] || '🔵';
+      html += '<div class="attention-item">';
+      html += '<span class="attention-icon">' + icon + '</span>';
+      html += '<span class="attention-project">' + escHtml(it.project) + '</span>';
+      html += '<span class="attention-reason">' + escHtml(it.reason) + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
+  function renderActivity(items) {
+    var el = document.getElementById('overview-activity');
+    if (!items || items.length === 0) {
+      el.innerHTML = '<div class="activity-empty">No recent activity</div>';
+      return;
+    }
+    var sorted = items.slice().sort(function(a, b) {
+      var ta = a.time ? new Date(a.time).getTime() : 0;
+      var tb = b.time ? new Date(b.time).getTime() : 0;
+      if (isNaN(ta)) ta = 0;
+      if (isNaN(tb)) tb = 0;
+      return tb - ta;
+    });
+    var max = Math.min(sorted.length, 20);
+    var html = '<div class="activity-list">';
+    for (var i = 0; i < max; i++) {
+      var a = sorted[i];
+      var icon = ACTIVITY_ICONS[a.type] || 'ℹ️';
+      html += '<div class="activity-item">';
+      html += '<span class="activity-time">' + formatTime(a.time) + '</span>';
+      html += '<span class="activity-icon">' + icon + '</span>';
+      html += '<span class="activity-project">' + escHtml(a.project) + '</span>';
+      html += '<span class="activity-msg">' + escHtml(a.message) + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
+  function loadOverview() {
+    var overviewData = null;
+    var projectsData = null;
+    var stateMap = {};
+    var pending = 2;
+
+    function checkDone() {
+      if (pending > 0) return;
+      if (!overviewData || !projectsData) return;
+      // Fetch state for each project
+      var slugs = [];
+      for (var i = 0; i < projectsData.length; i++) {
+        var p = projectsData[i];
+        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        slugs.push(slug);
+      }
+      var statePending = slugs.length;
+      if (statePending === 0) {
+        finishRender();
+        return;
+      }
+      for (var j = 0; j < slugs.length; j++) {
+        (function(s) {
+          fetch('/api/project/' + encodeURIComponent(s) + '/state')
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(d) { if (d) stateMap[s] = d; })
+            .catch(function() {})
+            .finally(function() {
+              statePending--;
+              if (statePending === 0) finishRender();
+            });
+        })(slugs[j]);
+      }
+    }
+
+    function finishRender() {
+      renderStats(overviewData);
+      renderProjects(projectsData, stateMap);
+      renderAttention(overviewData.needsAttention);
+      renderActivity(overviewData.recentActivity);
+      document.getElementById('overview-loading').style.display = 'none';
+      document.getElementById('overview-content').style.display = 'block';
+    }
+
+    fetch('/api/overview')
+      .then(function(r) { return r.json(); })
+      .then(function(d) { overviewData = d; })
+      .catch(function() {})
+      .finally(function() { pending--; checkDone(); });
+
+    fetch('/api/projects')
+      .then(function(r) { return r.json(); })
+      .then(function(d) { projectsData = d.projects || []; })
+      .catch(function() {})
+      .finally(function() { pending--; checkDone(); });
+  }
+
+  function startOverviewPolling() {
+    stopOverviewPolling();
+    loadOverview();
+    overviewTimer = setInterval(loadOverview, 10000);
+  }
+
+  function stopOverviewPolling() {
+    if (overviewTimer) {
+      clearInterval(overviewTimer);
+      overviewTimer = null;
+    }
+  }
+
+  // Hook into tab activation to start/stop overview polling
+  var origActivateTab = activateTab;
+  activateTab = function(tab) {
+    origActivateTab(tab);
+    if (tab === 'overview') {
+      startOverviewPolling();
+    } else {
+      stopOverviewPolling();
+    }
+  };
+
+  // Start polling if overview is the initial tab
+  if (getTabFromHash() === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
+    startOverviewPolling();
   }
 })();
 </script>
