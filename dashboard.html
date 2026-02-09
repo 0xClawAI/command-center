@@ -141,12 +141,24 @@
 <script>
 let state = null;
 let currentView = 'milestones';
+let collapsedMilestones = new Set(); // track which milestones user has collapsed
+let expandedMilestones = new Set(); // track which milestones user has expanded
 
 function statusClass(s) {
   const map = { '⬜': 'todo', 'todo': 'todo', '🔄': 'in_progress', 'in_progress': 'in_progress', 
     '🧪': 'testing', 'testing': 'testing', '✅': 'done', 'done': 'done', 
     '❌': 'failed', 'failed': 'failed', '🚫': 'blocked', 'blocked': 'blocked' };
   return map[s] || 'todo';
+}
+
+function toggleMilestone(el, name) {
+  const milestone = el.parentElement;
+  milestone.classList.toggle('open');
+  if (milestone.classList.contains('open')) {
+    expandedMilestones.add(name);
+  } else {
+    expandedMilestones.delete(name);
+  }
 }
 
 function setView(v) {
@@ -196,8 +208,8 @@ function render() {
       </div>
     `).join('');
     return `
-      <div class="milestone open">
-        <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="milestone ${expandedMilestones.has(m.name) ? 'open' : ''}">
+        <div class="milestone-header" onclick="toggleMilestone(this, '${m.name.replace(/'/g, "\\'")}')">
           <span class="milestone-name">${m.name}</span>
           <div class="milestone-progress">
             <div class="milestone-bar"><div class="milestone-bar-fill" style="width:${pct}%"></div></div>

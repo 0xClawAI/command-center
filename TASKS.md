@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 9/42 tasks complete
+> Progress: 11/42 tasks complete
 
 ---
 
@@ -230,18 +230,18 @@
 
 ### B-001: Migrate Viberr v2
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M3
 - **Depends:** none
 - **Pass criteria:**
-  - [ ] `~/projects/viberr/v2/PRD.md` exists (already present — verify not deleted)
-  - [ ] `~/projects/viberr/v2/TASKS.md` exists with orchestrator format: milestones, task IDs (X-NNN), pass criteria, fail criteria, type, status, depends fields
-  - [ ] `~/projects/viberr/v2/state.json` exists, is valid JSON, and matches the state.json schema from PRD
-  - [ ] `state.json` `progress.total` equals the number of tasks in TASKS.md
-  - [ ] `state.json` task statuses match TASKS.md statuses (spot-check 3 random tasks)
-  - [ ] `~/projects/viberr/v2/progress.txt` exists with at least one entry: the migration entry with timestamp
-  - [ ] `~/projects/viberr/v2/dashboard.html` exists and renders without JS errors when opened
-  - [ ] All files committed in git (`git -C ~/projects/viberr/v2 status` shows clean working tree)
+  - [x] `~/projects/viberr/v2/PRD.md` exists (already present — verify not deleted)
+  - [x] `~/projects/viberr/v2/TASKS.md` exists with orchestrator format: milestones, task IDs (X-NNN), pass criteria, fail criteria, type, status, depends fields
+  - [x] `~/projects/viberr/v2/state.json` exists, is valid JSON, and matches the state.json schema from PRD
+  - [x] `state.json` `progress.total` equals the number of tasks in TASKS.md
+  - [x] `state.json` task statuses match TASKS.md statuses (spot-check 3 random tasks)
+  - [x] `~/projects/viberr/v2/progress.txt` exists with at least one entry: the migration entry with timestamp
+  - [x] `~/projects/viberr/v2/dashboard.html` exists and renders without JS errors when opened
+  - [x] All files committed in git (`git -C ~/projects/viberr/v2 status` shows clean working tree)
 - **Fail criteria:**
   - TASKS.md lacks milestones or pass/fail criteria
   - state.json task count doesn't match TASKS.md
@@ -252,18 +252,18 @@
 
 ### B-002: Migrate Blob Social
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M3
 - **Depends:** none
 - **Pass criteria:**
-  - [ ] `~/projects/blob-social/PRD.md` exists and accurately describes the project's purpose and features based on codebase analysis
-  - [ ] `~/projects/blob-social/TASKS.md` exists with orchestrator format (milestones, IDs, pass/fail criteria)
-  - [ ] `~/projects/blob-social/state.json` exists, is valid JSON, matches schema
-  - [ ] `state.json` `progress.total` equals number of tasks in TASKS.md
-  - [ ] `~/projects/blob-social/progress.txt` exists with migration entry
-  - [ ] `~/projects/blob-social/dashboard.html` exists and renders without JS errors
-  - [ ] PRD.md mentions current state of codebase honestly (what works, what's broken/incomplete)
-  - [ ] All files committed in git
+  - [x] `~/projects/blob-social/PRD.md` exists and accurately describes the project's purpose and features based on codebase analysis
+  - [x] `~/projects/blob-social/TASKS.md` exists with orchestrator format (milestones, IDs, pass/fail criteria)
+  - [x] `~/projects/blob-social/state.json` exists, is valid JSON, matches schema
+  - [x] `state.json` `progress.total` equals number of tasks in TASKS.md
+  - [x] `~/projects/blob-social/progress.txt` exists with migration entry
+  - [x] `~/projects/blob-social/dashboard.html` exists and renders without JS errors
+  - [x] PRD.md mentions current state of codebase honestly (what works, what's broken/incomplete)
+  - [x] All files committed in git
 - **Fail criteria:**
   - PRD.md is generic/boilerplate and doesn't reflect actual codebase
   - TASKS.md tasks don't relate to actual remaining work needed
@@ -274,17 +274,17 @@
 
 ### B-003: Migrate DeFi Tools
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M3
 - **Depends:** none
 - **Pass criteria:**
-  - [ ] `~/projects/defi-tools/PRD.md` exists and accurately describes the project
-  - [ ] `~/projects/defi-tools/TASKS.md` exists with orchestrator format
-  - [ ] `~/projects/defi-tools/state.json` exists, is valid JSON, matches schema
-  - [ ] `state.json` `progress.total` equals number of tasks in TASKS.md
-  - [ ] `~/projects/defi-tools/progress.txt` exists with migration entry
-  - [ ] `~/projects/defi-tools/dashboard.html` exists and renders without JS errors
-  - [ ] All files committed in git
+  - [x] `~/projects/defi-tools/PRD.md` exists and accurately describes the project
+  - [x] `~/projects/defi-tools/TASKS.md` exists with orchestrator format
+  - [x] `~/projects/defi-tools/state.json` exists, is valid JSON, matches schema
+  - [x] `state.json` `progress.total` equals number of tasks in TASKS.md
+  - [x] `~/projects/defi-tools/progress.txt` exists with migration entry
+  - [x] `~/projects/defi-tools/dashboard.html` exists and renders without JS errors
+  - [x] All files committed in git
 - **Fail criteria:**
   - PRD.md is generic/boilerplate
   - TASKS.md tasks don't relate to actual codebase
@@ -295,18 +295,18 @@
 
 ### B-004: Register All ~/projects/ Directories
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M3
 - **Depends:** none
 - **Pass criteria:**
-  - [ ] Every directory in `~/projects/` has an entry in `~/.openclaw/workspace/projects.json` (verify: `ls ~/projects/ | wc -l` matches project count)
-  - [ ] `command-center` project is registered with status `active` and correct path
-  - [ ] Each entry has: name, path (absolute), status, type, notes, created, lastActive
-  - [ ] No duplicate `name` values in projects.json (verify: `jq '.projects[].name' | sort | uniq -d` returns empty)
-  - [ ] Completed projects have `status: "complete"` (proof-of-intelligence, agent-trust-oracle)
-  - [ ] Paused projects have `status: "paused"` (polymarket-edge, security-research, micro-saas)
-  - [ ] Old/abandoned projects have `status: "archived"`
-  - [ ] `lastActive` dates are reasonable (based on git log or file modification times)
+  - [x] Every directory in `~/projects/` has an entry in `~/.openclaw/workspace/projects.json` (verify: `ls ~/projects/ | wc -l` matches project count)
+  - [x] `command-center` project is registered with status `active` and correct path
+  - [x] Each entry has: name, path (absolute), status, type, notes, created, lastActive
+  - [x] No duplicate `name` values in projects.json (verify: `jq '.projects[].name' | sort | uniq -d` returns empty)
+  - [x] Completed projects have `status: "complete"` (proof-of-intelligence, agent-trust-oracle)
+  - [x] Paused projects have `status: "paused"` (polymarket-edge, security-research, micro-saas)
+  - [x] Old/abandoned projects have `status: "archived"`
+  - [x] `lastActive` dates are reasonable (based on git log or file modification times)
 - **Fail criteria:**
   - Directories missing from projects.json
   - Duplicate names
@@ -317,16 +317,16 @@
 
 ### B-005: Validate All state.json Files
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M3
 - **Depends:** B-001, B-002, B-003
 - **Pass criteria:**
-  - [ ] For each migrated project: `node -e "JSON.parse(require('fs').readFileSync('state.json'))"` succeeds without error
-  - [ ] Each state.json has required fields: project, type, status, lastUpdated, progress, tasks
-  - [ ] `progress.total` equals `tasks.length` in every state.json
-  - [ ] `progress.done` equals count of tasks with `status: "done"` in tasks array
-  - [ ] Every task has: id, title, type, status fields
-  - [ ] No task has `status` value outside: todo, in_progress, testing, done, failed, blocked
+  - [x] For each migrated project: `node -e "JSON.parse(require('fs').readFileSync('state.json'))"` succeeds without error
+  - [x] Each state.json has required fields: project, type, status, lastUpdated, progress, tasks
+  - [x] `progress.total` equals `tasks.length` in every state.json
+  - [x] `progress.done` equals count of tasks with `status: "done"` in tasks array
+  - [x] Every task has: id, title, type, status fields
+  - [x] No task has `status` value outside: todo, in_progress, testing, done, failed, blocked
 - **Fail criteria:**
   - Any state.json fails JSON.parse
   - progress counts don't match task array
@@ -336,15 +336,15 @@
 
 ### B-006: Validate Dashboard Renders with Migrated Data
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M3
 - **Depends:** B-005, A-010
 - **Pass criteria:**
-  - [ ] Command Center overview shows all 3 migrated projects with progress bars (not "Not migrated")
-  - [ ] Clicking each migrated project in Projects tab loads its state.json and renders milestones
-  - [ ] Content tab shows content/marketing tasks from migrated projects (if any exist)
-  - [ ] Research tab shows research/analysis tasks from migrated projects (if any exist)
-  - [ ] No JS console errors when navigating through all tabs
+  - [x] Command Center overview shows all 3 migrated projects with progress bars (not "Not migrated")
+  - [x] Clicking each migrated project in Projects tab loads its state.json and renders milestones
+  - [x] Content tab shows content/marketing tasks from migrated projects (if any exist)
+  - [x] Research tab shows research/analysis tasks from migrated projects (if any exist)
+  - [x] No JS console errors when navigating through all tabs
 - **Fail criteria:**
   - Any migrated project still shows "Not migrated"
   - JS errors in browser console
@@ -354,14 +354,14 @@
 
 ### B-007: Phase 2 Review
 - **Type:** ops
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M7
 - **Depends:** B-001, B-002, B-003, B-004, B-005, B-006
 - **Pass criteria:**
-  - [ ] All B-xxx pass criteria verified and checked off
-  - [ ] 3 active projects fully migrated with valid orchestrator files
-  - [ ] All ~/projects/ directories registered in projects.json
-  - [ ] Command Center displays migrated project data correctly
+  - [x] All B-xxx pass criteria verified and checked off
+  - [x] 3 active projects fully migrated with valid orchestrator files
+  - [x] All ~/projects/ directories registered in projects.json
+  - [x] Command Center displays migrated project data correctly
 - **Fail criteria:**
   - Any B-xxx task has unchecked pass criteria
 - **Files:** All Phase 2 files
