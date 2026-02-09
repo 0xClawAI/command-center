@@ -1451,6 +1451,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    cursor: pointer;
   }
 
   .dept-card-header {
@@ -2531,11 +2532,19 @@
   function getTabFromHash() {
     var hash = location.hash;
     if (!hash || hash === '#' || hash === '#/') return 'overview';
-    var match = hash.match(/^#\/([a-z]+)/);
+    var match = hash.match(/^#\/([a-z][a-z0-9-]*)/);
     if (!match) return 'overview';
     var tab = match[1];
-    if (VALID_TABS.indexOf(tab) === -1) return null;
-    return tab;
+    if (VALID_TABS.indexOf(tab) !== -1) return tab;
+
+    // Support #/departments/<name> → dept-<name>
+    var deptMatch = hash.match(/^#\/departments\/([a-z][a-z0-9-]*)$/);
+    if (deptMatch) {
+      var deptTab = 'dept-' + deptMatch[1];
+      if (VALID_TABS.indexOf(deptTab) !== -1) return deptTab;
+    }
+
+    return null;
   }
 
   function getSlugFromHash() {
@@ -4086,7 +4095,7 @@
       var focus = dept.status.currentFocus || 'No current focus set';
       var latest = dept.outbox.latest || 'No outbox entries';
 
-      gridHtml += '<div class="dept-card">';
+      gridHtml += '<div class="dept-card" data-dept="' + escHtml(dept.slug) + '">';
       gridHtml += '<div class="dept-card-header">';
       gridHtml += '<span class="dept-status-dot ' + dotColor + '"></span>';
       gridHtml += '<span class="dept-card-name">' + escHtml(dept.name) + '</span>';
@@ -4100,7 +4109,16 @@
       gridHtml += '</div>';
       gridHtml += '</div>';
     }
-    document.getElementById('departments-grid').innerHTML = gridHtml;
+    var gridEl = document.getElementById('departments-grid');
+    gridEl.innerHTML = gridHtml;
+
+    // Click handler for department cards (event delegation)
+    gridEl.addEventListener('click', function(e) {
+      var card = e.target.closest('.dept-card');
+      if (card && card.dataset.dept) {
+        location.hash = '#/departments/' + card.dataset.dept;
+      }
+    });
 
     // Render activity feed
     var feedHtml = '<div class="activity-list">';
@@ -4145,6 +4163,9 @@
   function renderDeptDetail(deptName, data) {
     var html = '';
     var status = data.status || {};
+
+    // Back navigation
+    html += '<a href="#/departments" style="color:var(--text-dim);text-decoration:none;font-size:14px;display:inline-block;margin-bottom:8px;">\u2190 Back to Departments</a>';
 
     // Header
     html += '<div class="dept-detail-header">';
