@@ -536,3 +536,5 @@ Worker: worker-c004
 - View toggle always visible (not gated on tasks existing)
 - Status: 🧪 testing
 ================================================================================
+---
+[2026-02-09T19:14:28Z] C-005: Content tab built — shows content/marketing tasks grouped by status (Todo→In Progress→Testing→Done), with project filter dropdown, type filter, hide-completed toggle. Project badges link to #/projects/<slug>. Empty state handled.
