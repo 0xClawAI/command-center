@@ -2297,6 +2297,14 @@
     });
   }
 
+  // ── Project group header clicks (event delegation) ──
+  document.addEventListener('click', function(e) {
+    var header = e.target.closest('.project-group-header');
+    if (header) {
+      toggleProjectGroup(header);
+    }
+  });
+
   // ── Listen for hash changes (back/forward) ──
   window.addEventListener('hashchange', handleHashChange);
 
@@ -2413,7 +2421,7 @@
       var collapsedClass = isExpanded ? '' : ' collapsed';
 
       // Group header
-      html += '<div class="project-group-header' + collapsedClass + '" onclick="toggleProjectGroup(this)">';
+      html += '<div class="project-group-header' + collapsedClass + '">';
       html += '<span class="project-group-chevron">' + chevron + '</span>';
       html += '<span>' + group.name + ' (' + group.projects.length + ')</span>';
       html += '</div>';
