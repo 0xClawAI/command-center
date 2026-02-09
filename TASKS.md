@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 29/34 tasks complete
+> Progress: 32/34 tasks complete
 
 ---
 
@@ -574,16 +574,16 @@
 
 ### D-002: Connection Loss/Recovery
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** D-001
 - **Pass criteria:**
-  - [ ] When API server is stopped, a "Connection lost" indicator appears in the header within 15 seconds
-  - [ ] Indicator is subtle (small banner or icon), not a blocking modal
-  - [ ] Dashboard continues retrying automatically
-  - [ ] When server restarts, indicator clears automatically within 15 seconds
-  - [ ] No manual page reload required to recover
-  - [ ] Error toasts/alerts do NOT spam (max 1 visible indicator at a time)
+  - [x] When API server is stopped, a "Connection lost" indicator appears in the header within 15 seconds
+  - [x] Indicator is subtle (small banner or icon), not a blocking modal
+  - [x] Dashboard continues retrying automatically
+  - [x] When server restarts, indicator clears automatically within 15 seconds
+  - [x] No manual page reload required to recover
+  - [x] Error toasts/alerts do NOT spam (max 1 visible indicator at a time)
 - **Fail criteria:**
   - No visual indicator of connection loss
   - Blocking modal or alert() popup
@@ -615,14 +615,14 @@
 
 ### D-004: Responsive — Tablet (768px)
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** D-003
 - **Pass criteria:**
-  - [ ] At 768px viewport: layout adapts (not just stretched mobile or squished desktop)
-  - [ ] Kanban columns are visible (may be 2x2 grid instead of 4-column row)
-  - [ ] No horizontal scrollbar
-  - [ ] Navigation tabs visible (not necessarily full desktop layout)
+  - [x] At 768px viewport: layout adapts (not just stretched mobile or squished desktop)
+  - [x] Kanban columns are visible (may be 2x2 grid instead of 4-column row)
+  - [x] No horizontal scrollbar
+  - [x] Navigation tabs visible (not necessarily full desktop layout)
 - **Fail criteria:**
   - Identical to mobile layout at 768px
   - Identical to desktop layout at 768px with overflow
@@ -632,13 +632,13 @@
 
 ### D-005: Kanban Mobile Adaptation
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** D-003
 - **Pass criteria:**
-  - [ ] On mobile (<768px): Kanban columns stack vertically (single column scroll)
-  - [ ] Column headers still visible with task counts
-  - [ ] Cards remain readable
+  - [x] On mobile (<768px): Kanban columns stack vertically (single column scroll)
+  - [x] Column headers still visible with task counts
+  - [x] Cards remain readable
 - **Fail criteria:**
   - 4-column layout forced on mobile causing horizontal scroll
   - Column headers disappear

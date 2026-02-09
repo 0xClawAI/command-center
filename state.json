@@ -5,12 +5,12 @@
   "lastUpdated": "2026-02-09T21:00:00.000Z",
   "progress": {
     "total": 34,
-    "done": 29,
+    "done": 32,
     "inProgress": 0,
     "testing": 0,
     "failed": 0,
     "blocked": 0,
-    "todo": 5
+    "todo": 2
   },
   "milestones": [
     {
@@ -90,7 +90,7 @@
       ],
       "progress": {
         "total": 7,
-        "done": 3
+        "done": 6
       }
     },
     {
@@ -412,7 +412,7 @@
       "id": "D-002",
       "title": "Connection Loss/Recovery",
       "type": "code",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []
@@ -430,7 +430,7 @@
       "id": "D-004",
       "title": "Responsive — Tablet (768px)",
       "type": "code",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []
@@ -439,7 +439,7 @@
       "id": "D-005",
       "title": "Kanban Mobile Adaptation",
       "type": "code",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []

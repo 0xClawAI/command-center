@@ -827,3 +827,26 @@ D-006 Edge Case Handling: ✅ PASS
 - Client: ⚠️ Directory not found badge, Not migrated fallback, 0/0 tasks handling,
   per-project try/catch isolation, "No projects registered" empty state
 ================================================================================
+
+================================================================================
+[2026-02-09 22:15 PST] D-002, D-004, D-005 — Phase 4 Batch 2 — ALL PASS
+================================================================================
+
+D-002 Connection Loss/Recovery: ✅ PASS
+- Subtle inline banner with pulsing red dot, hidden by default
+- Global fetch wrapper auto-detects loss/recovery
+- Boolean guard prevents spam (max 1 indicator)
+- Polling continues retrying, banner clears automatically on recovery
+
+D-004 Responsive Tablet (768px): ✅ PASS
+- @media (min-width: 769px) and (max-width: 1024px) breakpoint
+- Distinct from both mobile and desktop: 2x2 stat grid, 2x2 kanban, compact nav
+- Tab buttons visible (not dropdown), no horizontal scroll
+
+D-005 Kanban Mobile Adaptation: ✅ PASS
+- Kanban stacks single-column on mobile with sticky column headers
+- Enhanced header prominence (larger padding, border-bottom)
+- Increased card readability (bigger padding, font sizes)
+
+32/34 tasks complete. D-007 (README) and D-008 (Final Review) remaining.
+================================================================================
