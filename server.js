@@ -20,8 +20,12 @@ function err(res, status, msg) { json(res, status, { error: msg }); }
 function slugify(name) { return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''); }
 
 function loadProjects() {
-  const data = JSON.parse(fs.readFileSync(PROJECTS_JSON, 'utf8'));
-  if (!data || !Array.isArray(data.projects)) throw new Error('projects.json must have "projects" array');
+  let raw;
+  try { raw = fs.readFileSync(PROJECTS_JSON, 'utf8'); } catch { return []; }
+  if (!raw || !raw.trim()) return [];
+  let data;
+  try { data = JSON.parse(raw); } catch { return []; }
+  if (!data || !Array.isArray(data.projects)) return [];
   return data.projects;
 }
 
@@ -81,11 +85,17 @@ function apiProjects(res) {
 
 function apiProjectState(res, slug) {
   withProject(res, slug, proj => {
+    // Check if the project directory exists
+    try {
+      fs.accessSync(proj.path, fs.constants.F_OK);
+    } catch {
+      return json(res, 404, { error: 'Directory not found', code: 'DIR_NOT_FOUND' });
+    }
     const fp = safePath(proj.path, path.join(proj.path, 'state.json'));
     if (!fp) return err(res, 404, 'Invalid path');
     const raw = readSafe(fp);
-    if (!raw) return err(res, 404, 'No state.json — project may not be migrated');
-    try { json(res, 200, JSON.parse(raw)); } catch { err(res, 500, 'state.json is malformed'); }
+    if (!raw) return json(res, 404, { error: 'No state.json — project may not be migrated', code: 'NO_STATE' });
+    try { json(res, 200, JSON.parse(raw)); } catch { json(res, 500, { error: 'state.json is malformed', code: 'MALFORMED' }); }
   });
 }
 
@@ -119,6 +129,16 @@ function apiOverview(res) {
       else if (p.status === 'complete') complete++;
 
       const slug = p.slug || slugify(p.name);
+
+      // Check if directory exists
+      let dirExists = true;
+      try { fs.accessSync(p.path, fs.constants.F_OK); } catch { dirExists = false; }
+
+      if (!dirExists) {
+        attention.push({ project: p.name, slug, reason: 'Directory not found', severity: 'high' });
+        continue;
+      }
+
       const state = readState(p.path);
 
       if (!state) {
