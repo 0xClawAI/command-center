@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 11/42 tasks complete
+> Progress: 25/34 tasks complete
 
 ---
 
@@ -453,7 +453,7 @@
 
 ### C-005: Content Tab
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
@@ -475,14 +475,14 @@
 
 ### C-006: Research Tab
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** C-005
 - **Pass criteria:**
-  - [ ] Identical functionality to Content tab but filters on type `research` or `analysis`
-  - [ ] Uses `/api/overview` `crossProjectTasks.research` data
-  - [ ] Same grouping, filtering, and navigation as Content tab
-  - [ ] Empty state: "No research tasks found" message
+  - [x] Identical functionality to Content tab but filters on type `research` or `analysis`
+  - [x] Uses `/api/overview` `crossProjectTasks.research` data
+  - [x] Same grouping, filtering, and navigation as Content tab
+  - [x] Empty state: "No research tasks found" message
 - **Fail criteria:**
   - Shows content/marketing tasks instead of research/analysis
   - Missing any feature that Content tab has
@@ -510,7 +510,7 @@
 
 ### C-008: Ideas System — Global & Per-Project
 - **Type:** code
-- **Status:** ❌ failed
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
@@ -519,7 +519,7 @@
   - [x] Ideas tab or section in Overview shows all ideas grouped by: Global, then by project
   - [x] Ideas with `#blocked:reason` show the blocker visually
   - [x] Ideas with `#done:date` show as completed with date
-  - [ ] Ideas with `#project:name` tagged to a project show under that project's section
+  - [x] Ideas with `#project:name` tagged to a project show under that project's section
   - [x] Empty IDEAS.md files handled gracefully (no crash, show "No ideas yet")
   - [x] Template `IDEAS.md` created at `~/.openclaw/workspace/IDEAS.md` with format docs
 - **Fail criteria:**
