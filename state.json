@@ -2,15 +2,15 @@
   "project": "Command Center",
   "type": "product",
   "status": "active",
-  "lastUpdated": "2026-02-09T18:49:30.995Z",
+  "lastUpdated": "2026-02-09T18:58:00.365Z",
   "progress": {
     "total": 34,
-    "done": 18,
+    "done": 19,
     "inProgress": 0,
     "testing": 0,
     "failed": 0,
     "blocked": 0,
-    "todo": 16
+    "todo": 15
   },
   "milestones": [
     {
@@ -73,7 +73,7 @@
       ],
       "progress": {
         "total": 8,
-        "done": 1
+        "done": 2
       }
     },
     {
@@ -155,7 +155,7 @@
       "name": "Full Dashboard",
       "status": "active",
       "tasks": 9,
-      "done": 1
+      "done": 2
     },
     {
       "name": "Polish & Ship",
@@ -331,7 +331,7 @@
       "id": "C-002",
       "title": "Projects Tab — Milestones View",
       "type": "code",
-      "status": "testing",
+      "status": "done",
       "milestone": "M4",
       "assignee": null,
       "depends": []
@@ -340,7 +340,7 @@
       "id": "C-003",
       "title": "Projects Tab — Kanban View",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
       "assignee": null,
       "depends": []

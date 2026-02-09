@@ -430,3 +430,88 @@ Data handling:
 
 All pass criteria verified. No fail criteria triggered.
 ================================================================================
+
+================================================================================
+[2026-02-09 21:00 PST] C-002: Projects Tab — Milestones View — ✅ PASS
+Supervisor: supervisor-verification
+================================================================================
+7/7 pass criteria verified. 0/4 fail criteria triggered.
+
+1. Default view when project selected: ✅ PASS
+   renderProjectInfo() calls renderMilestones(state) — the only view rendered.
+   No kanban/progress toggle exists yet (C-003/C-004 pending).
+
+2. Collapsible milestone cards with name, progress bar, done/total: ✅ PASS
+   CSS: .milestone-tasks {display:none} → .expanded .milestone-tasks {display:block}
+   Click handler: card.classList.toggle('expanded') on .milestone-header
+   Each card: chevron (▶), milestone name, progress bar (width=pct%), done/total label
+
+3. Expanded tasks show ID (mono), title, status badge, type badge: ✅ PASS
+   renderTaskRow(): .task-id (font-family: monospace), .task-title, .task-badge
+   status-{status}, .task-badge.type-badge. All 4 elements present per task row.
+
+4. Task status badges use correct design system colors: ✅ PASS
+   .task-badge.status-done=var(--green), .status-in_progress=var(--blue),
+   .status-testing=var(--yellow), .status-failed=var(--red),
+   .status-blocked=var(--purple), .status-todo=var(--text-dim)
+   Exact match to spec.
+
+5. All-done milestones show green checkmark: ✅ PASS
+   allDone = total > 0 && done === total → renders ✓ in color:var(--green)
+   Verified: M1(4/4), M2(5/5), M3(6/6), M6(1/1), M7(1/1) = checkmark.
+   M4(1/8), M5(0/7), M8(0/1), M9(0/1) = no checkmark.
+
+6. Project info header (name, type, status, links target=_blank): ✅ PASS
+   Header: .project-info-name + .project-info-badge.type + .project-info-badge.status-{x}
+   Links: <a href="{url}" target="_blank" rel="noopener"> — opens in new tab
+   Verified: viberr-v2 has repo/live/API links, all with target="_blank"
+
+7. 0 milestones shows flat task list: ✅ PASS
+   polymarket-edge: 21 tasks, milestones=null → hits !state.milestones branch
+   Renders "All Tasks" header + pre-expanded milestone-card with all tasks
+   proof-of-intelligence: 0 tasks, milestones=null → returns '' (empty, no crash)
+
+Fail criteria:
+   ✓ Milestones collapsible — toggle('expanded') with CSS display switch
+   ✓ Status colors consistent — all use design system var() references
+   ✓ External links target="_blank" — verified in code line 1347
+   ✓ No crash on 0 milestones — polymarket-edge (21 tasks/0 ms) and
+     proof-of-intelligence (0 tasks/0 ms) both handled
+================================================================================
+
+================================================================================
+[2026-02-09 22:00 PST] C-003: Projects Tab — Kanban View
+Lead: code-worker (Opus)
+--------------------------------------------------------------------------------
+Added Kanban board view with toggle to switch between Milestones and Kanban views.
+
+Features implemented:
+- View toggle (Milestones | Kanban) button group rendered below project info card
+- Toggle only appears when project has tasks; preserves project selection when switching
+- Kanban board: 4-column grid (Todo, In Progress, Testing, Done)
+- Column headers show column name and task count badge
+- Each card shows: task ID (monospace), title, type badge, milestone name
+- Failed tasks → Todo column with red "failed" badge
+- Blocked tasks → Todo column with purple "blocked" badge
+- Unknown statuses fall back to Todo column (defensive)
+- Empty columns show "No tasks" placeholder
+- Switching views re-renders only the view container, not the full project info
+
+CSS: ~140 lines added (view toggle, kanban board, columns, cards, badges)
+JS: ~95 lines added (renderKanban function, view toggle state + handlers)
+Total index.html: 1872 lines (was 1559)
+
+Data flow:
+- currentProjectView tracks active view ('milestones' or 'kanban')
+- currentProjectState/currentProjectMeta stored on project load for view switching
+- renderKanban() builds milestoneMap from state.milestones, sorts tasks into 4 columns
+  by status, renders cards with all required fields
+- Toggle click handler updates button states and swaps view container innerHTML
+
+All pass criteria verified:
+1. Toggle switches between Milestones and Kanban views ✓
+2. 4 columns: Todo, In Progress, Testing, Done ✓
+3. Cards show: ID, title, type badge, milestone name ✓
+4. failed → Todo (red badge), blocked → Todo (purple badge) ✓
+5. Column headers show task count ✓
+================================================================================

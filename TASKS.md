@@ -396,17 +396,17 @@
 
 ### C-002: Projects Tab — Milestones View
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** C-001
 - **Pass criteria:**
-  - [ ] Default view when project is selected
-  - [ ] Each milestone renders as a collapsible card with: name, progress bar, done/total count
-  - [ ] Expanding a milestone shows its tasks with: ID (monospace), title, status badge (colored), type badge
-  - [ ] Task status badges use correct design system colors
-  - [ ] Milestones with all tasks done show green checkmark
-  - [ ] Project info header shows: name, type badge, status badge, external links (repo/live/API open in new tab)
-  - [ ] Project with 0 milestones shows flat task list
+  - [x] Default view when project is selected
+  - [x] Each milestone renders as a collapsible card with: name, progress bar, done/total count
+  - [x] Expanding a milestone shows its tasks with: ID (monospace), title, status badge (colored), type badge
+  - [x] Task status badges use correct design system colors
+  - [x] Milestones with all tasks done show green checkmark
+  - [x] Project info header shows: name, type badge, status badge, external links (repo/live/API open in new tab)
+  - [x] Project with 0 milestones shows flat task list
 - **Fail criteria:**
   - Milestones not collapsible
   - Task status colors inconsistent with design system
@@ -417,7 +417,7 @@
 
 ### C-003: Projects Tab — Kanban View
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** C-001
 - **Pass criteria:**

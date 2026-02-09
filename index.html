@@ -823,6 +823,167 @@
     color: var(--text-dim);
     margin-bottom: 8px;
   }
+
+  /* ── View Toggle ── */
+  .view-toggle {
+    display: flex;
+    gap: 2px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+  }
+
+  .view-toggle-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+  }
+
+  .view-toggle-btn:first-child {
+    border-radius: 6px 0 0 6px;
+  }
+
+  .view-toggle-btn:last-child {
+    border-radius: 0 6px 6px 0;
+  }
+
+  .view-toggle-btn:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  .view-toggle-btn.active {
+    color: var(--text);
+    background: var(--surface2);
+    border-color: var(--blue);
+  }
+
+  /* ── Kanban Board ── */
+  .kanban-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    min-height: 200px;
+  }
+
+  .kanban-column {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+  }
+
+  .kanban-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .kanban-column-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .kanban-column-count {
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text-dim);
+    background: var(--surface2);
+    padding: 1px 8px;
+    border-radius: 10px;
+  }
+
+  .kanban-column-body {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .kanban-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .kanban-card-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kanban-card-id {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .kanban-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .kanban-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .kanban-card-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    white-space: nowrap;
+  }
+
+  .kanban-card-badge.type-badge {
+    color: var(--text-dim);
+  }
+
+  .kanban-card-badge.status-failed {
+    color: var(--red);
+    border-color: var(--red);
+  }
+
+  .kanban-card-badge.status-blocked {
+    color: var(--purple);
+    border-color: var(--purple);
+  }
+
+  .kanban-card-milestone {
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
 </head>
 <body>
@@ -1232,6 +1393,9 @@
   // ── Projects Tab Logic ──
   var projectsCache = null;
   var selectedSlug = null;
+  var currentProjectView = 'milestones';
+  var currentProjectState = null;
+  var currentProjectMeta = null;
 
   var STATUS_ORDER = { active: 0, paused: 1, complete: 2, archived: 3 };
   var STATUS_COLORS = { active: 'green', paused: 'yellow', complete: 'blue', archived: 'gray' };
@@ -1319,6 +1483,10 @@
       return;
     }
 
+    // Store for view switching
+    currentProjectMeta = proj;
+    currentProjectState = state;
+
     var html = '<div class="project-info-card">';
 
     // Header: name + badges
@@ -1399,12 +1567,62 @@
 
     html += '</div>'; // .project-info-card
 
-    // Render milestones or flat task list
-    html += renderMilestones(state);
+    // View toggle (only show if we have tasks)
+    if (state && state.tasks && state.tasks.length > 0) {
+      html += '<div class="view-toggle" id="view-toggle">';
+      html += '<button class="view-toggle-btn' + (currentProjectView === 'milestones' ? ' active' : '') + '" data-view="milestones">Milestones</button>';
+      html += '<button class="view-toggle-btn' + (currentProjectView === 'kanban' ? ' active' : '') + '" data-view="kanban">Kanban</button>';
+      html += '</div>';
+    }
+
+    // Render the active view
+    html += '<div id="project-view-container">';
+    if (currentProjectView === 'kanban' && state && state.tasks && state.tasks.length > 0) {
+      html += renderKanban(state);
+    } else {
+      html += renderMilestones(state);
+    }
+    html += '</div>';
 
     el.innerHTML = html;
 
-    // Attach milestone toggle handlers
+    // Attach view toggle handlers
+    var toggleBtns = el.querySelectorAll('.view-toggle-btn');
+    for (var t = 0; t < toggleBtns.length; t++) {
+      toggleBtns[t].addEventListener('click', function(e) {
+        var view = e.currentTarget.getAttribute('data-view');
+        if (view === currentProjectView) return;
+        currentProjectView = view;
+
+        // Update toggle button states
+        var btns = document.querySelectorAll('.view-toggle-btn');
+        for (var b = 0; b < btns.length; b++) {
+          if (btns[b].getAttribute('data-view') === view) {
+            btns[b].classList.add('active');
+          } else {
+            btns[b].classList.remove('active');
+          }
+        }
+
+        // Re-render view container
+        var container = document.getElementById('project-view-container');
+        if (view === 'kanban') {
+          container.innerHTML = renderKanban(currentProjectState);
+        } else {
+          container.innerHTML = renderMilestones(currentProjectState);
+          // Re-attach milestone toggle handlers
+          var headers = container.querySelectorAll('.milestone-header');
+          for (var h = 0; h < headers.length; h++) {
+            headers[h].addEventListener('click', function(ev) {
+              var card = ev.currentTarget.closest('.milestone-card');
+              card.classList.toggle('expanded');
+            });
+          }
+        }
+      });
+    }
+
+    // Attach milestone toggle handlers (for initial render)
     var cards = el.querySelectorAll('.milestone-header');
     for (var k = 0; k < cards.length; k++) {
       cards[k].addEventListener('click', function(e) {
@@ -1493,6 +1711,101 @@
     }
 
     html += '</div>'; // .milestones-section
+    return html;
+  }
+
+  function renderKanban(state) {
+    if (!state || !state.tasks || state.tasks.length === 0) {
+      return '';
+    }
+
+    // Build milestone lookup by ID
+    var milestoneMap = {};
+    if (state.milestones) {
+      for (var i = 0; i < state.milestones.length; i++) {
+        milestoneMap[state.milestones[i].id] = state.milestones[i].name;
+      }
+    }
+
+    // Define columns: key, label, which statuses map here
+    var columns = [
+      { key: 'todo', label: 'Todo', statuses: ['todo', 'failed', 'blocked'], tasks: [] },
+      { key: 'in_progress', label: 'In Progress', statuses: ['in_progress'], tasks: [] },
+      { key: 'testing', label: 'Testing', statuses: ['testing'], tasks: [] },
+      { key: 'done', label: 'Done', statuses: ['done'], tasks: [] }
+    ];
+
+    // Sort tasks into columns
+    for (var t = 0; t < state.tasks.length; t++) {
+      var task = state.tasks[t];
+      var status = task.status || 'todo';
+      var placed = false;
+      for (var c = 0; c < columns.length; c++) {
+        if (columns[c].statuses.indexOf(status) !== -1) {
+          columns[c].tasks.push(task);
+          placed = true;
+          break;
+        }
+      }
+      // Fallback: unknown statuses go to Todo
+      if (!placed) {
+        columns[0].tasks.push(task);
+      }
+    }
+
+    var html = '<div class="kanban-board">';
+
+    for (var col = 0; col < columns.length; col++) {
+      var column = columns[col];
+      html += '<div class="kanban-column">';
+      html += '<div class="kanban-column-header">';
+      html += '<span class="kanban-column-title">' + escHtml(column.label) + '</span>';
+      html += '<span class="kanban-column-count">' + column.tasks.length + '</span>';
+      html += '</div>';
+      html += '<div class="kanban-column-body">';
+
+      for (var ct = 0; ct < column.tasks.length; ct++) {
+        var tk = column.tasks[ct];
+        var msName = milestoneMap[tk.milestone] || '';
+
+        html += '<div class="kanban-card">';
+        html += '<div class="kanban-card-top">';
+        html += '<span class="kanban-card-id">' + escHtml(tk.id) + '</span>';
+        html += '</div>';
+        html += '<div class="kanban-card-title">' + escHtml(tk.title) + '</div>';
+        html += '<div class="kanban-card-meta">';
+
+        // Type badge
+        if (tk.type) {
+          html += '<span class="kanban-card-badge type-badge">' + escHtml(tk.type) + '</span>';
+        }
+
+        // Status badge for failed/blocked (special indicators in Todo column)
+        if (tk.status === 'failed') {
+          html += '<span class="kanban-card-badge status-failed">failed</span>';
+        } else if (tk.status === 'blocked') {
+          html += '<span class="kanban-card-badge status-blocked">blocked</span>';
+        }
+
+        html += '</div>';
+
+        // Milestone name
+        if (msName) {
+          html += '<div class="kanban-card-milestone">' + escHtml(msName) + '</div>';
+        }
+
+        html += '</div>'; // .kanban-card
+      }
+
+      if (column.tasks.length === 0) {
+        html += '<div style="text-align:center;padding:24px 8px;color:var(--text-dim);font-size:12px;font-style:italic;">No tasks</div>';
+      }
+
+      html += '</div>'; // .kanban-column-body
+      html += '</div>'; // .kanban-column
+    }
+
+    html += '</div>'; // .kanban-board
     return html;
   }
 
