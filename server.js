@@ -6,6 +6,7 @@ const os = require('os');
 const PORT = parseInt(process.env.PORT, 10) || 3400;
 const HOST = '0.0.0.0';
 const PROJECTS_JSON = path.join(os.homedir(), '.openclaw', 'workspace', 'projects.json');
+const DEPARTMENTS_DIR = path.join(os.homedir(), '.openclaw', 'workspace', 'org', 'departments');
 const ROOT = __dirname;
 const MAX_ENTRIES = 50;
 const STALE_DAYS = 7;
@@ -285,6 +286,115 @@ function apiIdeas(res) {
   });
 }
 
+// --- Departments endpoint ---
+function apiDepartments(res) {
+  let dirs;
+  try {
+    dirs = fs.readdirSync(DEPARTMENTS_DIR, { withFileTypes: true })
+      .filter(d => d.isDirectory())
+      .map(d => d.name);
+  } catch { return json(res, 200, { departments: [] }); }
+
+  const now = Date.now();
+  const departments = [];
+  const allEntries = [];
+
+  for (const name of dirs) {
+    const base = path.join(DEPARTMENTS_DIR, name);
+    const statusRaw = readSafe(path.join(base, 'status.md'));
+    const inboxRaw = readSafe(path.join(base, 'inbox.md'));
+    const outboxRaw = readSafe(path.join(base, 'outbox.md'));
+
+    // Parse status.md
+    let currentFocus = '';
+    let lastUpdated = null;
+    if (statusRaw) {
+      // Look for "Currently Working On" or "Current focus" or "## Current: ..."
+      const focusMatch = statusRaw.match(/^## Current(?:ly Working On)?[:\s]*(.+)/im)
+        || statusRaw.match(/\*\*Current focus:\*\*\s*(.+)/i);
+      if (focusMatch) currentFocus = focusMatch[1].trim();
+
+      // Look for timestamps
+      const tsMatch = statusRaw.match(/(?:Last updated|Updated)[:\s]*(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}(?::\d{2})?\s*(?:PST|PT|UTC)?)/i);
+      if (tsMatch) {
+        const parsed = new Date(tsMatch[1].replace(/\s*(PST|PT)$/i, ' GMT-0800'));
+        if (!isNaN(parsed.getTime())) lastUpdated = parsed.toISOString();
+      }
+    }
+
+    // If no parsed timestamp, use file mtime
+    if (!lastUpdated) {
+      try {
+        const stat = fs.statSync(path.join(base, 'status.md'));
+        lastUpdated = stat.mtime.toISOString();
+      } catch {}
+    }
+
+    // Count ## [ entries in inbox/outbox
+    const entryPattern = /^## \[/gm;
+    const inboxCount = inboxRaw ? (inboxRaw.match(entryPattern) || []).length : 0;
+    const outboxCount = outboxRaw ? (outboxRaw.match(entryPattern) || []).length : 0;
+
+    // Parse outbox entries
+    const outboxEntries = [];
+    if (outboxRaw) {
+      const entryRegex = /^## \[([^\]]+)\]\s*(.+)?$/gm;
+      let m;
+      while ((m = entryRegex.exec(outboxRaw)) !== null) {
+        const ts = m[1].trim();
+        const title = (m[2] || '').trim();
+        // Get first non-empty line after the heading as description
+        const afterIdx = m.index + m[0].length;
+        const rest = outboxRaw.slice(afterIdx, afterIdx + 500);
+        const descMatch = rest.match(/\n(?:[-*]\s*)?(?:\*\*What(?::|\*\*)|)?\s*(.+)/);
+        const desc = descMatch ? descMatch[1].replace(/\*\*/g, '').trim() : '';
+        const entry = { timestamp: ts, title, description: desc, department: name };
+
+        // Try to parse timestamp for sorting
+        let parsedTs = new Date(ts.replace(/\s*(PST|PT)$/i, ' GMT-0800'));
+        if (isNaN(parsedTs.getTime())) {
+          // Try without timezone
+          parsedTs = new Date(ts);
+        }
+        entry.parsedTime = !isNaN(parsedTs.getTime()) ? parsedTs.toISOString() : null;
+
+        outboxEntries.push(entry);
+        allEntries.push(entry);
+      }
+    }
+
+    // Latest inbox/outbox
+    const inboxLatest = inboxRaw ? (inboxRaw.match(/^## \[([^\]]+)\]\s*(.+)?$/m) || []) : [];
+    const outboxLatest = outboxEntries.length > 0 ? outboxEntries[0] : null;
+
+    departments.push({
+      name,
+      status: {
+        currentFocus,
+        lastUpdated
+      },
+      inbox: {
+        count: inboxCount,
+        latest: inboxLatest.length > 2 ? (inboxLatest[2] || '').trim() : null
+      },
+      outbox: {
+        count: outboxCount,
+        latest: outboxLatest ? outboxLatest.title : null,
+        entries: outboxEntries
+      }
+    });
+  }
+
+  // Sort all entries by timestamp descending
+  allEntries.sort((a, b) => {
+    const ta = a.parsedTime ? new Date(a.parsedTime).getTime() : 0;
+    const tb = b.parsedTime ? new Date(b.parsedTime).getTime() : 0;
+    return tb - ta;
+  });
+
+  json(res, 200, { departments, activityFeed: allEntries.slice(0, 20) });
+}
+
 // --- Router ---
 const server = http.createServer((req, res) => {
   try {
@@ -295,6 +405,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/api/projects') return apiProjects(res);
     if (pathname === '/api/overview') return apiOverview(res);
     if (pathname === '/api/ideas') return apiIdeas(res);
+    if (pathname === '/api/departments') return apiDepartments(res);
 
     const m = pathname.match(/^\/api\/project\/([^/]+)\/(state|progress|tasks)$/);
     if (m) {

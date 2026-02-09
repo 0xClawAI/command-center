@@ -1442,6 +1442,115 @@
     border-color: var(--blue);
   }
 
+  /* ── Department Cards ── */
+  .dept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dept-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dept-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dept-status-dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .dept-status-dot.yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .dept-status-dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+
+  .dept-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .dept-card-focus {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .dept-card-latest {
+    font-size: 12px;
+    color: var(--blue);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dept-card-footer {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .dept-feed-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: background 0.1s;
+  }
+
+  .dept-feed-item:hover {
+    background: var(--surface);
+  }
+
+  .dept-feed-time {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .dept-feed-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+
+  .dept-feed-title {
+    font-weight: 500;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dept-feed-desc {
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+
   /* ── Connection Lost Banner ── */
   .conn-banner {
     display: none;
@@ -1920,6 +2029,7 @@
       <button class="tab-btn" data-tab="content">Content</button>
       <button class="tab-btn" data-tab="research">Research</button>
       <button class="tab-btn" data-tab="ideas">Ideas</button>
+      <button class="tab-btn" data-tab="departments">Departments</button>
       <button class="tab-btn" data-tab="agents">Agents</button>
     </div>
     <select class="mobile-tab-select" id="mobileTabSelect">
@@ -1928,6 +2038,7 @@
       <option value="content">Content</option>
       <option value="research">Research</option>
       <option value="ideas">Ideas</option>
+      <option value="departments">Departments</option>
       <option value="agents">Agents</option>
     </select>
   </div>
@@ -2038,6 +2149,20 @@
     </div>
   </div>
 
+  <!-- Departments Tab -->
+  <div class="tab-panel" id="panel-departments">
+    <div id="departments-loading" class="empty-state">
+      <div class="empty-state-icon">🏢</div>
+      <div class="empty-state-title">Loading departments...</div>
+      <div class="empty-state-text">Department status cards and activity feed will appear here.</div>
+    </div>
+    <div id="departments-content" style="display:none">
+      <div id="departments-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:32px;"></div>
+      <div class="section-header">Activity Feed</div>
+      <div id="departments-feed"></div>
+    </div>
+  </div>
+
   <!-- Agents Tab -->
   <div class="tab-panel" id="panel-agents">
     <div class="section-header">Lead Orchestrator</div>
@@ -2083,7 +2208,7 @@
   'use strict';
 
   // ── Valid tab routes ──
-  var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'agents'];
+  var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'departments', 'agents'];
 
   // ── Slug helper ──
   function slugify(name) {
@@ -3316,6 +3441,9 @@
     if (tab === 'ideas') {
       loadIdeasTab();
     }
+    if (tab === 'departments') {
+      loadDepartmentsTab();
+    }
   };
 
   // ── Content Tab Logic ──
@@ -3749,6 +3877,73 @@
     }
 
     panel.innerHTML = html;
+  }
+
+  // ── Departments Tab Logic ──
+  function loadDepartmentsTab() {
+    fetch('/api/departments')
+      .then(function(r) { return r.json(); })
+      .then(function(d) { renderDepartmentsTab(d); })
+      .catch(function() {
+        document.getElementById('departments-loading').querySelector('.empty-state-title').textContent = 'Failed to load departments';
+      });
+  }
+
+  function renderDepartmentsTab(data) {
+    var depts = data.departments || [];
+    var feed = data.activityFeed || [];
+    var now = Date.now();
+
+    document.getElementById('departments-loading').style.display = 'none';
+    document.getElementById('departments-content').style.display = 'block';
+
+    // Render cards
+    var gridHtml = '';
+    for (var i = 0; i < depts.length; i++) {
+      var dept = depts[i];
+      var lu = dept.status.lastUpdated;
+      var hoursAgo = lu ? (now - new Date(lu).getTime()) / 3600000 : Infinity;
+      var dotColor = hoursAgo < 4 ? 'green' : (hoursAgo < 12 ? 'yellow' : 'red');
+      var agoText = lu ? formatRelativeTime(lu) : 'never';
+      var focus = dept.status.currentFocus || 'No current focus set';
+      var latest = dept.outbox.latest || 'No outbox entries';
+
+      gridHtml += '<div class="dept-card">';
+      gridHtml += '<div class="dept-card-header">';
+      gridHtml += '<span class="dept-status-dot ' + dotColor + '"></span>';
+      gridHtml += '<span class="dept-card-name">' + escHtml(dept.name) + '</span>';
+      gridHtml += '</div>';
+      gridHtml += '<div class="dept-card-focus">' + escHtml(focus) + '</div>';
+      gridHtml += '<div class="dept-card-latest">📤 ' + escHtml(latest) + '</div>';
+      gridHtml += '<div class="dept-card-footer">';
+      gridHtml += '<span>📥 Inbox: ' + dept.inbox.count + '</span>';
+      gridHtml += '<span>📤 Outbox: ' + dept.outbox.count + '</span>';
+      gridHtml += '<span>🕐 ' + agoText + '</span>';
+      gridHtml += '</div>';
+      gridHtml += '</div>';
+    }
+    document.getElementById('departments-grid').innerHTML = gridHtml;
+
+    // Render activity feed
+    var feedHtml = '<div class="activity-list">';
+    if (feed.length === 0) {
+      feedHtml += '<div class="activity-empty">No department activity yet</div>';
+    } else {
+      for (var j = 0; j < feed.length; j++) {
+        var entry = feed[j];
+        feedHtml += '<div class="dept-feed-item">';
+        feedHtml += '<span class="dept-feed-time">' + escHtml(entry.timestamp) + '</span>';
+        feedHtml += '<span class="dept-feed-badge">' + escHtml(entry.department) + '</span>';
+        feedHtml += '<span class="dept-feed-title">' + escHtml(entry.title);
+        if (entry.description) {
+          feedHtml += ' <span class="dept-feed-desc">— ' + escHtml(entry.description.substring(0, 100)) + '</span>';
+        }
+        feedHtml += '</span>';
+        feedHtml += '</div>';
+      }
+    }
+    feedHtml += '</div>';
+    document.getElementById('departments-feed').innerHTML = feedHtml;
   }
 
   // ── Initial tab activation (triggers polling setup) ──
