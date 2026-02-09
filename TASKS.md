@@ -435,7 +435,7 @@
 
 ### C-004: Projects Tab — Progress Log View
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** C-001
 - **Pass criteria:**
@@ -453,18 +453,18 @@
 
 ### C-005: Content Tab
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ❌ failed
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
-  - [ ] Shows all tasks with type `content` or `marketing` from `/api/overview` `crossProjectTasks.content`
-  - [ ] Tasks grouped by status: Todo → In Progress → Testing → Done
-  - [ ] Each task shows: source project name as badge, task title, type badge (content vs marketing)
+  - [x] Shows all tasks with type `content` or `marketing` from `/api/overview` `crossProjectTasks.content`
+  - [x] Tasks grouped by status: Todo → In Progress → Testing → Done
+  - [x] Each task shows: source project name as badge, task title, type badge (content vs marketing)
   - [ ] Filter dropdown to filter by project (multi-select)
-  - [ ] Filter by type (content vs marketing)
-  - [ ] "Hide completed" toggle that hides done tasks
-  - [ ] Clicking project badge navigates to `#/projects/<slug>`
-  - [ ] Empty state: "No content tasks found" message when no content/marketing tasks exist
+  - [x] Filter by type (content vs marketing)
+  - [x] "Hide completed" toggle that hides done tasks
+  - [x] Clicking project badge navigates to `#/projects/<slug>`
+  - [x] Empty state: "No content tasks found" message when no content/marketing tasks exist
 - **Fail criteria:**
   - Shows non-content/marketing tasks
   - Filters don't work
@@ -475,7 +475,7 @@
 
 ### C-006: Research Tab
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** C-005
 - **Pass criteria:**

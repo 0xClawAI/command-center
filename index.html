@@ -1406,10 +1406,27 @@
 
   <!-- Research Tab -->
   <div class="tab-panel" id="panel-research">
-    <div class="empty-state">
+    <div id="research-loading" class="empty-state">
       <div class="empty-state-icon">🔬</div>
       <div class="empty-state-title">Loading research tasks...</div>
       <div class="empty-state-text">Cross-project research and analysis tasks will appear here.</div>
+    </div>
+    <div id="research-empty" class="empty-state" style="display:none">
+      <div class="empty-state-icon">🔬</div>
+      <div class="empty-state-title">No research tasks found</div>
+      <div class="empty-state-text">No research or analysis tasks exist across your projects.</div>
+    </div>
+    <div id="research-main" style="display:none">
+      <div class="cross-tab-filters" id="research-filters">
+        <select class="cross-tab-select" id="research-filter-project"><option value="">All Projects</option></select>
+        <select class="cross-tab-select" id="research-filter-type">
+          <option value="">All Types</option>
+          <option value="research">Research</option>
+          <option value="analysis">Analysis</option>
+        </select>
+        <label class="cross-tab-toggle-label"><input type="checkbox" id="research-hide-done"> Hide completed</label>
+      </div>
+      <div id="research-groups"></div>
     </div>
   </div>
 
@@ -2381,6 +2398,134 @@
     }
   };
 
+  // ── Research Tab Logic ──
+  var researchTasks = [];
+  var researchLoaded = false;
+
+  function loadResearchTab() {
+    fetch('/api/overview')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        researchTasks = (d.crossProjectTasks && d.crossProjectTasks.research) || [];
+        researchLoaded = true;
+        renderResearchTab();
+      })
+      .catch(function() {
+        researchTasks = [];
+        researchLoaded = true;
+        renderResearchTab();
+      });
+  }
+
+  function renderResearchTab() {
+    var loadingEl = document.getElementById('research-loading');
+    var emptyEl = document.getElementById('research-empty');
+    var mainEl = document.getElementById('research-main');
+
+    loadingEl.style.display = 'none';
+
+    if (researchTasks.length === 0) {
+      emptyEl.style.display = '';
+      mainEl.style.display = 'none';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    mainEl.style.display = 'block';
+
+    // Populate project filter dropdown
+    var projectSelect = document.getElementById('research-filter-project');
+    var projects = {};
+    for (var i = 0; i < researchTasks.length; i++) {
+      var t = researchTasks[i];
+      if (t.project && !projects[t.slug]) {
+        projects[t.slug] = t.project;
+      }
+    }
+    var currentVal = projectSelect.value;
+    projectSelect.innerHTML = '<option value="">All Projects</option>';
+    var slugs = Object.keys(projects).sort();
+    for (var s = 0; s < slugs.length; s++) {
+      var opt = document.createElement('option');
+      opt.value = slugs[s];
+      opt.textContent = projects[slugs[s]];
+      projectSelect.appendChild(opt);
+    }
+    projectSelect.value = currentVal;
+
+    // Apply filters
+    var filterProject = document.getElementById('research-filter-project').value;
+    var filterType = document.getElementById('research-filter-type').value;
+    var hideDone = document.getElementById('research-hide-done').checked;
+
+    var filtered = [];
+    for (var f = 0; f < researchTasks.length; f++) {
+      var task = researchTasks[f];
+      if (filterProject && task.slug !== filterProject) continue;
+      if (filterType && task.type !== filterType) continue;
+      if (hideDone && task.status === 'done') continue;
+      filtered.push(task);
+    }
+
+    // Group by status
+    var statusOrder = ['todo', 'in_progress', 'testing', 'done'];
+    var statusLabels = { todo: 'Todo', in_progress: 'In Progress', testing: 'Testing', done: 'Done' };
+    var groups = {};
+    for (var g = 0; g < statusOrder.length; g++) {
+      groups[statusOrder[g]] = [];
+    }
+    for (var j = 0; j < filtered.length; j++) {
+      var st = filtered[j].status || 'todo';
+      // Map failed/blocked to todo
+      if (st === 'failed' || st === 'blocked') st = 'todo';
+      if (!groups[st]) groups[st] = [];
+      groups[st].push(filtered[j]);
+    }
+
+    var html = '';
+    var anyVisible = false;
+    for (var k = 0; k < statusOrder.length; k++) {
+      var key = statusOrder[k];
+      var tasks = groups[key];
+      if (tasks.length === 0) continue;
+      anyVisible = true;
+      html += '<div class="cross-tab-group">';
+      html += '<div class="cross-tab-group-header">';
+      html += '<span>' + escHtml(statusLabels[key]) + '</span>';
+      html += '<span class="cross-tab-group-count">' + tasks.length + '</span>';
+      html += '</div>';
+      for (var m = 0; m < tasks.length; m++) {
+        var tk = tasks[m];
+        html += '<div class="cross-tab-task">';
+        html += '<a class="cross-tab-project-badge" href="#/projects/' + escHtml(tk.slug) + '">' + escHtml(tk.project) + '</a>';
+        html += '<span class="cross-tab-task-title">' + escHtml(tk.title) + '</span>';
+        html += '<span class="cross-tab-type-badge">' + escHtml(tk.type) + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    if (!anyVisible) {
+      html = '<div class="empty-state"><div class="empty-state-icon">🔬</div><div class="empty-state-title">No research tasks found</div><div class="empty-state-text">No tasks match the current filters.</div></div>';
+    }
+
+    document.getElementById('research-groups').innerHTML = html;
+  }
+
+  // Attach research filter event listeners
+  document.getElementById('research-filter-project').addEventListener('change', renderResearchTab);
+  document.getElementById('research-filter-type').addEventListener('change', renderResearchTab);
+  document.getElementById('research-hide-done').addEventListener('change', renderResearchTab);
+
+  // Hook research tab into activation
+  var _prevActivateTabR = activateTab;
+  activateTab = function(tab) {
+    _prevActivateTabR(tab);
+    if (tab === 'research') {
+      loadResearchTab(); // refresh data each time
+    }
+  };
+
   // ── Agents Tab Logic ──
   function loadAgentsTab() {
     var container = document.getElementById('agents-workers');
@@ -2583,6 +2728,9 @@
   }
   if (initTab === 'ideas') {
     loadIdeasTab();
+  }
+  if (initTab === 'research') {
+    loadResearchTab();
   }
 })();
 </script>

@@ -2,15 +2,15 @@
   "project": "Command Center",
   "type": "product",
   "status": "active",
-  "lastUpdated": "2026-02-09T18:58:00.365Z",
+  "lastUpdated": "2026-02-09T19:28:55.276Z",
   "progress": {
     "total": 34,
-    "done": 19,
+    "done": 20,
     "inProgress": 0,
-    "testing": 0,
+    "testing": 5,
     "failed": 0,
     "blocked": 0,
-    "todo": 15
+    "todo": 10
   },
   "milestones": [
     {
@@ -73,7 +73,7 @@
       ],
       "progress": {
         "total": 8,
-        "done": 2
+        "done": 3
       }
     },
     {
@@ -155,7 +155,7 @@
       "name": "Full Dashboard",
       "status": "active",
       "tasks": 9,
-      "done": 2
+      "done": 3
     },
     {
       "name": "Polish & Ship",
@@ -340,7 +340,7 @@
       "id": "C-003",
       "title": "Projects Tab — Kanban View",
       "type": "code",
-      "status": "testing",
+      "status": "done",
       "milestone": "M4",
       "assignee": null,
       "depends": []
@@ -349,7 +349,7 @@
       "id": "C-004",
       "title": "Projects Tab — Progress Log View",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
       "assignee": null,
       "depends": []
@@ -358,7 +358,7 @@
       "id": "C-005",
       "title": "Content Tab",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
       "assignee": null,
       "depends": []
@@ -367,7 +367,7 @@
       "id": "C-006",
       "title": "Research Tab",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
       "assignee": null,
       "depends": []
@@ -376,7 +376,7 @@
       "id": "C-007",
       "title": "Agents Tab",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
       "assignee": null,
       "depends": []
@@ -385,7 +385,7 @@
       "id": "C-008",
       "title": "Ideas System — Global & Per-Project",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
       "assignee": null,
       "depends": []

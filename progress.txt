@@ -555,3 +555,49 @@ Worker: worker-c004
   - Tags rendered as colored badges
   - Empty state handled gracefully
 - Status: 🧪 testing
+
+================================================================================
+[C-006] Research Tab — 2026-02-09T11:20:00-08:00
+- Implemented Research tab with identical functionality to Content tab
+- Uses crossProjectTasks.research from /api/overview (research/analysis types)
+- HTML: loading state, empty state ("No research tasks found"), main view with filters
+- Filters: project dropdown, type dropdown (Research/Analysis), hide-completed toggle
+- Tasks grouped by status: Todo → In Progress → Testing → Done
+- Each task shows: project badge (links to #/projects/<slug>), title, type badge
+- Failed/blocked tasks mapped to Todo group (same as Content tab)
+- Filter empty state shows "No tasks match the current filters"
+- Deep-link support: #/research loads tab directly
+- All CSS reuses existing cross-tab-* classes from Content tab (no new CSS needed)
+- Status: 🧪 testing
+================================================================================
+[2026-02-09T11:20:00-08:00] SUPERVISOR VERIFICATION — C-004: Progress Log View — ✅ PASS
+================================================================================
+
+5/5 pass criteria verified. 0/3 fail criteria triggered.
+
+1. Toggle (third view alongside Milestones/Kanban): ✅ PASS
+   - View toggle renders 3 buttons: Milestones, Kanban, Progress (lines 1931-1933)
+   - Click handler switches currentProjectView and re-renders (lines 1952-1985)
+
+2. Fetches /api/project/:slug/progress: ✅ PASS
+   - loadProgressLog() calls fetch('/api/project/' + slug + '/progress') (line 2196)
+   - Live test: curl localhost:3400/api/project/command-center/progress → 31 entries
+
+3. Entries rendered newest first: ✅ PASS
+   - renderProgressLog() calls entries.slice().reverse() (line 2185)
+   - API returns oldest-first (index 0 = header), code reverses for display
+
+4. Each entry visually separated: ✅ PASS
+   - .progress-entry: background var(--surface), border 1px solid var(--border),
+     border-radius 8px, padding 16px 18px (lines 1304-1315)
+   - .progress-log: gap 10px between cards (line 1300)
+
+5. Empty state "No progress entries yet": ✅ PASS
+   - Guard: if (!entries || entries.length === 0) returns placeholder (lines 2181-2183)
+   - Live test: /api/project/proof-of-intelligence/progress → {"entries":[]}
+   - .progress-empty styled centered, italic (lines 1317-1323)
+
+Fail criteria:
+   ✓ Not oldest-first — .reverse() applied
+   ✓ Visual separation present — cards with border, bg, gap
+   ✓ No crash on empty — guard clause + fetch .catch() fallback
