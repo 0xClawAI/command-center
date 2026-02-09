@@ -7,6 +7,8 @@ const PORT = parseInt(process.env.PORT, 10) || 3400;
 const HOST = '0.0.0.0';
 const PROJECTS_JSON = path.join(os.homedir(), '.openclaw', 'workspace', 'projects.json');
 const DEPARTMENTS_DIR = path.join(os.homedir(), '.openclaw', 'workspace', 'org', 'departments');
+const CONTENT_DIR = path.join(os.homedir(), '.openclaw', 'workspace', 'content');
+const KNOWLEDGE_DIR = path.join(os.homedir(), '.openclaw', 'workspace', 'knowledge');
 const ROOT = __dirname;
 const MAX_ENTRIES = 50;
 const STALE_DAYS = 7;
@@ -395,6 +397,180 @@ function apiDepartments(res) {
   json(res, 200, { departments, activityFeed: allEntries.slice(0, 20) });
 }
 
+// --- Per-department detail endpoint ---
+function formatDeptName(name) {
+  return name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+function parseMarkdownEntries(raw) {
+  if (!raw) return [];
+  const entries = [];
+  const parts = raw.split(/^## /m).slice(1);
+  for (const part of parts) {
+    const lines = part.split('\n');
+    const heading = lines[0].trim();
+    const tsMatch = heading.match(/^\[([^\]]+)\]\s*(.*)/);
+    let timestamp = null, title = heading;
+    if (tsMatch) {
+      timestamp = tsMatch[1].trim();
+      title = tsMatch[2].trim();
+    }
+    const body = lines.slice(1).join('\n').trim();
+    entries.push({ timestamp, title, body });
+  }
+  return entries;
+}
+
+function parseStatusMd(raw) {
+  if (!raw) return {};
+  const result = {};
+  // Current focus
+  const focusMatch = raw.match(/^## Current(?:ly Working On)?[:\s]*(.+)/im)
+    || raw.match(/\*\*Current focus:\*\*\s*(.+)/i);
+  if (focusMatch) result.currentFocus = focusMatch[1].trim();
+
+  // Parse all bullet items under "Currently Working On"
+  const workingSection = raw.match(/## Currently Working On\n([\s\S]*?)(?=\n##|\n$|$)/);
+  if (workingSection) {
+    result.workingItems = workingSection[1].split('\n')
+      .filter(l => l.match(/^[-*]\s/))
+      .map(l => l.replace(/^[-*]\s+/, '').trim());
+  }
+
+  // Blocked
+  const blockedSection = raw.match(/## Blocked On\n([\s\S]*?)(?=\n##|\n$|$)/);
+  if (blockedSection) {
+    result.blockedItems = blockedSection[1].split('\n')
+      .filter(l => l.match(/^[-*]\s/) && !l.match(/nothing/i))
+      .map(l => l.replace(/^[-*]\s+/, '').trim());
+  }
+
+  // Next Up
+  const nextSection = raw.match(/## Next Up\n([\s\S]*?)(?=\n##|\n$|$)/);
+  if (nextSection) {
+    result.nextItems = nextSection[1].split('\n')
+      .filter(l => l.match(/^[-*]\s/))
+      .map(l => l.replace(/^[-*]\s+/, '').trim());
+  }
+
+  // Remaining Queue (content)
+  const queueSection = raw.match(/## Remaining Queue\n([\s\S]*?)(?=\n##|\n$|$)/);
+  if (queueSection) {
+    result.queue = queueSection[1].split('\n')
+      .filter(l => l.match(/^[-*]\s/))
+      .map(l => l.replace(/^[-*]\s+/, '').trim());
+  }
+
+  // Completed items
+  const completedSection = raw.match(/## (?:Completed This Wake|What Got Done This Wake)\n([\s\S]*?)(?=\n##|\n$|$)/);
+  if (completedSection) {
+    result.completed = completedSection[1].split('\n')
+      .filter(l => l.match(/^[-*\d]\s|^\d+\./))
+      .map(l => l.replace(/^[-*\d]+[.)]\s*/, '').trim());
+  }
+
+  // Posted This Wake (content)
+  const postedSection = raw.match(/## Posted This Wake\n([\s\S]*?)(?=\n##|\n$|$)/);
+  if (postedSection) {
+    result.posted = postedSection[1].split('\n')
+      .filter(l => l.match(/^\d+\./))
+      .map(l => l.replace(/^\d+\.\s*/, '').trim());
+  }
+
+  return result;
+}
+
+function parsePostedLog(raw) {
+  if (!raw) return [];
+  const posts = [];
+  const tweetBlocks = raw.split(/^### /m).slice(1);
+  for (const block of tweetBlocks) {
+    const lines = block.split('\n');
+    const title = lines[0].trim();
+    const post = { title };
+    for (const line of lines) {
+      const idMatch = line.match(/\*\*ID:\*\*\s*(\d+)/);
+      if (idMatch) post.id = idMatch[1];
+      const urlMatch = line.match(/\*\*URL:\*\*\s*(https?:\/\/\S+)/);
+      if (urlMatch) post.url = urlMatch[1];
+      const pillarMatch = line.match(/\*\*Pillar:\*\*\s*(.+)/);
+      if (pillarMatch) post.pillar = pillarMatch[1].trim();
+      const textMatch = line.match(/\*\*Text:\*\*\s*(.+)/);
+      if (textMatch) post.text = textMatch[1].trim();
+    }
+    posts.push(post);
+  }
+  return posts;
+}
+
+function parseTweetIdeas(raw) {
+  if (!raw) return [];
+  const ideas = [];
+  const blocks = raw.split(/^### /m).slice(1);
+  for (const block of blocks) {
+    const title = block.split('\n')[0].trim();
+    ideas.push({ title, posted: block.includes('POSTED') || block.includes('posted') });
+  }
+  return ideas;
+}
+
+function getFileMtime(fp) {
+  try { return fs.statSync(fp).mtime.toISOString(); } catch { return null; }
+}
+
+function apiDepartmentDetail(res, name) {
+  const base = path.join(DEPARTMENTS_DIR, name);
+  try { fs.accessSync(base, fs.constants.F_OK); } catch {
+    return err(res, 404, 'Department not found');
+  }
+
+  const statusRaw = readSafe(path.join(base, 'status.md'));
+  const inboxRaw = readSafe(path.join(base, 'inbox.md'));
+  const outboxRaw = readSafe(path.join(base, 'outbox.md'));
+
+  const status = parseStatusMd(statusRaw);
+  const inboxEntries = parseMarkdownEntries(inboxRaw);
+  const outboxEntries = parseMarkdownEntries(outboxRaw);
+
+  const result = {
+    name,
+    displayName: formatDeptName(name),
+    status,
+    statusRaw: statusRaw || '',
+    inbox: inboxEntries,
+    outbox: outboxEntries,
+  };
+
+  // Department-specific data
+  if (name === 'content') {
+    result.postedLog = parsePostedLog(readSafe(path.join(CONTENT_DIR, 'posted-log.md')));
+    result.tweetIdeas = parseTweetIdeas(readSafe(path.join(CONTENT_DIR, 'tweet-ideas.md')));
+    result.engagementTracker = readSafe(path.join(CONTENT_DIR, 'engagement-tracker.md'));
+  }
+
+  if (name === 'research') {
+    // Knowledge base file stats
+    const kbFiles = ['technical.md', 'social.md', 'engagement.md'];
+    result.knowledgeBase = kbFiles.map(f => ({
+      name: f.replace('.md', ''),
+      lastUpdated: getFileMtime(path.join(KNOWLEDGE_DIR, f)),
+      exists: !!readSafe(path.join(KNOWLEDGE_DIR, f)),
+    }));
+  }
+
+  if (name === 'engineering') {
+    // Include projects data
+    result.projects = loadProjects();
+  }
+
+  if (name === 'engagement') {
+    result.engagementTracker = readSafe(path.join(CONTENT_DIR, 'engagement-tracker.md'));
+    result.pendingReplies = readSafe(path.join(CONTENT_DIR, 'pending-replies.md'));
+  }
+
+  json(res, 200, result);
+}
+
 // --- Router ---
 const server = http.createServer((req, res) => {
   try {
@@ -406,6 +582,9 @@ const server = http.createServer((req, res) => {
     if (pathname === '/api/overview') return apiOverview(res);
     if (pathname === '/api/ideas') return apiIdeas(res);
     if (pathname === '/api/departments') return apiDepartments(res);
+
+    const deptMatch = pathname.match(/^\/api\/departments\/([a-z0-9-]+)$/);
+    if (deptMatch) return apiDepartmentDetail(res, deptMatch[1]);
 
     const m = pathname.match(/^\/api\/project\/([^/]+)\/(state|progress|tasks)$/);
     if (m) {

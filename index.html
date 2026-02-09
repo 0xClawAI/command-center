@@ -2012,6 +2012,126 @@
       overflow-x: hidden;
     }
   }
+
+  /* ── Department Detail Views ── */
+  .dept-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .dept-detail-header h2 { font-size: 22px; font-weight: 700; }
+  .dept-detail-header .dept-status-pill {
+    font-size: 11px; padding: 3px 10px; border-radius: 12px;
+    border: 1px solid var(--border); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+  .dept-status-pill.green { color: var(--green); border-color: var(--green); }
+  .dept-status-pill.yellow { color: var(--yellow); border-color: var(--yellow); }
+  .dept-status-pill.red { color: var(--red); border-color: var(--red); }
+
+  .dept-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .dept-detail-grid { grid-template-columns: 1fr; }
+  }
+
+  .dept-detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .dept-detail-card h3 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-dim); margin-bottom: 12px;
+  }
+  .dept-detail-card ul {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .dept-detail-card li {
+    font-size: 13px; padding: 5px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+    line-height: 1.4;
+  }
+  .dept-detail-card li:last-child { border-bottom: none; }
+
+  .dept-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+  .dept-entry-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 6px;
+  }
+  .dept-entry-ts {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px; color: var(--blue); flex-shrink: 0;
+  }
+  .dept-entry-title { font-weight: 600; font-size: 14px; }
+  .dept-entry-body {
+    font-size: 13px; color: var(--text-dim); line-height: 1.5;
+    max-height: 120px; overflow-y: auto;
+    white-space: pre-wrap; word-break: break-word;
+  }
+
+  .dept-tweet-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+  .dept-tweet-card .tweet-title { font-weight: 600; font-size: 14px; }
+  .dept-tweet-card .tweet-pillar {
+    font-size: 11px; color: var(--purple); margin-left: 8px;
+  }
+  .dept-tweet-card .tweet-text {
+    font-size: 13px; color: var(--text-dim); margin-top: 6px; line-height: 1.4;
+  }
+  .dept-tweet-card .tweet-link {
+    font-size: 12px; color: var(--blue); text-decoration: none; margin-top: 4px; display: inline-block;
+  }
+
+  .dept-kb-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+  }
+  .dept-kb-item:last-child { border-bottom: none; }
+  .dept-kb-name { font-size: 14px; font-weight: 500; text-transform: capitalize; }
+  .dept-kb-time { font-size: 12px; color: var(--text-dim); }
+
+  .dept-full-width { grid-column: 1 / -1; }
+
+  .dept-idea-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+    font-size: 13px;
+  }
+  .dept-idea-item:last-child { border-bottom: none; }
+  .dept-idea-posted { color: var(--green); }
+  .dept-idea-pending { color: var(--yellow); }
+
+  .dept-project-mini {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+  }
+  .dept-project-mini:last-child { border-bottom: none; }
+  .dept-project-mini a {
+    color: var(--blue); text-decoration: none; font-weight: 600; font-size: 14px;
+  }
+  .dept-project-mini a:hover { text-decoration: underline; }
+
+  .dept-placeholder {
+    text-align: center; padding: 32px; color: var(--text-dim);
+    font-size: 14px; font-style: italic;
+  }
 </style>
 </head>
 <body>
@@ -2030,6 +2150,11 @@
       <button class="tab-btn" data-tab="research">Research</button>
       <button class="tab-btn" data-tab="ideas">Ideas</button>
       <button class="tab-btn" data-tab="departments">Departments</button>
+      <button class="tab-btn" data-tab="dept-engineering">⚙️ Eng</button>
+      <button class="tab-btn" data-tab="dept-content">📝 Content</button>
+      <button class="tab-btn" data-tab="dept-research">🔬 Research</button>
+      <button class="tab-btn" data-tab="dept-engagement">💬 Engage</button>
+      <button class="tab-btn" data-tab="dept-marketing">📈 Mktg</button>
       <button class="tab-btn" data-tab="agents">Agents</button>
     </div>
     <select class="mobile-tab-select" id="mobileTabSelect">
@@ -2039,6 +2164,11 @@
       <option value="research">Research</option>
       <option value="ideas">Ideas</option>
       <option value="departments">Departments</option>
+      <option value="dept-engineering">⚙️ Engineering</option>
+      <option value="dept-content">📝 Content</option>
+      <option value="dept-research">🔬 Research</option>
+      <option value="dept-engagement">💬 Engagement</option>
+      <option value="dept-marketing">📈 Marketing</option>
       <option value="agents">Agents</option>
     </select>
   </div>
@@ -2163,6 +2293,51 @@
     </div>
   </div>
 
+  <!-- Department: Engineering Tab -->
+  <div class="tab-panel" id="panel-dept-engineering">
+    <div id="dept-engineering-loading" class="empty-state">
+      <div class="empty-state-icon">⚙️</div>
+      <div class="empty-state-title">Loading Engineering...</div>
+    </div>
+    <div id="dept-engineering-content" style="display:none"></div>
+  </div>
+
+  <!-- Department: Content Tab -->
+  <div class="tab-panel" id="panel-dept-content">
+    <div id="dept-content-loading" class="empty-state">
+      <div class="empty-state-icon">📝</div>
+      <div class="empty-state-title">Loading Content...</div>
+    </div>
+    <div id="dept-content-content" style="display:none"></div>
+  </div>
+
+  <!-- Department: Research Tab -->
+  <div class="tab-panel" id="panel-dept-research">
+    <div id="dept-research-loading" class="empty-state">
+      <div class="empty-state-icon">🔬</div>
+      <div class="empty-state-title">Loading Research...</div>
+    </div>
+    <div id="dept-research-content" style="display:none"></div>
+  </div>
+
+  <!-- Department: Engagement Tab -->
+  <div class="tab-panel" id="panel-dept-engagement">
+    <div id="dept-engagement-loading" class="empty-state">
+      <div class="empty-state-icon">💬</div>
+      <div class="empty-state-title">Loading Engagement...</div>
+    </div>
+    <div id="dept-engagement-content" style="display:none"></div>
+  </div>
+
+  <!-- Department: Marketing Tab -->
+  <div class="tab-panel" id="panel-dept-marketing">
+    <div id="dept-marketing-loading" class="empty-state">
+      <div class="empty-state-icon">📈</div>
+      <div class="empty-state-title">Loading Marketing...</div>
+    </div>
+    <div id="dept-marketing-content" style="display:none"></div>
+  </div>
+
   <!-- Agents Tab -->
   <div class="tab-panel" id="panel-agents">
     <div class="section-header">Lead Orchestrator</div>
@@ -2208,7 +2383,7 @@
   'use strict';
 
   // ── Valid tab routes ──
-  var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'departments', 'agents'];
+  var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'departments', 'dept-engineering', 'dept-content', 'dept-research', 'dept-engagement', 'dept-marketing', 'agents'];
 
   // ── Slug helper ──
   function slugify(name) {
@@ -3444,6 +3619,9 @@
     if (tab === 'departments') {
       loadDepartmentsTab();
     }
+    if (tab.startsWith('dept-')) {
+      loadDeptDetailTab(tab.replace('dept-', ''));
+    }
   };
 
   // ── Content Tab Logic ──
@@ -3944,6 +4122,241 @@
     }
     feedHtml += '</div>';
     document.getElementById('departments-feed').innerHTML = feedHtml;
+  }
+
+  // ── Department Detail Tab Logic ──
+  function loadDeptDetailTab(deptName) {
+    var loadingEl = document.getElementById('dept-' + deptName + '-loading');
+    var contentEl = document.getElementById('dept-' + deptName + '-content');
+    if (loadingEl) loadingEl.style.display = '';
+    if (contentEl) contentEl.style.display = 'none';
+
+    fetch('/api/departments/' + encodeURIComponent(deptName))
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (contentEl) { contentEl.style.display = 'block'; contentEl.innerHTML = renderDeptDetail(deptName, d); }
+      })
+      .catch(function() {
+        if (loadingEl) { loadingEl.querySelector('.empty-state-title').textContent = 'Failed to load'; }
+      });
+  }
+
+  function renderDeptDetail(deptName, data) {
+    var html = '';
+    var status = data.status || {};
+
+    // Header
+    html += '<div class="dept-detail-header">';
+    html += '<h2>' + escHtml(data.displayName || deptName) + '</h2>';
+    html += '</div>';
+
+    // Route to specific renderer
+    switch (deptName) {
+      case 'engineering': html += renderEngineering(data); break;
+      case 'content': html += renderContentDept(data); break;
+      case 'research': html += renderResearchDept(data); break;
+      case 'engagement': html += renderEngagementDept(data); break;
+      case 'marketing': html += renderMarketingDept(data); break;
+      default: html += renderGenericDept(data);
+    }
+
+    return html;
+  }
+
+  function renderStatusCards(status) {
+    var html = '';
+    if (status.workingItems && status.workingItems.length) {
+      html += '<div class="dept-detail-card"><h3>🔄 Currently Working On</h3><ul>';
+      for (var i = 0; i < status.workingItems.length; i++) html += '<li>' + escHtml(status.workingItems[i]) + '</li>';
+      html += '</ul></div>';
+    }
+    if (status.completed && status.completed.length) {
+      html += '<div class="dept-detail-card"><h3>✅ Completed</h3><ul>';
+      for (var i = 0; i < status.completed.length; i++) html += '<li>' + escHtml(status.completed[i]) + '</li>';
+      html += '</ul></div>';
+    }
+    if (status.nextItems && status.nextItems.length) {
+      html += '<div class="dept-detail-card"><h3>⏭️ Next Up</h3><ul>';
+      for (var i = 0; i < status.nextItems.length; i++) html += '<li>' + escHtml(status.nextItems[i]) + '</li>';
+      html += '</ul></div>';
+    }
+    if (status.blockedItems && status.blockedItems.length) {
+      html += '<div class="dept-detail-card"><h3>🚫 Blocked</h3><ul>';
+      for (var i = 0; i < status.blockedItems.length; i++) html += '<li>' + escHtml(status.blockedItems[i]) + '</li>';
+      html += '</ul></div>';
+    }
+    return html;
+  }
+
+  function renderEntries(entries, label) {
+    if (!entries || !entries.length) return '<div class="dept-placeholder">No ' + label + ' entries yet</div>';
+    var html = '';
+    for (var i = 0; i < Math.min(entries.length, 10); i++) {
+      var e = entries[i];
+      html += '<div class="dept-entry"><div class="dept-entry-header">';
+      if (e.timestamp) html += '<span class="dept-entry-ts">' + escHtml(e.timestamp) + '</span>';
+      html += '<span class="dept-entry-title">' + escHtml(e.title) + '</span>';
+      html += '</div>';
+      if (e.body) {
+        var bodyPreview = e.body.length > 300 ? e.body.substring(0, 300) + '...' : e.body;
+        html += '<div class="dept-entry-body">' + escHtml(bodyPreview) + '</div>';
+      }
+      html += '</div>';
+    }
+    return html;
+  }
+
+  function renderEngineering(data) {
+    var html = '<div class="dept-detail-grid">';
+    html += renderStatusCards(data.status);
+
+    // Projects
+    if (data.projects && data.projects.length) {
+      html += '<div class="dept-detail-card"><h3>📁 Projects</h3>';
+      for (var i = 0; i < data.projects.length; i++) {
+        var p = data.projects[i];
+        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        html += '<div class="dept-project-mini">';
+        html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
+        html += '<a href="#/projects/' + escHtml(slug) + '">' + escHtml(p.name) + '</a>';
+        html += '<span style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">' + escHtml(p.status || '') + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+
+    // Inbox & Outbox
+    html += '<div class="section-header">📤 Recent Output</div>';
+    html += renderEntries(data.outbox, 'outbox');
+    html += '<div class="section-header">📥 Inbox</div>';
+    html += renderEntries(data.inbox, 'inbox');
+    return html;
+  }
+
+  function renderContentDept(data) {
+    var html = '<div class="dept-detail-grid">';
+    html += renderStatusCards(data.status);
+
+    // Posted tweets
+    if (data.postedLog && data.postedLog.length) {
+      html += '<div class="dept-detail-card dept-full-width"><h3>🐦 Posted Tweets</h3>';
+      for (var i = 0; i < data.postedLog.length; i++) {
+        var t = data.postedLog[i];
+        html += '<div class="dept-tweet-card">';
+        html += '<span class="tweet-title">' + escHtml(t.title) + '</span>';
+        if (t.pillar) html += '<span class="tweet-pillar">' + escHtml(t.pillar) + '</span>';
+        if (t.text) html += '<div class="tweet-text">' + escHtml(t.text.substring(0, 200)) + '</div>';
+        if (t.url) html += '<a class="tweet-link" href="' + escHtml(t.url) + '" target="_blank">View on X ↗</a>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    // Tweet queue
+    if (data.status.queue && data.status.queue.length) {
+      html += '<div class="dept-detail-card"><h3>📋 Queue</h3><ul>';
+      for (var i = 0; i < data.status.queue.length; i++) {
+        html += '<li>' + escHtml(data.status.queue[i]) + '</li>';
+      }
+      html += '</ul></div>';
+    }
+
+    // Tweet ideas
+    if (data.tweetIdeas && data.tweetIdeas.length) {
+      html += '<div class="dept-detail-card"><h3>💡 Tweet Ideas (' + data.tweetIdeas.length + ')</h3>';
+      for (var i = 0; i < Math.min(data.tweetIdeas.length, 15); i++) {
+        var idea = data.tweetIdeas[i];
+        html += '<div class="dept-idea-item">';
+        html += '<span class="' + (idea.posted ? 'dept-idea-posted' : 'dept-idea-pending') + '">' + (idea.posted ? '✅' : '💡') + '</span>';
+        html += '<span>' + escHtml(idea.title) + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    html += '</div>';
+
+    html += '<div class="section-header">📤 Recent Output</div>';
+    html += renderEntries(data.outbox, 'outbox');
+    return html;
+  }
+
+  function renderResearchDept(data) {
+    var html = '<div class="dept-detail-grid">';
+    html += renderStatusCards(data.status);
+
+    // Knowledge base status
+    if (data.knowledgeBase && data.knowledgeBase.length) {
+      html += '<div class="dept-detail-card"><h3>📚 Knowledge Base</h3>';
+      for (var i = 0; i < data.knowledgeBase.length; i++) {
+        var kb = data.knowledgeBase[i];
+        html += '<div class="dept-kb-item">';
+        html += '<span class="dept-kb-name">' + escHtml(kb.name) + '.md</span>';
+        html += '<span class="dept-kb-time">' + (kb.exists ? (kb.lastUpdated ? formatRelativeTime(kb.lastUpdated) : 'unknown') : '❌ missing') + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    html += '</div>';
+
+    html += '<div class="section-header">📤 Recent Findings</div>';
+    html += renderEntries(data.outbox, 'outbox');
+    html += '<div class="section-header">📥 Inbox</div>';
+    html += renderEntries(data.inbox, 'inbox');
+    return html;
+  }
+
+  function renderEngagementDept(data) {
+    var html = '<div class="dept-detail-grid">';
+    html += renderStatusCards(data.status);
+
+    // Placeholder sections
+    html += '<div class="dept-detail-card"><h3>🤝 Relationship Tracker</h3>';
+    html += '<div class="dept-placeholder">Coming soon — will track key accounts and interactions</div></div>';
+
+    html += '<div class="dept-detail-card"><h3>📊 Reply Metrics</h3>';
+    html += '<div class="dept-placeholder">Coming soon — replies sent, responses received</div></div>';
+
+    html += '</div>';
+
+    html += '<div class="section-header">📤 Recent Output</div>';
+    html += renderEntries(data.outbox, 'outbox');
+    html += '<div class="section-header">📥 Inbox</div>';
+    html += renderEntries(data.inbox, 'inbox');
+    return html;
+  }
+
+  function renderMarketingDept(data) {
+    var html = '<div class="dept-detail-grid">';
+    html += renderStatusCards(data.status);
+
+    html += '<div class="dept-detail-card"><h3>📊 Audience Analytics</h3>';
+    html += '<div class="dept-placeholder">Coming soon — follower growth, engagement rates</div></div>';
+
+    html += '<div class="dept-detail-card"><h3>🧪 Growth Experiments</h3>';
+    html += '<div class="dept-placeholder">Coming soon — A/B tests, timing optimization</div></div>';
+
+    html += '</div>';
+
+    html += '<div class="section-header">📤 Recent Output</div>';
+    html += renderEntries(data.outbox, 'outbox');
+    html += '<div class="section-header">📥 Inbox</div>';
+    html += renderEntries(data.inbox, 'inbox');
+    return html;
+  }
+
+  function renderGenericDept(data) {
+    var html = '<div class="dept-detail-grid">';
+    html += renderStatusCards(data.status);
+    html += '</div>';
+    html += '<div class="section-header">📤 Recent Output</div>';
+    html += renderEntries(data.outbox, 'outbox');
+    html += '<div class="section-header">📥 Inbox</div>';
+    html += renderEntries(data.inbox, 'inbox');
+    return html;
   }
 
   // ── Initial tab activation (triggers polling setup) ──
