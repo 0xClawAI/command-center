@@ -525,3 +525,14 @@ All pass criteria verified:
 - Column headers show task count via kanban-column-count
 ================================================================================
 
+
+================================================================================
+[2026-02-09T11:12:00-08:00] C-004: Progress Log View — COMPLETE
+Worker: worker-c004
+- Added "Progress" as third view toggle alongside Milestones/Kanban
+- Fetches from /api/project/:slug/progress endpoint
+- Entries rendered newest first in visually separated cards (monospace, bordered)
+- Empty state shows "No progress entries yet"
+- View toggle always visible (not gated on tasks existing)
+- Status: 🧪 testing
+================================================================================

@@ -1260,6 +1260,11 @@
       </div>
     </div>
 
+    <div class="section-header">Active Workers</div>
+    <div id="agents-workers">
+      <div style="text-align:center;padding:24px;color:var(--text-dim);font-size:14px;">Loading workers...</div>
+    </div>
+
     <div class="section-header">Department Agents <span class="badge-coming-soon">Coming Soon</span></div>
     <div class="placeholder-grid">
       <div class="placeholder-card">
@@ -2072,6 +2077,136 @@
     }
   };
 
+  // ── Content Tab Logic ──
+  var contentTasks = [];
+  var contentLoaded = false;
+
+  function loadContentTab() {
+    fetch('/api/overview')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        contentTasks = (d.crossProjectTasks && d.crossProjectTasks.content) || [];
+        contentLoaded = true;
+        renderContentTab();
+      })
+      .catch(function() {
+        contentTasks = [];
+        contentLoaded = true;
+        renderContentTab();
+      });
+  }
+
+  function renderContentTab() {
+    var loadingEl = document.getElementById('content-loading');
+    var emptyEl = document.getElementById('content-empty');
+    var mainEl = document.getElementById('content-main');
+
+    loadingEl.style.display = 'none';
+
+    if (contentTasks.length === 0) {
+      emptyEl.style.display = '';
+      mainEl.style.display = 'none';
+      return;
+    }
+
+    emptyEl.style.display = 'none';
+    mainEl.style.display = 'block';
+
+    // Populate project filter dropdown
+    var projectSelect = document.getElementById('content-filter-project');
+    var projects = {};
+    for (var i = 0; i < contentTasks.length; i++) {
+      var t = contentTasks[i];
+      if (t.project && !projects[t.slug]) {
+        projects[t.slug] = t.project;
+      }
+    }
+    var currentVal = projectSelect.value;
+    projectSelect.innerHTML = '<option value="">All Projects</option>';
+    var slugs = Object.keys(projects).sort();
+    for (var s = 0; s < slugs.length; s++) {
+      var opt = document.createElement('option');
+      opt.value = slugs[s];
+      opt.textContent = projects[slugs[s]];
+      projectSelect.appendChild(opt);
+    }
+    projectSelect.value = currentVal;
+
+    // Apply filters
+    var filterProject = document.getElementById('content-filter-project').value;
+    var filterType = document.getElementById('content-filter-type').value;
+    var hideDone = document.getElementById('content-hide-done').checked;
+
+    var filtered = [];
+    for (var f = 0; f < contentTasks.length; f++) {
+      var task = contentTasks[f];
+      if (filterProject && task.slug !== filterProject) continue;
+      if (filterType && task.type !== filterType) continue;
+      if (hideDone && task.status === 'done') continue;
+      filtered.push(task);
+    }
+
+    // Group by status
+    var statusOrder = ['todo', 'in_progress', 'testing', 'done'];
+    var statusLabels = { todo: 'Todo', in_progress: 'In Progress', testing: 'Testing', done: 'Done' };
+    var groups = {};
+    for (var g = 0; g < statusOrder.length; g++) {
+      groups[statusOrder[g]] = [];
+    }
+    for (var j = 0; j < filtered.length; j++) {
+      var st = filtered[j].status || 'todo';
+      // Map failed/blocked to todo
+      if (st === 'failed' || st === 'blocked') st = 'todo';
+      if (!groups[st]) groups[st] = [];
+      groups[st].push(filtered[j]);
+    }
+
+    var html = '';
+    var anyVisible = false;
+    for (var k = 0; k < statusOrder.length; k++) {
+      var key = statusOrder[k];
+      var tasks = groups[key];
+      if (tasks.length === 0) continue;
+      anyVisible = true;
+      html += '<div class="cross-tab-group">';
+      html += '<div class="cross-tab-group-header">';
+      html += '<span>' + escHtml(statusLabels[key]) + '</span>';
+      html += '<span class="cross-tab-group-count">' + tasks.length + '</span>';
+      html += '</div>';
+      for (var m = 0; m < tasks.length; m++) {
+        var tk = tasks[m];
+        html += '<div class="cross-tab-task">';
+        html += '<a class="cross-tab-project-badge" href="#/projects/' + escHtml(tk.slug) + '">' + escHtml(tk.project) + '</a>';
+        html += '<span class="cross-tab-task-title">' + escHtml(tk.title) + '</span>';
+        html += '<span class="cross-tab-type-badge">' + escHtml(tk.type) + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    if (!anyVisible) {
+      html = '<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-title">No content tasks found</div><div class="empty-state-text">No tasks match the current filters.</div></div>';
+    }
+
+    document.getElementById('content-groups').innerHTML = html;
+  }
+
+  // Attach filter event listeners
+  document.getElementById('content-filter-project').addEventListener('change', renderContentTab);
+  document.getElementById('content-filter-type').addEventListener('change', renderContentTab);
+  document.getElementById('content-hide-done').addEventListener('change', renderContentTab);
+
+  // Hook content tab into activation
+  var _prevActivateTab = activateTab;
+  activateTab = function(tab) {
+    _prevActivateTab(tab);
+    if (tab === 'content' && !contentLoaded) {
+      loadContentTab();
+    } else if (tab === 'content') {
+      loadContentTab(); // refresh data each time
+    }
+  };
+
   // Start polling if overview is the initial tab
   var initTab = getTabFromHash();
   if (initTab === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
@@ -2080,6 +2215,10 @@
   // Load projects tab if it's the initial tab (deep link)
   if (initTab === 'projects') {
     loadProjectsTab();
+  }
+  // Load content tab if it's the initial tab (deep link)
+  if (initTab === 'content') {
+    loadContentTab();
   }
 })();
 </script>

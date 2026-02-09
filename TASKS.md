@@ -453,7 +453,7 @@
 
 ### C-005: Content Tab
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
