@@ -1,8 +1,8 @@
 # TASKS.md — Command Center
 
-> Last updated: 2026-02-09T10:08:00-08:00
-> Status: Complete
-> Progress: 34/34 tasks complete
+> Last updated: 2026-02-09T15:20:00-08:00
+> Status: Phase 5 Active
+> Progress: 36/42 tasks complete
 
 ---
 
@@ -17,6 +17,8 @@
 - **M7: Phase 2 Review** — Tasks: B-007
 - **M8: Phase 3 Review** — Tasks: C-009
 - **M9: Final Review** — Tasks: D-008
+- **M10: Departments Overview** — Tasks: E-001, E-002, E-003
+- **M11: Department Enhancements** — Tasks: E-004, E-005, E-006, E-007, E-008
 
 ---
 
@@ -707,3 +709,152 @@
   - Inaccessible from Tailscale
 - **Files:** All project files
 - **Notes:** Final gate. Project is shipped after this passes.
+
+---
+
+## Phase 5: Organization Dashboard
+**Goal:** Departments tab with overview cards and per-department detail views, plus enhancement tasks for each department
+**Exit when:** All Phase 5 tasks pass supervisor verification
+
+### E-001: Departments Overview Tab
+- **Type:** code
+- **Status:** 🧪 testing
+- **Milestone:** M10
+- **Depends:** A-005, A-006
+- **Commit:** b47d80d
+- **Pass criteria:**
+  - [ ] Departments tab appears in main navigation alongside existing tabs
+  - [ ] Each department (Content, Engagement, Marketing, Research, Engineering) rendered as a card
+  - [ ] Each card shows department name, lead name, worker count
+  - [ ] Activity feed section shows recent department activity
+  - [ ] Cards use design system colors and dark theme consistently
+  - [ ] Responsive layout on mobile (375px) — cards stack vertically
+  - [ ] No JS console errors when navigating to Departments tab
+  - [ ] Hash routing works: `#/departments` loads the tab
+- **Fail criteria:**
+  - Departments tab missing from navigation
+  - Cards don't render or show broken/placeholder data
+  - JS errors in console
+  - Not responsive on mobile
+  - Breaks existing tabs' functionality
+- **Files:** `~/projects/command-center/index.html`
+- **Notes:** Already built in commit b47d80d. Needs supervisor review.
+
+### E-002: Per-Department Detail Tabs
+- **Type:** code
+- **Status:** 🧪 testing
+- **Milestone:** M10
+- **Depends:** E-001
+- **Commit:** d683975
+- **Pass criteria:**
+  - [ ] Clicking a department card opens a detail view for that department
+  - [ ] Detail view shows department-specific information (org files, status, members)
+  - [ ] Back navigation returns to departments overview
+  - [ ] URL updates to `#/departments/<dept-name>` when viewing a department
+  - [ ] Deep linking works: pasting URL with `#/departments/engineering` loads that department
+  - [ ] Responsive on mobile
+  - [ ] No JS console errors
+- **Fail criteria:**
+  - Click on department card does nothing
+  - No back navigation
+  - Hash routing broken for department detail views
+  - Breaks existing functionality
+- **Files:** `~/projects/command-center/index.html`
+- **Notes:** Already built in commit d683975. Needs supervisor review.
+
+### E-003: Supervisor Review of E-001 + E-002
+- **Type:** review
+- **Status:** ⬜ todo
+- **Milestone:** M10
+- **Depends:** E-001, E-002
+- **Pass criteria:**
+  - [ ] All E-001 pass criteria verified with evidence
+  - [ ] All E-002 pass criteria verified with evidence
+  - [ ] No regressions in existing tabs (Overview, Projects, Content, Research, Agents)
+  - [ ] Code quality acceptable (no dead code, consistent style)
+- **Fail criteria:**
+  - Any E-001 or E-002 pass criterion not met
+  - Regressions in existing functionality
+  - Console errors present
+- **Files:** `~/projects/command-center/index.html`
+- **Notes:** Supervisor must test both commits together on current HEAD
+
+### E-004: Content Department — Content Calendar View
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M11
+- **Depends:** E-003
+- **Pass criteria:**
+  - [ ] Content department detail tab shows a content calendar view
+  - [ ] Calendar displays scheduled posts, drafts, and published content
+  - [ ] Items sourced from org/departments/content/ files
+  - [ ] Responsive on mobile
+- **Fail criteria:**
+  - No calendar view in Content department tab
+  - Data not sourced from org files
+- **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
+- **Notes:** Requires new API endpoint for department-specific data
+
+### E-005: Engagement Department — Engagement Tracker
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M11
+- **Depends:** E-003
+- **Pass criteria:**
+  - [ ] Engagement department detail tab shows engagement tracker
+  - [ ] Tracks community interactions, response times
+  - [ ] Data sourced from org/departments/engagement/ files
+  - [ ] Responsive on mobile
+- **Fail criteria:**
+  - No tracker in Engagement department tab
+  - Data not sourced from org files
+- **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
+- **Notes:** Requires new API endpoint
+
+### E-006: Marketing Department — Marketing Analytics
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M11
+- **Depends:** E-003
+- **Pass criteria:**
+  - [ ] Marketing department detail tab shows analytics dashboard
+  - [ ] Displays campaign performance, reach metrics
+  - [ ] Data sourced from org/departments/marketing/ files
+  - [ ] Responsive on mobile
+- **Fail criteria:**
+  - No analytics in Marketing department tab
+  - Data not sourced from org files
+- **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
+- **Notes:** Requires new API endpoint
+
+### E-007: Research Department — Research Browser
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M11
+- **Depends:** E-003
+- **Pass criteria:**
+  - [ ] Research department detail tab shows research browser
+  - [ ] Browse research outputs, papers, analyses
+  - [ ] Data sourced from org/departments/research/ files
+  - [ ] Responsive on mobile
+- **Fail criteria:**
+  - No browser in Research department tab
+  - Data not sourced from org files
+- **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
+- **Notes:** Requires new API endpoint
+
+### E-008: Engineering Department — Lead/Worker Status
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M11
+- **Depends:** E-003
+- **Pass criteria:**
+  - [ ] Engineering department detail tab shows lead/worker status
+  - [ ] Displays active workers, task assignments, build status
+  - [ ] Data sourced from org/departments/engineering/ files and project state.json files
+  - [ ] Responsive on mobile
+- **Fail criteria:**
+  - No status display in Engineering department tab
+  - Data not sourced from org files
+- **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
+- **Notes:** Requires new API endpoint, cross-references project worker data

@@ -818,6 +818,49 @@ project-2/progress.txt ─────┤       ▲              │
 
 ---
 
+## Phase 5: Organization Dashboard
+
+### Overview
+
+The Command Center now includes an Organization Dashboard that surfaces the internal department structure. This phase adds a Departments tab showing all departments (Content, Engagement, Marketing, Research, Engineering) with overview cards and per-department detail tabs.
+
+### Feature 14: Departments Overview Tab
+
+**What:** A new "Departments" tab in the main navigation showing all org departments as cards with key metrics (lead name, worker count, recent activity).
+
+**Commit:** b47d80d  
+**Status:** Built, needs review.
+
+**Acceptance criteria:**
+- [ ] Departments tab appears in main navigation
+- [ ] Each department rendered as a card with name, lead, worker count
+- [ ] Activity feed shows recent department activity
+- [ ] Responsive on mobile
+
+### Feature 15: Per-Department Detail Tabs
+
+**What:** Clicking a department card drills into a detail view with department-specific information, org files, and status.
+
+**Commit:** d683975  
+**Status:** Built, needs review.
+
+**Acceptance criteria:**
+- [ ] Clicking a department card opens its detail tab
+- [ ] Detail view shows department-specific data
+- [ ] Back navigation works
+- [ ] Responsive on mobile
+
+### Feature 16-20: Department Enhancement Tasks
+
+Each department tab gets specialized tooling:
+- **Content:** Content calendar view (scheduled posts, drafts, published)
+- **Engagement:** Engagement tracker (community interactions, response times)
+- **Marketing:** Marketing analytics (campaign performance, reach metrics)
+- **Research:** Research browser (browse research outputs, papers, analyses)
+- **Engineering:** Lead/worker status display (active workers, task assignments, build status)
+
+---
+
 ## Out of Scope
 
 - **Task editing from UI** — TASKS.md is the source of truth, edited by agents/humans in files. Dashboard is read-only.
