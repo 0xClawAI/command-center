@@ -659,6 +659,170 @@
     color: var(--text-dim);
     font-size: 14px;
   }
+
+  /* ── Milestones View ── */
+  .milestones-section {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .milestone-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .milestone-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: background 0.1s;
+    user-select: none;
+  }
+
+  .milestone-header:hover {
+    background: var(--surface2);
+  }
+
+  .milestone-chevron {
+    font-size: 12px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    width: 16px;
+    text-align: center;
+  }
+
+  .milestone-card.expanded .milestone-chevron {
+    transform: rotate(90deg);
+  }
+
+  .milestone-check {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+  }
+
+  .milestone-name {
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .milestone-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    width: 160px;
+  }
+
+  .milestone-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .milestone-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .milestone-bar-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    white-space: nowrap;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .milestone-tasks {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .milestone-card.expanded .milestone-tasks {
+    display: block;
+  }
+
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px 10px 44px;
+    font-size: 13px;
+    transition: background 0.1s;
+  }
+
+  .task-row:hover {
+    background: var(--surface2);
+  }
+
+  .task-row + .task-row {
+    border-top: 1px solid var(--border);
+  }
+
+  .task-id {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    min-width: 48px;
+    flex-shrink: 0;
+  }
+
+  .task-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .task-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .task-badge.status-done { color: var(--green); }
+  .task-badge.status-in_progress { color: var(--blue); }
+  .task-badge.status-testing { color: var(--yellow); }
+  .task-badge.status-failed { color: var(--red); }
+  .task-badge.status-blocked { color: var(--purple); }
+  .task-badge.status-todo { color: var(--text-dim); }
+
+  .task-badge.type-badge {
+    color: var(--text-dim);
+  }
+
+  .flat-tasks-header {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
 </style>
 </head>
 <body>
@@ -1234,7 +1398,116 @@
     }
 
     html += '</div>'; // .project-info-card
+
+    // Render milestones or flat task list
+    html += renderMilestones(state);
+
     el.innerHTML = html;
+
+    // Attach milestone toggle handlers
+    var cards = el.querySelectorAll('.milestone-header');
+    for (var k = 0; k < cards.length; k++) {
+      cards[k].addEventListener('click', function(e) {
+        var card = e.currentTarget.closest('.milestone-card');
+        card.classList.toggle('expanded');
+      });
+    }
+  }
+
+  function renderMilestones(state) {
+    if (!state || !state.tasks || state.tasks.length === 0) {
+      return '';
+    }
+
+    // Build task lookup by ID
+    var taskMap = {};
+    for (var i = 0; i < state.tasks.length; i++) {
+      taskMap[state.tasks[i].id] = state.tasks[i];
+    }
+
+    var html = '<div class="milestones-section">';
+
+    if (!state.milestones || state.milestones.length === 0) {
+      // No milestones — render flat task list
+      html += '<div class="flat-tasks-header">All Tasks</div>';
+      html += '<div class="milestone-card expanded">';
+      html += '<div class="milestone-tasks" style="display:block;border-top:none;">';
+      for (var f = 0; f < state.tasks.length; f++) {
+        html += renderTaskRow(state.tasks[f]);
+      }
+      html += '</div></div>';
+    } else {
+      // Render each milestone as a collapsible card
+      for (var m = 0; m < state.milestones.length; m++) {
+        var ms = state.milestones[m];
+        var msTasks = [];
+        var taskIds = ms.tasks || [];
+        for (var t = 0; t < taskIds.length; t++) {
+          var task = taskMap[taskIds[t]];
+          if (task) msTasks.push(task);
+        }
+
+        // Compute done/total from actual task statuses
+        var done = 0;
+        for (var d = 0; d < msTasks.length; d++) {
+          if (msTasks[d].status === 'done') done++;
+        }
+        var total = msTasks.length;
+
+        // If milestone has explicit progress, use that for total (covers tasks not in tasks array)
+        if (ms.progress && typeof ms.progress.total === 'number') {
+          total = ms.progress.total;
+          if (typeof ms.progress.done === 'number') {
+            done = ms.progress.done;
+          }
+        }
+
+        var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+        var allDone = total > 0 && done === total;
+
+        html += '<div class="milestone-card">';
+        html += '<div class="milestone-header">';
+        html += '<span class="milestone-chevron">&#9654;</span>';
+        if (allDone) {
+          html += '<span class="milestone-check" style="color:var(--green);">&#10003;</span>';
+        }
+        html += '<span class="milestone-name">' + escHtml(ms.name) + '</span>';
+        html += '<span class="milestone-bar-wrap">';
+        html += '<span class="milestone-bar-track"><span class="milestone-bar-fill" style="width:' + pct + '%"></span></span>';
+        html += '<span class="milestone-bar-label">' + done + '/' + total + '</span>';
+        html += '</span>';
+        html += '</div>'; // .milestone-header
+
+        // Task list inside milestone
+        html += '<div class="milestone-tasks">';
+        for (var r = 0; r < msTasks.length; r++) {
+          html += renderTaskRow(msTasks[r]);
+        }
+        if (msTasks.length === 0) {
+          html += '<div class="task-row" style="color:var(--text-dim);font-style:italic;">No tasks in this milestone</div>';
+        }
+        html += '</div>'; // .milestone-tasks
+
+        html += '</div>'; // .milestone-card
+      }
+    }
+
+    html += '</div>'; // .milestones-section
+    return html;
+  }
+
+  function renderTaskRow(task) {
+    var statusLabel = (task.status || 'todo').replace(/_/g, ' ');
+    var statusClass = 'status-' + (task.status || 'todo');
+    var html = '<div class="task-row">';
+    html += '<span class="task-id">' + escHtml(task.id) + '</span>';
+    html += '<span class="task-title">' + escHtml(task.title) + '</span>';
+    html += '<span class="task-badge ' + statusClass + '">' + escHtml(statusLabel) + '</span>';
+    if (task.type) {
+      html += '<span class="task-badge type-badge">' + escHtml(task.type) + '</span>';
+    }
+    html += '</div>';
+    return html;
   }
 
   function loadProjectsTab() {

@@ -2,12 +2,12 @@
   "project": "Command Center",
   "type": "product",
   "status": "active",
-  "lastUpdated": "2026-02-09T18:44:23.692Z",
+  "lastUpdated": "2026-02-09T18:49:30.995Z",
   "progress": {
     "total": 34,
-    "done": 17,
+    "done": 18,
     "inProgress": 0,
-    "testing": 1,
+    "testing": 0,
     "failed": 0,
     "blocked": 0,
     "todo": 16
@@ -73,7 +73,7 @@
       ],
       "progress": {
         "total": 8,
-        "done": 0
+        "done": 1
       }
     },
     {
@@ -153,9 +153,9 @@
     },
     {
       "name": "Full Dashboard",
-      "status": "pending",
+      "status": "active",
       "tasks": 9,
-      "done": 0
+      "done": 1
     },
     {
       "name": "Polish & Ship",
@@ -171,7 +171,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M1",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-002",
@@ -179,7 +180,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M1",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-003",
@@ -187,7 +189,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M1",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-004",
@@ -195,7 +198,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M1",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-005",
@@ -203,7 +207,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M2",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-006",
@@ -211,7 +216,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M2",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-007",
@@ -219,7 +225,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M2",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-008",
@@ -227,7 +234,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M2",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-009",
@@ -235,7 +243,8 @@
       "type": "code",
       "status": "done",
       "milestone": "M2",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "A-010",
@@ -243,7 +252,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M6",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-001",
@@ -251,7 +261,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M3",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-002",
@@ -259,7 +270,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M3",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-003",
@@ -267,7 +279,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M3",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-004",
@@ -275,7 +288,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M3",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-005",
@@ -283,7 +297,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M3",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-006",
@@ -291,7 +306,8 @@
       "type": "ops",
       "status": "done",
       "milestone": "M3",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "B-007",
@@ -299,23 +315,26 @@
       "type": "ops",
       "status": "done",
       "milestone": "M7",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-001",
       "title": "Projects Tab — Project Sub-Tabs & Selection",
       "type": "code",
-      "status": "testing",
+      "status": "done",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-002",
       "title": "Projects Tab — Milestones View",
       "type": "code",
-      "status": "todo",
+      "status": "testing",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-003",
@@ -323,7 +342,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-004",
@@ -331,7 +351,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-005",
@@ -339,7 +360,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-006",
@@ -347,7 +369,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-007",
@@ -355,7 +378,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-008",
@@ -363,7 +387,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M4",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "C-009",
@@ -371,7 +396,8 @@
       "type": "ops",
       "status": "todo",
       "milestone": "M8",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-001",
@@ -379,7 +405,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-002",
@@ -387,7 +414,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-003",
@@ -395,7 +423,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-004",
@@ -403,7 +432,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-005",
@@ -411,7 +441,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-006",
@@ -419,7 +450,8 @@
       "type": "code",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-007",
@@ -427,7 +459,8 @@
       "type": "content",
       "status": "todo",
       "milestone": "M5",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     },
     {
       "id": "D-008",
@@ -435,7 +468,8 @@
       "type": "ops",
       "status": "todo",
       "milestone": "M9",
-      "phase": ""
+      "assignee": null,
+      "depends": []
     }
   ],
   "workers": [],

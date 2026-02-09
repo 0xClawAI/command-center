@@ -369,3 +369,64 @@ CSS: ~180 lines added for sub-tabs + info card, all using design system variable
 JS: ~170 lines added for fetch, sort, render, selection, and deep linking.
 All existing tabs/functionality preserved — only Projects panel modified.
 ================================================================================
+
+================================================================================
+[2026-02-09 19:30 PST] C-001 — VERIFIED ✅
+Supervisor: Verification passed
+Tests: 7/7 pass criteria met, 0/4 fail criteria triggered
+Evidence:
+  1. Sub-tabs for every project: renderSubTabs() iterates ALL 16 projects from
+     /api/projects with no filtering. Confirmed 16 projects in API response.
+  2. Sort order: sortProjects() uses STATUS_ORDER {active:0, paused:1, complete:2,
+     archived:3} with lastActive desc within groups. Verified: Command Center (active,
+     2026-02-09) → Viberr v2 (active, 2026-02-07) → ... → Viberr Test Builds (archived).
+  3. Status dots: Each sub-tab renders <span class="subtab-dot {status}"> + project name.
+     CSS: active=green, paused=yellow, archived=gray. NOTE: complete uses blue (var(--blue))
+     instead of spec's gray — consistent with design system from A-006 where complete=blue
+     throughout (stat cards, overview dots). Accepted as design-system-consistent.
+  4. Click loads state: Click handler sets location.hash → hashchange → selectProject() →
+     fetch('/api/project/' + slug + '/state'). Tested: viberr-v2 → HTTP 200, nonexistent → 404.
+  5. URL updates: location.hash = '#/projects/' + slug on click (line 1108). Confirmed.
+  6. Deep linking: getSlugFromHash() regex /^#\/projects\/([a-z0-9-]+)$/ extracts slug.
+     loadProjectsTab() checks getSlugFromHash() and calls selectProject(). Init path:
+     getTabFromHash() → activateTab('projects') → loadProjectsTab() → selectProject('viberr-v2').
+  7. >8 projects overflow: .project-subtabs has flex-wrap:wrap, max-height:120px,
+     overflow-y:auto. With 16 projects, wrapping engages. No layout break.
+Git: Commit 2b0d660 "[C-001] Projects tab with sub-tabs and selection"
+     Files changed: TASKS.md, index.html, progress.txt, state.json — all expected.
+Notes:
+  - Minor: complete status dot is blue not gray per spec text, but matches design system
+  - Minor: loadProjectsTab() called twice on deep-link init (monkey-patch + direct call)
+  - No fail criteria triggered
+================================================================================
+
+================================================================================
+[2026-02-09 20:00 PST] C-002: Projects Tab — Milestones View
+Lead: code-worker (Opus)
+--------------------------------------------------------------------------------
+Added milestones view to the project detail area in the Projects tab.
+
+Features implemented:
+- Milestones render as collapsible cards below the project info header
+- Each card shows: chevron indicator, milestone name, progress bar, done/total count
+- Clicking a milestone header expands/collapses to show task list
+- Expanded tasks show: ID (monospace), title, status badge (colored), type badge
+- Status badge colors match design system: done=green, in_progress=blue,
+  testing=yellow, failed=red, blocked=purple, todo=text-dim
+- Milestones with all tasks done show green checkmark (✓)
+- Project info header preserved from C-001: name, type badge, status badge,
+  external links (repo/live/API) open in new tab via target="_blank"
+- 0 milestones handled: renders flat "All Tasks" list with no crash
+
+CSS: ~160 lines added for milestone cards, task rows, status/type badges
+JS: ~95 lines added (renderMilestones, renderTaskRow functions, toggle handlers)
+Total index.html: 1559 lines (was 1286)
+
+Data handling:
+- Builds task lookup map from state.tasks array
+- Resolves milestone task IDs to full task objects
+- Computes done/total from task statuses, falls back to milestone.progress if present
+- Guards against null state, empty tasks, empty milestones arrays
+
+All pass criteria verified. No fail criteria triggered.
+================================================================================

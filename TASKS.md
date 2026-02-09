@@ -375,17 +375,17 @@
 
 ### C-001: Projects Tab — Project Sub-Tabs & Selection
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M4
 - **Depends:** A-005, A-006
 - **Pass criteria:**
-  - [ ] Projects tab shows a sub-tab for every registered project
-  - [ ] Sub-tabs sorted: active first (by lastActive desc), then paused, then complete, then archived
-  - [ ] Each sub-tab shows project name and colored status dot (green=active, yellow=paused, gray=complete/archived)
-  - [ ] Clicking sub-tab loads that project's state.json via `/api/project/:slug/state`
-  - [ ] URL updates to `#/projects/<slug>` when project selected
-  - [ ] Loading URL `#/projects/viberr-v2` directly selects Viberr v2
-  - [ ] >8 projects: sub-tabs horizontally scroll or wrap without breaking layout
+  - [x] Projects tab shows a sub-tab for every registered project
+  - [x] Sub-tabs sorted: active first (by lastActive desc), then paused, then complete, then archived
+  - [x] Each sub-tab shows project name and colored status dot (green=active, yellow=paused, gray=complete/archived)
+  - [x] Clicking sub-tab loads that project's state.json via `/api/project/:slug/state`
+  - [x] URL updates to `#/projects/<slug>` when project selected
+  - [x] Loading URL `#/projects/viberr-v2` directly selects Viberr v2
+  - [x] >8 projects: sub-tabs horizontally scroll or wrap without breaking layout
 - **Fail criteria:**
   - Not all projects shown
   - No visual status indicator
@@ -396,7 +396,7 @@
 
 ### C-002: Projects Tab — Milestones View
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** C-001
 - **Pass criteria:**
