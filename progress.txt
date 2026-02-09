@@ -1,0 +1,63 @@
+# progress.txt — Command Center
+# Append-only log. Never edit previous entries. This is the project's memory.
+
+================================================================================
+[2026-02-09 10:10 PST] PROJECT START
+Lead: 0xClaw
+--------------------------------------------------------------------------------
+Project initialized using the orchestrator skill (dogfooding our own system).
+
+Context: Deadly wanted a central hub to manage all projects, see what's happening
+across everything, and eventually support department agents. We designed the 
+orchestrator skill first (SKILL.md + 7 archetypes + dashboard + migration guide),
+then used it to plan this project.
+
+PRD created by prd-worker (Opus). 13 features, API server design, migration plan.
+TASKS.md created by task-worker (Opus). 42 tasks across 4 phases.
+state.json created by dashboard-worker (Sonnet). Mechanical transformation.
+
+Phase 1: Foundation (API server + Overview tab)
+Phase 2: Project Migration (3 active projects + register all)
+Phase 3: Full Dashboard (all tabs functional)
+Phase 4: Polish & Ship (responsive, errors, mobile)
+
+Dashboard: http://0xs-mac-mini.tailacc337.ts.net:3400/ (after Phase 1)
+================================================================================
+
+================================================================================
+[2026-02-09 12:00 PST] A-005, A-006: HTML Shell + Design System
+Lead: code-worker (Opus)
+--------------------------------------------------------------------------------
+Built index.html — the Command Center dashboard shell.
+
+A-005 (Tab Navigation & Routing):
+- Single index.html file at project root with inline CSS and JS
+- 6 tabs: Overview, Projects, Content, Research, Ideas, Agents
+- Hash routing: #/overview, #/projects, #/content, #/research, #/ideas, #/agents
+- No hash or empty hash defaults to #/overview via location.replace (no extra history)
+- Invalid hash (e.g. #/garbage) redirects to #/overview
+- Browser back/forward works via hashchange listener
+- Pasting URL with hash loads correct tab
+- Vanilla JS only, no frameworks, IIFE-wrapped
+
+A-006 (Design System & Dark Theme):
+- All 11 CSS custom properties defined in :root
+- No hardcoded color values outside :root block
+- Font stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif
+- Monospace: 'SF Mono', 'Fira Code', monospace (used for agent IDs, clock)
+- Status dot classes: in_progress=blue, done=green, testing=yellow,
+  failed=red, blocked=purple, todo=gray (text-dim)
+- GitHub-dark aesthetic throughout
+
+Tab placeholder content:
+- Overview: "Loading overview data..." with icon
+- Projects: "Select a project" with icon
+- Content: "Loading content tasks..." with icon
+- Research: "Loading research tasks..." with icon
+- Ideas: "Loading ideas..." with icon
+- Agents: 0xClaw lead orchestrator card (green dot, always active) +
+  4 department agent placeholders (Engineering, Content, Research, QA)
+  with "Coming Soon" badge
+
+Clock in top-right shows current date/time, updates every second.
+================================================================================
