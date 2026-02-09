@@ -251,6 +251,64 @@
     color: var(--text-dim);
   }
 
+  /* ── Worker Cards (Agents Tab) ── */
+  .workers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .worker-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .worker-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .worker-dot.active { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .worker-dot.idle { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+  .worker-dot.offline { background: var(--text-dim); }
+
+  .worker-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .worker-info .worker-meta {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .worker-info .worker-task {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--blue);
+  }
+
+  .workers-empty {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-dim);
+    font-size: 14px;
+    font-style: italic;
+  }
+
   .badge-coming-soon {
     display: inline-block;
     font-size: 10px;
@@ -2207,6 +2265,86 @@
     }
   };
 
+  // ── Agents Tab Logic ──
+  function loadAgentsTab() {
+    var container = document.getElementById('agents-workers');
+    fetch('/api/projects')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var projects = d.projects || [];
+        var pending = projects.length;
+        var allWorkers = [];
+
+        if (pending === 0) {
+          renderWorkers(allWorkers);
+          return;
+        }
+
+        for (var i = 0; i < projects.length; i++) {
+          (function(proj) {
+            var slug = proj.slug || slugify(proj.name);
+            fetch('/api/project/' + encodeURIComponent(slug) + '/state')
+              .then(function(r) { return r.ok ? r.json() : null; })
+              .then(function(state) {
+                if (state && state.workers && state.workers.length > 0) {
+                  for (var w = 0; w < state.workers.length; w++) {
+                    var worker = state.workers[w];
+                    allWorkers.push({
+                      name: worker.name || worker.id || 'Unknown',
+                      status: worker.status || 'offline',
+                      project: proj.name,
+                      taskId: worker.currentTask || worker.task || ''
+                    });
+                  }
+                }
+              })
+              .catch(function() {})
+              .finally(function() {
+                pending--;
+                if (pending === 0) renderWorkers(allWorkers);
+              });
+          })(projects[i]);
+        }
+      })
+      .catch(function() {
+        container.innerHTML = '<div class="workers-empty">Failed to load workers</div>';
+      });
+  }
+
+  function renderWorkers(workers) {
+    var container = document.getElementById('agents-workers');
+    if (!workers || workers.length === 0) {
+      container.innerHTML = '<div class="workers-empty">No active workers</div>';
+      return;
+    }
+    var html = '<div class="workers-grid">';
+    for (var i = 0; i < workers.length; i++) {
+      var w = workers[i];
+      var dotClass = w.status === 'active' ? 'active' : (w.status === 'idle' ? 'idle' : 'offline');
+      html += '<div class="worker-card">';
+      html += '<div class="worker-dot ' + dotClass + '"></div>';
+      html += '<div class="worker-info">';
+      html += '<h4>' + escHtml(w.name) + '</h4>';
+      html += '<div class="worker-meta">';
+      html += '<span>' + escHtml(w.project) + '</span>';
+      if (w.taskId) {
+        html += '<span class="worker-task">' + escHtml(w.taskId) + '</span>';
+      }
+      html += '</div></div></div>';
+    }
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  // Hook agents tab into activation
+  var _prevActivateTab2 = activateTab;
+  activateTab = function(tab) {
+    _prevActivateTab2(tab);
+    if (tab === 'agents') {
+      loadAgentsTab();
+    }
+  };
+
   // Start polling if overview is the initial tab
   var initTab = getTabFromHash();
   if (initTab === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
@@ -2215,6 +2353,9 @@
   // Load projects tab if it's the initial tab (deep link)
   if (initTab === 'projects') {
     loadProjectsTab();
+  }
+  if (initTab === 'agents') {
+    loadAgentsTab();
   }
   // Load content tab if it's the initial tab (deep link)
   if (initTab === 'content') {

@@ -170,6 +170,74 @@ function apiOverview(res) {
   });
 }
 
+// --- Ideas endpoint ---
+const IDEAS_GLOBAL = path.join(os.homedir(), '.openclaw', 'workspace', 'IDEAS.md');
+
+function parseIdeasMd(raw, source) {
+  if (!raw) return [];
+  const ideas = [];
+  const lines = raw.split('\n');
+  for (const line of lines) {
+    // Match: - [ ] **Title** — description #tags  OR  - [x] **Title** — description #tags
+    const m = line.match(/^-\s+\[([ xX])\]\s+\*\*(.+?)\*\*\s*[—–-]\s*(.+)$/);
+    if (!m) continue;
+    const checked = m[1].toLowerCase() === 'x';
+    const title = m[2].trim();
+    const rest = m[3].trim();
+
+    // Extract tags (#word or #key:value)
+    const tags = [];
+    let blocker = null;
+    let doneDate = null;
+    let status = checked ? 'done' : 'open';
+    const tagRe = /#([a-z0-9_-]+(?::[^\s#]+)?)/gi;
+    let tm;
+    while ((tm = tagRe.exec(rest)) !== null) {
+      const tag = tm[1];
+      tags.push(tag);
+      if (tag.startsWith('blocked:')) {
+        status = 'blocked';
+        blocker = tag.slice(8);
+      }
+      if (tag.startsWith('done:')) {
+        status = 'done';
+        doneDate = tag.slice(5);
+      }
+    }
+
+    // Description = rest without tags
+    const description = rest.replace(/#[a-z0-9_:+-]+/gi, '').trim();
+
+    const idea = { text: line.trim(), title, description, status, tags, source };
+    if (blocker) idea.blocker = blocker;
+    if (doneDate) idea.doneDate = doneDate;
+    ideas.push(idea);
+  }
+  return ideas;
+}
+
+function apiIdeas(res) {
+  withProjects(res, projects => {
+    const result = [];
+
+    // Global IDEAS.md
+    const globalRaw = readSafe(IDEAS_GLOBAL);
+    const globalIdeas = parseIdeasMd(globalRaw, 'global');
+    result.push(...globalIdeas);
+
+    // Per-project IDEAS.md
+    for (const p of projects) {
+      const fp = path.join(p.path, 'IDEAS.md');
+      const raw = readSafe(fp);
+      if (!raw) continue;
+      const name = p.name || 'unknown';
+      result.push(...parseIdeasMd(raw, name));
+    }
+
+    json(res, 200, { ideas: result });
+  });
+}
+
 // --- Router ---
 const server = http.createServer((req, res) => {
   try {

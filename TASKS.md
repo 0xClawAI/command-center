@@ -491,7 +491,7 @@
 
 ### C-007: Agents Tab
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** A-006
 - **Pass criteria:**
