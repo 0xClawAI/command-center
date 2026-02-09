@@ -5,12 +5,12 @@
   "lastUpdated": "2026-02-09T21:00:00.000Z",
   "progress": {
     "total": 34,
-    "done": 26,
+    "done": 29,
     "inProgress": 0,
     "testing": 0,
     "failed": 0,
     "blocked": 0,
-    "todo": 8
+    "todo": 5
   },
   "milestones": [
     {
@@ -90,7 +90,7 @@
       ],
       "progress": {
         "total": 7,
-        "done": 0
+        "done": 3
       }
     },
     {
@@ -403,7 +403,7 @@
       "id": "D-001",
       "title": "Auto-Refresh & Polling",
       "type": "code",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []
@@ -421,7 +421,7 @@
       "id": "D-003",
       "title": "Responsive — Mobile (375px)",
       "type": "code",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []
@@ -448,7 +448,7 @@
       "id": "D-006",
       "title": "Edge Case Handling",
       "type": "code",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []

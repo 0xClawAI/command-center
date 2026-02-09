@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 26/34 tasks complete
+> Progress: 29/34 tasks complete
 
 ---
 
@@ -553,17 +553,17 @@
 
 ### D-001: Auto-Refresh & Polling
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** C-008
 - **Pass criteria:**
-  - [ ] Overview data refreshes every 10 seconds (verify: change projects.json, see update within 15s without reload)
-  - [ ] Selected project state refreshes every 5 seconds
-  - [ ] Projects registry refreshes every 30 seconds
-  - [ ] No visible flicker or scroll position reset on data refresh
-  - [ ] When tab is backgrounded (document.hidden === true), polling interval increases to 60s
-  - [ ] When tab is foregrounded, polling resumes normal rate within 5 seconds
-  - [ ] `document.visibilitychange` event listener present in source code
+  - [x] Overview data refreshes every 10 seconds (verify: change projects.json, see update within 15s without reload)
+  - [x] Selected project state refreshes every 5 seconds
+  - [x] Projects registry refreshes every 30 seconds
+  - [x] No visible flicker or scroll position reset on data refresh
+  - [x] When tab is backgrounded (document.hidden === true), polling interval increases to 60s
+  - [x] When tab is foregrounded, polling resumes normal rate within 5 seconds
+  - [x] `document.visibilitychange` event listener present in source code
 - **Fail criteria:**
   - Scroll position resets on poll
   - Full DOM re-render on each poll (should diff/update only changed elements)
@@ -594,17 +594,17 @@
 
 ### D-003: Responsive — Mobile (375px)
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** C-008
 - **Pass criteria:**
-  - [ ] At 375px viewport width: no horizontal scrollbar on page body
-  - [ ] Tab navigation becomes dropdown selector or hamburger menu on mobile
-  - [ ] All text readable without zooming (minimum 13px font-size on body text — verify in computed styles)
-  - [ ] Touch targets ≥44px height (verify: all clickable elements)
-  - [ ] Cards stack vertically in single column
-  - [ ] Progress bars use full available width
-  - [ ] Project sub-tabs become dropdown selector on mobile
+  - [x] At 375px viewport width: no horizontal scrollbar on page body
+  - [x] Tab navigation becomes dropdown selector or hamburger menu on mobile
+  - [x] All text readable without zooming (minimum 13px font-size on body text — verify in computed styles)
+  - [x] Touch targets ≥44px height (verify: all clickable elements)
+  - [x] Cards stack vertically in single column
+  - [x] Progress bars use full available width
+  - [x] Project sub-tabs become dropdown selector on mobile
 - **Fail criteria:**
   - Horizontal scroll on mobile
   - Text smaller than 13px
@@ -647,16 +647,16 @@
 
 ### D-006: Edge Case Handling
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** C-008
 - **Pass criteria:**
-  - [ ] Project with nonexistent directory path: shows ⚠️ "Directory not found" badge on project card (not crash)
-  - [ ] Project with no state.json: shows "Not migrated" in projects tab (not blank or error)
-  - [ ] Project with state.json but 0 tasks: shows "0/0 tasks" and empty progress bar
-  - [ ] All projects complete/paused: "Needs Attention" shows "Nothing needs attention 🎉"
-  - [ ] Malformed state.json for one project: that project shows error, other projects render normally
-  - [ ] Empty projects.json (no projects): shows "No projects registered" message
+  - [x] Project with nonexistent directory path: shows ⚠️ "Directory not found" badge on project card (not crash)
+  - [x] Project with no state.json: shows "Not migrated" in projects tab (not blank or error)
+  - [x] Project with state.json but 0 tasks: shows "0/0 tasks" and empty progress bar
+  - [x] All projects complete/paused: "Needs Attention" shows "Nothing needs attention 🎉"
+  - [x] Malformed state.json for one project: that project shows error, other projects render normally
+  - [x] Empty projects.json (no projects): shows "No projects registered" message
 - **Fail criteria:**
   - Any edge case crashes the page
   - Malformed data for one project breaks all other projects

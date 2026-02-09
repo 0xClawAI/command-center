@@ -805,3 +805,25 @@ Supervisor verified all Phase 3 criteria:
 
 Phase 3 COMPLETE. Moving to Phase 4: Polish & Ship.
 ================================================================================
+
+================================================================================
+[2026-02-09 21:45 PST] D-001, D-003, D-006 — Phase 4 Batch 1 — ALL PASS
+================================================================================
+
+D-001 Auto-Refresh & Polling: ✅ PASS
+- Polling intervals: 10s overview, 5s project, 30s registry
+- visibilitychange listener switches to 60s when backgrounded
+- Smart DOM updates: stat cards in-place, project rows in-place, JSON diff for project state
+- Scroll position preserved via save/restore around updates
+
+D-003 Responsive Mobile (375px): ✅ PASS
+- overflow-x:hidden + max-width:100vw prevents horizontal scroll
+- Tab nav → mobile dropdown selector; project sub-tabs → mobile dropdown
+- Touch targets ≥44px, font-size ≥13px, single-column card stacking
+- @media (max-width: 768px) breakpoint with comprehensive responsive rules
+
+D-006 Edge Case Handling: ✅ PASS
+- Server: structured error codes (DIR_NOT_FOUND, NO_STATE, MALFORMED), graceful empty projects.json
+- Client: ⚠️ Directory not found badge, Not migrated fallback, 0/0 tasks handling,
+  per-project try/catch isolation, "No projects registered" empty state
+================================================================================
