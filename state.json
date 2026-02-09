@@ -2,71 +2,448 @@
   "project": "Command Center",
   "type": "product",
   "status": "active",
-  "lastUpdated": "2026-02-09T16:00:00-08:00",
+  "lastUpdated": "2026-02-09T18:44:23.692Z",
   "progress": {
     "total": 34,
-    "done": 6,
+    "done": 17,
     "inProgress": 0,
-    "testing": 3,
+    "testing": 1,
     "failed": 0,
     "blocked": 0,
-    "todo": 25
+    "todo": 16
   },
   "milestones": [
-    { "id": "M1", "name": "API Server Running", "tasks": ["A-001", "A-002", "A-003", "A-004"] },
-    { "id": "M2", "name": "Overview Dashboard Live", "tasks": ["A-005", "A-006", "A-007", "A-008", "A-009"] },
-    { "id": "M3", "name": "Projects Migrated", "tasks": ["B-001", "B-002", "B-003", "B-004", "B-005", "B-006"] },
-    { "id": "M4", "name": "Full Dashboard", "tasks": ["C-001", "C-002", "C-003", "C-004", "C-005", "C-006", "C-007", "C-008"] },
-    { "id": "M5", "name": "Polish & Ship", "tasks": ["D-001", "D-002", "D-003", "D-004", "D-005", "D-006", "D-007"] },
-    { "id": "M6", "name": "Phase 1 Review", "tasks": ["A-010"] },
-    { "id": "M7", "name": "Phase 2 Review", "tasks": ["B-007"] },
-    { "id": "M8", "name": "Phase 3 Review", "tasks": ["C-009"] },
-    { "id": "M9", "name": "Final Review", "tasks": ["D-008"] }
+    {
+      "id": "M1",
+      "name": "API Server Running",
+      "tasks": [
+        "A-001",
+        "A-002",
+        "A-003",
+        "A-004"
+      ],
+      "progress": {
+        "total": 4,
+        "done": 4
+      }
+    },
+    {
+      "id": "M2",
+      "name": "Overview Dashboard Live",
+      "tasks": [
+        "A-005",
+        "A-006",
+        "A-007",
+        "A-008",
+        "A-009"
+      ],
+      "progress": {
+        "total": 5,
+        "done": 5
+      }
+    },
+    {
+      "id": "M3",
+      "name": "Projects Migrated",
+      "tasks": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006"
+      ],
+      "progress": {
+        "total": 6,
+        "done": 6
+      }
+    },
+    {
+      "id": "M4",
+      "name": "Full Dashboard",
+      "tasks": [
+        "C-001",
+        "C-002",
+        "C-003",
+        "C-004",
+        "C-005",
+        "C-006",
+        "C-007",
+        "C-008"
+      ],
+      "progress": {
+        "total": 8,
+        "done": 0
+      }
+    },
+    {
+      "id": "M5",
+      "name": "Polish & Ship",
+      "tasks": [
+        "D-001",
+        "D-002",
+        "D-003",
+        "D-004",
+        "D-005",
+        "D-006",
+        "D-007"
+      ],
+      "progress": {
+        "total": 7,
+        "done": 0
+      }
+    },
+    {
+      "id": "M6",
+      "name": "Phase 1 Review",
+      "tasks": [
+        "A-010"
+      ],
+      "progress": {
+        "total": 1,
+        "done": 1
+      }
+    },
+    {
+      "id": "M7",
+      "name": "Phase 2 Review",
+      "tasks": [
+        "B-007"
+      ],
+      "progress": {
+        "total": 1,
+        "done": 1
+      }
+    },
+    {
+      "id": "M8",
+      "name": "Phase 3 Review",
+      "tasks": [
+        "C-009"
+      ],
+      "progress": {
+        "total": 1,
+        "done": 0
+      }
+    },
+    {
+      "id": "M9",
+      "name": "Final Review",
+      "tasks": [
+        "D-008"
+      ],
+      "progress": {
+        "total": 1,
+        "done": 0
+      }
+    }
   ],
   "phases": [
-    { "name": "Foundation", "status": "active", "tasks": 10, "done": 6 },
-    { "name": "Project Migration", "status": "pending", "tasks": 7, "done": 0 },
-    { "name": "Full Dashboard", "status": "pending", "tasks": 9, "done": 0 },
-    { "name": "Polish & Ship", "status": "pending", "tasks": 8, "done": 0 }
+    {
+      "name": "Foundation",
+      "status": "complete",
+      "tasks": 10,
+      "done": 10
+    },
+    {
+      "name": "Project Migration",
+      "status": "complete",
+      "tasks": 7,
+      "done": 7
+    },
+    {
+      "name": "Full Dashboard",
+      "status": "pending",
+      "tasks": 9,
+      "done": 0
+    },
+    {
+      "name": "Polish & Ship",
+      "status": "pending",
+      "tasks": 8,
+      "done": 0
+    }
   ],
   "tasks": [
-    { "id": "A-001", "title": "API Server — Core HTTP + Static Serving", "type": "code", "phase": "Foundation", "milestone": "M1", "status": "done", "depends": [], "assignee": null },
-    { "id": "A-002", "title": "API Server — Project Endpoints", "type": "code", "phase": "Foundation", "milestone": "M1", "status": "done", "depends": ["A-001"], "assignee": null },
-    { "id": "A-003", "title": "API Server — Path Traversal Prevention", "type": "code", "phase": "Foundation", "milestone": "M1", "status": "done", "depends": ["A-002"], "assignee": null },
-    { "id": "A-004", "title": "API Server — Overview Endpoint", "type": "code", "phase": "Foundation", "milestone": "M1", "status": "done", "depends": ["A-002"], "assignee": null },
-    { "id": "A-005", "title": "HTML Shell — Tab Navigation & Routing", "type": "code", "phase": "Foundation", "milestone": "M2", "status": "done", "depends": ["A-001"], "assignee": null },
-    { "id": "A-006", "title": "HTML Shell — Design System & Dark Theme", "type": "code", "phase": "Foundation", "milestone": "M2", "status": "done", "depends": ["A-005"], "assignee": null },
-    { "id": "A-007", "title": "Overview Tab — Summary Stats & Project List", "type": "code", "phase": "Foundation", "milestone": "M2", "status": "testing", "depends": ["A-004", "A-006"], "assignee": null },
-    { "id": "A-008", "title": "Overview Tab — Needs Attention Section", "type": "code", "phase": "Foundation", "milestone": "M2", "status": "testing", "depends": ["A-007"], "assignee": null },
-    { "id": "A-009", "title": "Overview Tab — Recent Activity Feed", "type": "code", "phase": "Foundation", "milestone": "M2", "status": "testing", "depends": ["A-007"], "assignee": null },
-    { "id": "A-010", "title": "Phase 1 Review", "type": "ops", "phase": "Foundation", "milestone": "M6", "status": "todo", "depends": ["A-001", "A-002", "A-003", "A-004", "A-005", "A-006", "A-007", "A-008", "A-009"], "assignee": null },
-    { "id": "B-001", "title": "Migrate Viberr v2", "type": "ops", "phase": "Project Migration", "milestone": "M3", "status": "todo", "depends": [], "assignee": null },
-    { "id": "B-002", "title": "Migrate Blob Social", "type": "ops", "phase": "Project Migration", "milestone": "M3", "status": "todo", "depends": [], "assignee": null },
-    { "id": "B-003", "title": "Migrate DeFi Tools", "type": "ops", "phase": "Project Migration", "milestone": "M3", "status": "todo", "depends": [], "assignee": null },
-    { "id": "B-004", "title": "Register All ~/projects/ Directories", "type": "ops", "phase": "Project Migration", "milestone": "M3", "status": "todo", "depends": [], "assignee": null },
-    { "id": "B-005", "title": "Validate All state.json Files", "type": "ops", "phase": "Project Migration", "milestone": "M3", "status": "todo", "depends": ["B-001", "B-002", "B-003"], "assignee": null },
-    { "id": "B-006", "title": "Validate Dashboard Renders with Migrated Data", "type": "ops", "phase": "Project Migration", "milestone": "M3", "status": "todo", "depends": ["B-005", "A-010"], "assignee": null },
-    { "id": "B-007", "title": "Phase 2 Review", "type": "ops", "phase": "Project Migration", "milestone": "M7", "status": "todo", "depends": ["B-001", "B-002", "B-003", "B-004", "B-005", "B-006"], "assignee": null },
-    { "id": "C-001", "title": "Projects Tab — Project Sub-Tabs & Selection", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["A-005", "A-006"], "assignee": null },
-    { "id": "C-002", "title": "Projects Tab — Milestones View", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["C-001"], "assignee": null },
-    { "id": "C-003", "title": "Projects Tab — Kanban View", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["C-001"], "assignee": null },
-    { "id": "C-004", "title": "Projects Tab — Progress Log View", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["C-001"], "assignee": null },
-    { "id": "C-005", "title": "Content Tab", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["A-004", "A-006"], "assignee": null },
-    { "id": "C-006", "title": "Research Tab", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["C-005"], "assignee": null },
-    { "id": "C-007", "title": "Agents Tab", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["A-006"], "assignee": null },
-    { "id": "C-008", "title": "Ideas System — Global & Per-Project", "type": "code", "phase": "Full Dashboard", "milestone": "M4", "status": "todo", "depends": ["A-004", "A-006"], "assignee": null },
-    { "id": "C-009", "title": "Phase 3 Review", "type": "ops", "phase": "Full Dashboard", "milestone": "M8", "status": "todo", "depends": ["C-001", "C-002", "C-003", "C-004", "C-005", "C-006", "C-007", "C-008"], "assignee": null },
-    { "id": "D-001", "title": "Auto-Refresh & Polling", "type": "code", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["C-008"], "assignee": null },
-    { "id": "D-002", "title": "Connection Loss/Recovery", "type": "code", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["D-001"], "assignee": null },
-    { "id": "D-003", "title": "Responsive — Mobile (375px)", "type": "code", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["C-008"], "assignee": null },
-    { "id": "D-004", "title": "Responsive — Tablet (768px)", "type": "code", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["D-003"], "assignee": null },
-    { "id": "D-005", "title": "Kanban Mobile Adaptation", "type": "code", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["D-003"], "assignee": null },
-    { "id": "D-006", "title": "Edge Case Handling", "type": "code", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["C-008"], "assignee": null },
-    { "id": "D-007", "title": "README & Startup", "type": "content", "phase": "Polish & Ship", "milestone": "M5", "status": "todo", "depends": ["D-002"], "assignee": null },
-    { "id": "D-008", "title": "Final Review & Ship", "type": "ops", "phase": "Polish & Ship", "milestone": "M9", "status": "todo", "depends": ["D-001", "D-002", "D-003", "D-004", "D-005", "D-006", "D-007"], "assignee": null }
+    {
+      "id": "A-001",
+      "title": "API Server — Core HTTP + Static Serving",
+      "type": "code",
+      "status": "done",
+      "milestone": "M1",
+      "phase": ""
+    },
+    {
+      "id": "A-002",
+      "title": "API Server — Project Endpoints",
+      "type": "code",
+      "status": "done",
+      "milestone": "M1",
+      "phase": ""
+    },
+    {
+      "id": "A-003",
+      "title": "API Server — Path Traversal Prevention",
+      "type": "code",
+      "status": "done",
+      "milestone": "M1",
+      "phase": ""
+    },
+    {
+      "id": "A-004",
+      "title": "API Server — Overview Endpoint",
+      "type": "code",
+      "status": "done",
+      "milestone": "M1",
+      "phase": ""
+    },
+    {
+      "id": "A-005",
+      "title": "HTML Shell — Tab Navigation & Routing",
+      "type": "code",
+      "status": "done",
+      "milestone": "M2",
+      "phase": ""
+    },
+    {
+      "id": "A-006",
+      "title": "HTML Shell — Design System & Dark Theme",
+      "type": "code",
+      "status": "done",
+      "milestone": "M2",
+      "phase": ""
+    },
+    {
+      "id": "A-007",
+      "title": "Overview Tab — Summary Stats & Project List",
+      "type": "code",
+      "status": "done",
+      "milestone": "M2",
+      "phase": ""
+    },
+    {
+      "id": "A-008",
+      "title": "Overview Tab — Needs Attention Section",
+      "type": "code",
+      "status": "done",
+      "milestone": "M2",
+      "phase": ""
+    },
+    {
+      "id": "A-009",
+      "title": "Overview Tab — Recent Activity Feed",
+      "type": "code",
+      "status": "done",
+      "milestone": "M2",
+      "phase": ""
+    },
+    {
+      "id": "A-010",
+      "title": "Phase 1 Review",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M6",
+      "phase": ""
+    },
+    {
+      "id": "B-001",
+      "title": "Migrate Viberr v2",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M3",
+      "phase": ""
+    },
+    {
+      "id": "B-002",
+      "title": "Migrate Blob Social",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M3",
+      "phase": ""
+    },
+    {
+      "id": "B-003",
+      "title": "Migrate DeFi Tools",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M3",
+      "phase": ""
+    },
+    {
+      "id": "B-004",
+      "title": "Register All ~/projects/ Directories",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M3",
+      "phase": ""
+    },
+    {
+      "id": "B-005",
+      "title": "Validate All state.json Files",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M3",
+      "phase": ""
+    },
+    {
+      "id": "B-006",
+      "title": "Validate Dashboard Renders with Migrated Data",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M3",
+      "phase": ""
+    },
+    {
+      "id": "B-007",
+      "title": "Phase 2 Review",
+      "type": "ops",
+      "status": "done",
+      "milestone": "M7",
+      "phase": ""
+    },
+    {
+      "id": "C-001",
+      "title": "Projects Tab — Project Sub-Tabs & Selection",
+      "type": "code",
+      "status": "testing",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-002",
+      "title": "Projects Tab — Milestones View",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-003",
+      "title": "Projects Tab — Kanban View",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-004",
+      "title": "Projects Tab — Progress Log View",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-005",
+      "title": "Content Tab",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-006",
+      "title": "Research Tab",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-007",
+      "title": "Agents Tab",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-008",
+      "title": "Ideas System — Global & Per-Project",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M4",
+      "phase": ""
+    },
+    {
+      "id": "C-009",
+      "title": "Phase 3 Review",
+      "type": "ops",
+      "status": "todo",
+      "milestone": "M8",
+      "phase": ""
+    },
+    {
+      "id": "D-001",
+      "title": "Auto-Refresh & Polling",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-002",
+      "title": "Connection Loss/Recovery",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-003",
+      "title": "Responsive — Mobile (375px)",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-004",
+      "title": "Responsive — Tablet (768px)",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-005",
+      "title": "Kanban Mobile Adaptation",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-006",
+      "title": "Edge Case Handling",
+      "type": "code",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-007",
+      "title": "README & Startup",
+      "type": "content",
+      "status": "todo",
+      "milestone": "M5",
+      "phase": ""
+    },
+    {
+      "id": "D-008",
+      "title": "Final Review & Ship",
+      "type": "ops",
+      "status": "todo",
+      "milestone": "M9",
+      "phase": ""
+    }
   ],
   "workers": [],
   "activity": [
-    { "type": "start", "message": "Sprint 1 started. Phase 1 in progress.", "time": "2026-02-09T10:15:00-08:00" }
+    {
+      "type": "start",
+      "message": "Sprint 1 started. Phase 1 in progress.",
+      "time": "2026-02-09T10:15:00-08:00"
+    }
   ]
 }

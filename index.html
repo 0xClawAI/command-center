@@ -478,6 +478,187 @@
     font-size: 14px;
     color: var(--text-dim);
   }
+
+  /* ── Projects Tab: Sub-Tabs ── */
+  .project-subtabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+
+  .project-subtab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .project-subtab:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  .project-subtab.active {
+    color: var(--text);
+    background: var(--surface2);
+    border-color: var(--blue);
+  }
+
+  .project-subtab .subtab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .subtab-dot.active { background: var(--green); }
+  .subtab-dot.paused { background: var(--yellow); }
+  .subtab-dot.complete { background: var(--blue); }
+  .subtab-dot.archived { background: var(--text-dim); }
+
+  /* ── Projects Tab: Info Card ── */
+  .project-info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+
+  .project-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .project-info-name {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .project-info-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .project-info-badge.type {
+    background: var(--surface2);
+    color: var(--purple);
+  }
+
+  .project-info-badge.status-active {
+    background: var(--surface2);
+    color: var(--green);
+  }
+
+  .project-info-badge.status-paused {
+    background: var(--surface2);
+    color: var(--yellow);
+  }
+
+  .project-info-badge.status-complete {
+    background: var(--surface2);
+    color: var(--blue);
+  }
+
+  .project-info-badge.status-archived {
+    background: var(--surface2);
+    color: var(--text-dim);
+  }
+
+  .project-info-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .project-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .project-info-label {
+    color: var(--text-dim);
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .project-info-value {
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .project-info-value a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .project-info-value a:hover {
+    text-decoration: underline;
+  }
+
+  .project-info-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .project-info-progress {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .project-info-progress-bar {
+    height: 10px;
+    background: var(--surface2);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .project-info-progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 5px;
+    transition: width 0.3s;
+  }
+
+  .project-info-progress-text {
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .project-data-loading {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
 </style>
 </head>
 <body>
@@ -526,7 +707,9 @@
 
   <!-- Projects Tab -->
   <div class="tab-panel" id="panel-projects">
-    <div class="empty-state">
+    <div id="projects-subtabs" class="project-subtabs"></div>
+    <div id="projects-data"></div>
+    <div id="projects-empty" class="empty-state">
       <div class="empty-state-icon">📁</div>
       <div class="empty-state-title">Select a project</div>
       <div class="empty-state-text">Choose a project from the sub-tabs above to view milestones, tasks, and progress.</div>
@@ -602,6 +785,11 @@
   // ── Valid tab routes ──
   var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'agents'];
 
+  // ── Slug helper ──
+  function slugify(name) {
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  }
+
   // ── Clock ──
   function updateClock() {
     var now = new Date();
@@ -620,6 +808,11 @@
     var tab = match[1];
     if (VALID_TABS.indexOf(tab) === -1) return null;
     return tab;
+  }
+
+  function getSlugFromHash() {
+    var match = location.hash.match(/^#\/projects\/([a-z0-9-]+)$/);
+    return match ? match[1] : null;
   }
 
   function activateTab(tab) {
@@ -659,6 +852,12 @@
       return;
     }
     activateTab(tab);
+    if (tab === 'projects') {
+      var slug = getSlugFromHash();
+      if (slug) {
+        selectProject(slug);
+      }
+    }
   }
 
   // ── Tab button clicks ──
@@ -866,7 +1065,199 @@
     }
   }
 
-  // Hook into tab activation to start/stop overview polling
+  // ── Projects Tab Logic ──
+  var projectsCache = null;
+  var selectedSlug = null;
+
+  var STATUS_ORDER = { active: 0, paused: 1, complete: 2, archived: 3 };
+  var STATUS_COLORS = { active: 'green', paused: 'yellow', complete: 'blue', archived: 'gray' };
+
+  function sortProjects(projects) {
+    return projects.slice().sort(function(a, b) {
+      var sa = STATUS_ORDER[a.status] !== undefined ? STATUS_ORDER[a.status] : 9;
+      var sb = STATUS_ORDER[b.status] !== undefined ? STATUS_ORDER[b.status] : 9;
+      if (sa !== sb) return sa - sb;
+      // Within same status group, sort by lastActive descending
+      var da = a.lastActive ? new Date(a.lastActive).getTime() : 0;
+      var db = b.lastActive ? new Date(b.lastActive).getTime() : 0;
+      return db - da;
+    });
+  }
+
+  function renderSubTabs(projects) {
+    var el = document.getElementById('projects-subtabs');
+    var sorted = sortProjects(projects);
+    var html = '';
+    for (var i = 0; i < sorted.length; i++) {
+      var p = sorted[i];
+      var slug = p.slug || slugify(p.name);
+      var dotClass = p.status || 'archived';
+      var isActive = slug === selectedSlug ? ' active' : '';
+      html += '<button class="project-subtab' + isActive + '" data-slug="' + escHtml(slug) + '">';
+      html += '<span class="subtab-dot ' + escHtml(dotClass) + '"></span>';
+      html += escHtml(p.name);
+      html += '</button>';
+    }
+    el.innerHTML = html;
+
+    // Attach click handlers
+    var btns = el.querySelectorAll('.project-subtab');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].addEventListener('click', function(e) {
+        var slug = e.currentTarget.getAttribute('data-slug');
+        location.hash = '#/projects/' + slug;
+      });
+    }
+  }
+
+  function selectProject(slug) {
+    if (!projectsCache) return;
+    selectedSlug = slug;
+
+    // Update sub-tab active state
+    var btns = document.querySelectorAll('.project-subtab');
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].getAttribute('data-slug') === slug) {
+        btns[i].classList.add('active');
+      } else {
+        btns[i].classList.remove('active');
+      }
+    }
+
+    // Find project metadata
+    var proj = null;
+    for (var j = 0; j < projectsCache.length; j++) {
+      var s = projectsCache[j].slug || slugify(projectsCache[j].name);
+      if (s === slug) { proj = projectsCache[j]; break; }
+    }
+
+    var dataEl = document.getElementById('projects-data');
+    var emptyEl = document.getElementById('projects-empty');
+    emptyEl.style.display = 'none';
+    dataEl.innerHTML = '<div class="project-data-loading">Loading project data...</div>';
+
+    fetch('/api/project/' + encodeURIComponent(slug) + '/state')
+      .then(function(r) {
+        if (!r.ok) return null;
+        return r.json();
+      })
+      .then(function(state) {
+        renderProjectInfo(proj, state, dataEl);
+      })
+      .catch(function() {
+        renderProjectInfo(proj, null, dataEl);
+      });
+  }
+
+  function renderProjectInfo(proj, state, el) {
+    if (!proj) {
+      el.innerHTML = '<div class="project-data-loading">Project not found.</div>';
+      return;
+    }
+
+    var html = '<div class="project-info-card">';
+
+    // Header: name + badges
+    html += '<div class="project-info-header">';
+    html += '<span class="project-info-name">' + escHtml(proj.name) + '</span>';
+    if (proj.type) {
+      html += '<span class="project-info-badge type">' + escHtml(proj.type) + '</span>';
+    }
+    var statusBadgeClass = 'status-' + (proj.status || 'archived');
+    html += '<span class="project-info-badge ' + statusBadgeClass + '">' + escHtml(proj.status || 'unknown') + '</span>';
+    html += '</div>';
+
+    // Meta info
+    html += '<div class="project-info-meta">';
+
+    // Links
+    if (proj.links) {
+      var keys = Object.keys(proj.links);
+      if (keys.length > 0) {
+        html += '<div class="project-info-row">';
+        html += '<span class="project-info-label">Links</span>';
+        html += '<span class="project-info-value"><span class="project-info-links">';
+        for (var i = 0; i < keys.length; i++) {
+          var url = proj.links[keys[i]];
+          if (url) {
+            html += '<a href="' + escHtml(url) + '" target="_blank" rel="noopener">' + escHtml(keys[i]) + '</a>';
+          }
+        }
+        html += '</span></span></div>';
+      }
+    }
+
+    // Notes
+    if (proj.notes) {
+      html += '<div class="project-info-row">';
+      html += '<span class="project-info-label">Notes</span>';
+      html += '<span class="project-info-value">' + escHtml(proj.notes) + '</span>';
+      html += '</div>';
+    }
+
+    // Created / Last Active
+    if (proj.created) {
+      html += '<div class="project-info-row">';
+      html += '<span class="project-info-label">Created</span>';
+      html += '<span class="project-info-value">' + escHtml(proj.created) + '</span>';
+      html += '</div>';
+    }
+    if (proj.lastActive) {
+      html += '<div class="project-info-row">';
+      html += '<span class="project-info-label">Last Active</span>';
+      html += '<span class="project-info-value">' + escHtml(proj.lastActive) + '</span>';
+      html += '</div>';
+    }
+
+    html += '</div>'; // .project-info-meta
+
+    // Progress (from state.json)
+    if (state && state.progress) {
+      var done = state.progress.done || 0;
+      var total = state.progress.total || 0;
+      var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      html += '<div class="project-info-progress">';
+      html += '<div class="project-info-progress-text">';
+      html += '<span>Progress</span>';
+      html += '<span>' + done + ' / ' + total + ' tasks (' + pct + '%)</span>';
+      html += '</div>';
+      html += '<div class="project-info-progress-bar">';
+      html += '<span class="project-info-progress-fill" style="width:' + pct + '%"></span>';
+      html += '</div>';
+      html += '</div>';
+    } else {
+      html += '<div class="project-info-progress">';
+      html += '<div class="project-info-progress-text">';
+      html += '<span style="color:var(--yellow);font-style:italic;">Not migrated — no state.json found</span>';
+      html += '</div>';
+      html += '</div>';
+    }
+
+    html += '</div>'; // .project-info-card
+    el.innerHTML = html;
+  }
+
+  function loadProjectsTab() {
+    fetch('/api/projects')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        projectsCache = d.projects || [];
+        renderSubTabs(projectsCache);
+
+        // If a slug is in the URL, auto-select it
+        var slug = getSlugFromHash();
+        if (slug) {
+          selectProject(slug);
+        } else {
+          // Show empty state
+          document.getElementById('projects-data').innerHTML = '';
+          document.getElementById('projects-empty').style.display = '';
+        }
+      })
+      .catch(function() {});
+  }
+
+  // Hook into tab activation to start/stop overview polling + load projects
   var origActivateTab = activateTab;
   activateTab = function(tab) {
     origActivateTab(tab);
@@ -875,11 +1266,19 @@
     } else {
       stopOverviewPolling();
     }
+    if (tab === 'projects') {
+      loadProjectsTab();
+    }
   };
 
   // Start polling if overview is the initial tab
-  if (getTabFromHash() === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
+  var initTab = getTabFromHash();
+  if (initTab === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
     startOverviewPolling();
+  }
+  // Load projects tab if it's the initial tab (deep link)
+  if (initTab === 'projects') {
+    loadProjectsTab();
   }
 })();
 </script>

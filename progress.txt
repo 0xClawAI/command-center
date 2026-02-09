@@ -340,3 +340,32 @@ Action required: Fix blob-social (tasks→array) and defi-tools (add type field)
 - Command Center API /api/overview returns all 3 migrated projects with progress data
 - Phase 2 complete. Ready for Phase 3.
 ================================================================================
+
+================================================================================
+[2026-02-09 18:00 PST] C-001: Projects Tab — Sub-Tabs & Selection
+Lead: code-worker (Opus)
+--------------------------------------------------------------------------------
+Made the Projects tab functional with sub-tabs for every registered project and
+project selection with info card rendering.
+
+Features implemented:
+- Fetches /api/projects when Projects tab is activated
+- Renders a sub-tab button for every registered project
+- Sub-tabs sorted: active first (by lastActive desc), then paused, complete, archived
+- Each sub-tab shows project name + colored status dot (green=active, yellow=paused,
+  blue=complete, gray=archived)
+- Clicking a sub-tab fetches /api/project/:slug/state and renders project info card
+- URL updates to #/projects/<slug> when project selected
+- Deep linking works: loading #/projects/viberr-v2 directly selects that project
+- >8 projects: sub-tabs wrap with flex-wrap, overflow-y:auto with max-height for scroll
+- Slug derived from project name: lowercase, spaces→hyphens, strip special chars
+
+Project info card shows:
+- Name with type badge (purple) and status badge (colored by status)
+- Links (open in new tab), notes, created date, last active date
+- Progress bar from state.json (or "Not migrated" fallback)
+
+CSS: ~180 lines added for sub-tabs + info card, all using design system variables.
+JS: ~170 lines added for fetch, sort, render, selection, and deep linking.
+All existing tabs/functionality preserved — only Projects panel modified.
+================================================================================

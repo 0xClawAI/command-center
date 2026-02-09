@@ -375,7 +375,7 @@
 
 ### C-001: Projects Tab — Project Sub-Tabs & Selection
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** A-005, A-006
 - **Pass criteria:**
