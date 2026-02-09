@@ -432,6 +432,28 @@
     font-style: italic;
   }
 
+  .proj-dir-warning {
+    font-size: 12px;
+    color: var(--red);
+    font-style: italic;
+  }
+
+  .proj-error {
+    font-size: 12px;
+    color: var(--red);
+    font-style: italic;
+  }
+
+  .project-error-card {
+    background: var(--surface);
+    border: 1px solid var(--red);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    color: var(--red);
+    font-size: 14px;
+  }
+
   .proj-status-dot {
     width: 8px;
     height: 8px;
@@ -2082,76 +2104,40 @@
   // Smart project list update — updates each row in-place if structure matches
   function renderProjects(projects, stateMap) {
     var el = document.getElementById('overview-projects');
-    var existingRows = el.querySelectorAll('.project-row');
-
-    // Build new row data
-    var rowData = [];
-    for (var i = 0; i < projects.length; i++) {
-      var p = projects[i];
-      var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      var state = stateMap[slug];
-      rowData.push({ project: p, slug: slug, state: state });
+    if (!projects || projects.length === 0) {
+      el.innerHTML = '<div class="attention-ok">No projects registered</div>';
+      return;
     }
-
-    // If row count matches, update in-place
-    if (existingRows.length === rowData.length) {
-      for (var r = 0; r < rowData.length; r++) {
-        var row = existingRows[r];
-        var rd = rowData[r];
-        // Update href
-        row.setAttribute('href', '#/projects/' + rd.slug);
-        // Update status dot class
-        var dot = row.querySelector('.proj-status-dot');
-        if (dot) {
-          dot.className = 'proj-status-dot ' + (rd.project.status || '');
-        }
-        // Update name
-        updateText(row.querySelector('.proj-name'), rd.project.name);
-        // Update progress
-        if (rd.state) {
-          var done = (rd.state.progress && rd.state.progress.done) || 0;
-          var total = (rd.state.progress && rd.state.progress.total) || 0;
+    var html = '';
+    for (var i = 0; i < projects.length; i++) {
+      try {
+        var p = projects[i];
+        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        var state = stateMap[slug];
+        html += '<a class="project-row" href="#/projects/' + escHtml(slug) + '">';
+        html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
+        html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
+        if (state && state._error === 'dir_not_found') {
+          html += '<span class="proj-dir-warning">\u26A0\uFE0F Directory not found</span>';
+        } else if (state && state._error === 'malformed') {
+          html += '<span class="proj-error">Error loading project data</span>';
+        } else if (state && !state._error) {
+          var done = (state.progress && state.progress.done) || 0;
+          var total = (state.progress && state.progress.total) || 0;
           var pct = total > 0 ? Math.round((done / total) * 100) : 0;
-          var barFill = row.querySelector('.proj-bar-fill');
-          var barLabel = row.querySelector('.proj-bar-label');
-          if (barFill && barLabel) {
-            updateStyleWidth(barFill, pct);
-            updateText(barLabel, done + '/' + total + ' tasks');
-          } else {
-            // Structure changed (e.g. was "not migrated" before) — rebuild row content
-            var barHtml = '<span class="proj-status-dot ' + escHtml(rd.project.status || '') + '"></span>';
-            barHtml += '<span class="proj-name">' + escHtml(rd.project.name) + '</span>';
-            barHtml += '<span class="proj-bar-wrap">';
-            barHtml += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
-            barHtml += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
-            barHtml += '</span>';
-            row.innerHTML = barHtml;
-          }
-        }
-      }
-    } else {
-      // Row count changed — full rebuild
-      var html = '';
-      for (var j = 0; j < rowData.length; j++) {
-        var rd2 = rowData[j];
-        html += '<a class="project-row" href="#/projects/' + escHtml(rd2.slug) + '">';
-        html += '<span class="proj-status-dot ' + escHtml(rd2.project.status || '') + '"></span>';
-        html += '<span class="proj-name">' + escHtml(rd2.project.name) + '</span>';
-        if (rd2.state) {
-          var done2 = (rd2.state.progress && rd2.state.progress.done) || 0;
-          var total2 = (rd2.state.progress && rd2.state.progress.total) || 0;
-          var pct2 = total2 > 0 ? Math.round((done2 / total2) * 100) : 0;
           html += '<span class="proj-bar-wrap">';
-          html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct2 + '%"></span></span>';
-          html += '<span class="proj-bar-label">' + done2 + '/' + total2 + ' tasks</span>';
+          html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
+          html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
           html += '</span>';
         } else {
           html += '<span class="proj-not-migrated">Not migrated</span>';
         }
         html += '</a>';
+      } catch (e) {
+        html += '<div class="project-row"><span class="proj-error">Error loading project data</span></div>';
       }
-      el.innerHTML = html;
     }
+    updateHtmlSmart(el, html);
   }
 
   function renderAttentionHtml(items) {
@@ -2224,7 +2210,9 @@
 
     function checkDone() {
       if (pending > 0) return;
-      if (!overviewData || !projectsData) return;
+      // Default to empty if fetch failed
+      if (!overviewData) overviewData = { activeProjects: 0, pausedProjects: 0, completeProjects: 0, totalProjects: 0, needsAttention: [], recentActivity: [], crossProjectTasks: { content: [], research: [] } };
+      if (!projectsData) projectsData = [];
       // Fetch state for each project
       var slugs = [];
       for (var i = 0; i < projectsData.length; i++) {
@@ -2240,8 +2228,18 @@
       for (var j = 0; j < slugs.length; j++) {
         (function(s) {
           fetch('/api/project/' + encodeURIComponent(s) + '/state')
-            .then(function(r) { return r.ok ? r.json() : null; })
-            .then(function(d) { if (d) stateMap[s] = d; })
+            .then(function(r) {
+              return r.json().then(function(d) {
+                if (r.ok) {
+                  stateMap[s] = d;
+                } else if (d && d.code === 'DIR_NOT_FOUND') {
+                  stateMap[s] = { _error: 'dir_not_found' };
+                } else if (d && d.code === 'MALFORMED') {
+                  stateMap[s] = { _error: 'malformed' };
+                }
+                // NO_STATE → stateMap[s] stays undefined → "Not migrated"
+              });
+            })
             .catch(function() {})
             .finally(function() {
               statePending--;
@@ -2369,13 +2367,19 @@
 
     fetch('/api/project/' + encodeURIComponent(slug) + '/state')
       .then(function(r) {
-        if (!r.ok) return null;
-        return r.json();
-      })
-      .then(function(state) {
-        renderProjectInfo(proj, state, dataEl);
-        // Start project state polling
-        startPollTimer('project', pollProjectState);
+        return r.json().then(function(d) {
+          if (r.ok) {
+            renderProjectInfo(proj, d, dataEl);
+          } else if (d && d.code === 'DIR_NOT_FOUND') {
+            renderProjectInfo(proj, { _error: 'dir_not_found' }, dataEl);
+          } else if (d && d.code === 'MALFORMED') {
+            renderProjectInfo(proj, { _error: 'malformed' }, dataEl);
+          } else {
+            renderProjectInfo(proj, null, dataEl);
+          }
+          // Start project state polling
+          startPollTimer('project', pollProjectState);
+        });
       })
       .catch(function() {
         renderProjectInfo(proj, null, dataEl);
@@ -2477,6 +2481,7 @@
       return;
     }
 
+    try {
     // Store for view switching
     currentProjectMeta = proj;
     currentProjectState = state;
@@ -2538,7 +2543,19 @@
     html += '</div>'; // .project-info-meta
 
     // Progress (from state.json)
-    if (state && state.progress) {
+    if (state && state._error === 'dir_not_found') {
+      html += '<div class="project-info-progress">';
+      html += '<div class="project-info-progress-text">';
+      html += '<span style="color:var(--red);font-style:italic;">\u26A0\uFE0F Directory not found</span>';
+      html += '</div>';
+      html += '</div>';
+    } else if (state && state._error === 'malformed') {
+      html += '<div class="project-info-progress">';
+      html += '<div class="project-info-progress-text">';
+      html += '<span style="color:var(--red);font-style:italic;">Error loading project data</span>';
+      html += '</div>';
+      html += '</div>';
+    } else if (state && !state._error && state.progress) {
       var done = state.progress.done || 0;
       var total = state.progress.total || 0;
       var pct = total > 0 ? Math.round((done / total) * 100) : 0;
@@ -2551,6 +2568,17 @@
       html += '<span class="project-info-progress-fill" style="width:' + pct + '%"></span>';
       html += '</div>';
       html += '</div>';
+    } else if (state && !state._error) {
+      // state.json exists but has no progress field — show 0/0
+      html += '<div class="project-info-progress">';
+      html += '<div class="project-info-progress-text">';
+      html += '<span>Progress</span>';
+      html += '<span>0 / 0 tasks (0%)</span>';
+      html += '</div>';
+      html += '<div class="project-info-progress-bar">';
+      html += '<span class="project-info-progress-fill" style="width:0%"></span>';
+      html += '</div>';
+      html += '</div>';
     } else {
       html += '<div class="project-info-progress">';
       html += '<div class="project-info-progress-text">';
@@ -2561,23 +2589,30 @@
 
     html += '</div>'; // .project-info-card
 
-    // View toggle
-    html += '<div class="view-toggle" id="view-toggle">';
-    html += '<button class="view-toggle-btn' + (currentProjectView === 'milestones' ? ' active' : '') + '" data-view="milestones">Milestones</button>';
-    html += '<button class="view-toggle-btn' + (currentProjectView === 'kanban' ? ' active' : '') + '" data-view="kanban">Kanban</button>';
-    html += '<button class="view-toggle-btn' + (currentProjectView === 'progress' ? ' active' : '') + '" data-view="progress">Progress</button>';
-    html += '</div>';
+    // Only show view toggle and views if state is usable (no error)
+    var stateUsable = state && !state._error;
 
-    // Render the active view
-    html += '<div id="project-view-container">';
-    if (currentProjectView === 'kanban' && state && state.tasks && state.tasks.length > 0) {
-      html += renderKanban(state);
-    } else if (currentProjectView === 'progress') {
-      html += '<div class="progress-log" id="progress-log-container"><div class="progress-empty">Loading progress log...</div></div>';
-    } else {
-      html += renderMilestones(state);
+    if (stateUsable) {
+      // View toggle
+      html += '<div class="view-toggle" id="view-toggle">';
+      html += '<button class="view-toggle-btn' + (currentProjectView === 'milestones' ? ' active' : '') + '" data-view="milestones">Milestones</button>';
+      html += '<button class="view-toggle-btn' + (currentProjectView === 'kanban' ? ' active' : '') + '" data-view="kanban">Kanban</button>';
+      html += '<button class="view-toggle-btn' + (currentProjectView === 'progress' ? ' active' : '') + '" data-view="progress">Progress</button>';
+      html += '</div>';
+
+      // Render the active view
+      html += '<div id="project-view-container">';
+      if (currentProjectView === 'kanban') {
+        html += renderKanban(state);
+      } else if (currentProjectView === 'progress') {
+        html += '<div class="progress-log" id="progress-log-container"><div class="progress-empty">Loading progress log...</div></div>';
+      } else {
+        html += renderMilestones(state);
+      }
+      html += '</div>';
+    } else if (state && state._error === 'malformed') {
+      html += '<div class="project-error-card">Error loading project data — state.json is malformed</div>';
     }
-    html += '</div>';
 
     el.innerHTML = html;
 
@@ -2633,11 +2668,19 @@
         card.classList.toggle('expanded');
       });
     }
+
+    } catch (err) {
+      el.innerHTML = '<div class="project-error-card">Error loading project data</div>';
+    }
   }
 
   function renderMilestones(state) {
-    if (!state || !state.tasks || state.tasks.length === 0) {
+    if (!state || state._error) {
       return '';
+    }
+    var tasks = Array.isArray(state.tasks) ? state.tasks : [];
+    if (tasks.length === 0) {
+      return '<div class="milestones-section"><div style="text-align:center;padding:24px;color:var(--text-dim);font-size:14px;font-style:italic;">0/0 tasks</div></div>';
     }
 
     // Build task lookup by ID
@@ -2718,8 +2761,11 @@
   }
 
   function renderKanban(state) {
-    if (!state || !state.tasks || state.tasks.length === 0) {
+    if (!state || state._error) {
       return '';
+    }
+    if (!state.tasks || state.tasks.length === 0) {
+      return '<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:14px;font-style:italic;">0/0 tasks</div>';
     }
 
     // Build milestone lookup by ID
@@ -2857,6 +2903,18 @@
       .then(function(r) { return r.json(); })
       .then(function(d) {
         projectsCache = d.projects || [];
+
+        if (projectsCache.length === 0) {
+          document.getElementById('projects-subtabs').innerHTML = '';
+          document.getElementById('projects-data').innerHTML = '';
+          var emptyEl = document.getElementById('projects-empty');
+          emptyEl.querySelector('.empty-state-icon').textContent = '📁';
+          emptyEl.querySelector('.empty-state-title').textContent = 'No projects registered';
+          emptyEl.querySelector('.empty-state-text').textContent = 'Add projects to ~/.openclaw/workspace/projects.json to get started.';
+          emptyEl.style.display = '';
+          return;
+        }
+
         renderSubTabs(projectsCache);
 
         // If a slug is in the URL, auto-select it
