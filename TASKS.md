@@ -26,7 +26,7 @@
 
 ### A-001: API Server — Core HTTP + Static Serving
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M1
 - **Depends:** none
 - **Pass criteria:**
@@ -48,7 +48,7 @@
 
 ### A-002: API Server — Project Endpoints
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M1
 - **Depends:** A-001
 - **Pass criteria:**
@@ -68,7 +68,7 @@
 
 ### A-003: API Server — Path Traversal Prevention
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M1
 - **Depends:** A-002
 - **Pass criteria:**
@@ -86,7 +86,7 @@
 
 ### A-004: API Server — Overview Endpoint
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M1
 - **Depends:** A-002
 - **Pass criteria:**

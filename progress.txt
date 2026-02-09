@@ -61,3 +61,51 @@ Tab placeholder content:
 
 Clock in top-right shows current date/time, updates every second.
 ================================================================================
+
+================================================================================
+[2026-02-09 14:30 PST] A-001,A-002,A-003,A-004 (API Server — All Endpoints) — COMPLETED
+Worker: server-worker
+Commit: pending "[A-001,A-002,A-003,A-004] API server with all endpoints"
+Files: server.js
+--------------------------------------------------------------------------------
+Built server.js — the complete API server for Command Center. 210 lines, Node.js
+stdlib only, zero dependencies.
+
+A-001 (Core HTTP + Static Serving):
+- Binds to 0.0.0.0:3400 (configurable via PORT env var)
+- GET / serves index.html with Content-Type: text/html
+- Clear error message with port number if port is in use, exits non-zero
+- 210 lines (under 300 limit)
+
+A-002 (Project Endpoints):
+- GET /api/projects returns projects.json contents
+- GET /api/project/:slug/state returns project's state.json (404 if missing)
+- GET /api/project/:slug/progress returns {"entries":[...]} from progress.txt
+  (empty array if missing, splits on 80+ = chars, last 50 entries)
+- GET /api/project/:slug/tasks returns {"content":"..."} raw TASKS.md (404 if missing)
+- Slug derived from project name: lowercase, spaces to hyphens, strip special chars
+- Malformed projects.json returns 500 with error message
+
+A-003 (Path Traversal Prevention):
+- Slug validated: rejects .. / \ % characters before lookup
+- Path resolved via projects.json lookup only (not string concat)
+- safePath() uses path.resolve to verify resolved path starts with project base
+- Extension whitelist: only .json, .txt, .md served
+- Tested: /api/project/..%2F..%2Fetc%2Fpasswd/state returns 404
+
+A-004 (Overview Endpoint):
+- GET /api/overview returns aggregated data from all projects
+- Counts: totalProjects, activeProjects, pausedProjects, completeProjects
+- needsAttention: failed tasks (high), stale >7 days (medium), no state.json (medium)
+- crossProjectTasks.content: all content/marketing tasks across projects
+- crossProjectTasks.research: all research/analysis tasks across projects
+- recentActivity: aggregated from all projects, sorted newest first
+- Response time: ~5ms (well under 500ms requirement)
+- Resilient: missing/invalid state.json for any project doesn't crash the endpoint
+
+Key decisions:
+- Used withProjects/withProject helper pattern to DRY up error handling
+- decodeURIComponent on pathname before routing (catches encoded traversal)
+- Regex route matching for /api/project/:slug/:resource pattern
+- Synchronous file reads (simplicity over throughput — this is a low-traffic dashboard)
+================================================================================
