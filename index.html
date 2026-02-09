@@ -1516,6 +1516,101 @@
   updateClock();
   setInterval(updateClock, 1000);
 
+  // ══════════════════════════════════════════
+  // ── Polling Timer Management System ──
+  // ══════════════════════════════════════════
+
+  // Polling intervals (ms) — normal and backgrounded
+  var POLL_INTERVALS = {
+    overview:  { normal: 10000, background: 60000 },
+    project:   { normal: 5000,  background: 60000 },
+    registry:  { normal: 30000, background: 60000 }
+  };
+
+  // Active timers keyed by type
+  var pollTimers = {};
+  var activeTab = null;
+  var isBackgrounded = false;
+
+  function clearPollTimer(type) {
+    if (pollTimers[type]) {
+      clearInterval(pollTimers[type]);
+      pollTimers[type] = null;
+    }
+  }
+
+  function clearAllPollTimers() {
+    var keys = Object.keys(pollTimers);
+    for (var i = 0; i < keys.length; i++) {
+      clearPollTimer(keys[i]);
+    }
+  }
+
+  function getInterval(type) {
+    var cfg = POLL_INTERVALS[type];
+    if (!cfg) return 10000;
+    return isBackgrounded ? cfg.background : cfg.normal;
+  }
+
+  function startPollTimer(type, fn) {
+    clearPollTimer(type);
+    fn(); // run immediately
+    pollTimers[type] = setInterval(fn, getInterval(type));
+  }
+
+  // Restart all active timers with new intervals (used when visibility changes)
+  function rescheduleTimers() {
+    if (activeTab === 'overview') {
+      clearPollTimer('overview');
+      pollTimers['overview'] = setInterval(pollOverviewData, getInterval('overview'));
+    }
+    if (activeTab === 'projects' && selectedSlug) {
+      clearPollTimer('project');
+      pollTimers['project'] = setInterval(pollProjectState, getInterval('project'));
+    }
+    // Registry timer runs whenever projects tab is active
+    if (activeTab === 'projects') {
+      clearPollTimer('registry');
+      pollTimers['registry'] = setInterval(pollRegistry, getInterval('registry'));
+    }
+  }
+
+  // ── Visibility Change Handler ──
+  document.addEventListener('visibilitychange', function() {
+    isBackgrounded = document.hidden;
+    rescheduleTimers();
+  });
+
+  // ══════════════════════════════════════════
+  // ── Smart DOM Update Helpers ──
+  // ══════════════════════════════════════════
+
+  // Update textContent of an element only if it changed
+  function updateText(el, text) {
+    if (el && el.textContent !== text) {
+      el.textContent = text;
+    }
+  }
+
+  // Update innerHTML of an element only if it changed, preserving scroll
+  function updateHtmlSmart(el, html) {
+    if (!el) return;
+    if (el.innerHTML === html) return; // no change, skip
+    var scrollable = document.querySelector('.content');
+    var scrollTop = scrollable ? scrollable.scrollTop : 0;
+    el.innerHTML = html;
+    if (scrollable) scrollable.scrollTop = scrollTop;
+  }
+
+  // Update a style width (e.g. progress bar) only if changed
+  function updateStyleWidth(el, pct) {
+    if (!el) return;
+    var val = pct + '%';
+    if (el.style.width !== val) {
+      el.style.width = val;
+    }
+  }
+
   // ── Tab Routing ──
   function getTabFromHash() {
     var hash = location.hash;
@@ -1602,7 +1697,6 @@
   }
 
   // ── Overview Tab Logic ──
-  var overviewTimer = null;
 
   var ACTIVITY_ICONS = {
     complete: '✅', start: '🚀', status: 'ℹ️', audit: '🔍',
@@ -1625,46 +1719,104 @@
     return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
   }
 
+  // Smart stat card update — updates individual values instead of replacing all
   function renderStats(ov) {
     var el = document.getElementById('overview-stats');
-    el.innerHTML =
-      '<div class="stat-card"><div class="stat-value active">' + ov.activeProjects + '</div><div class="stat-label">Active</div></div>' +
-      '<div class="stat-card"><div class="stat-value paused">' + ov.pausedProjects + '</div><div class="stat-label">Paused</div></div>' +
-      '<div class="stat-card"><div class="stat-value complete">' + ov.completeProjects + '</div><div class="stat-label">Complete</div></div>' +
-      '<div class="stat-card"><div class="stat-value total">' + ov.totalProjects + '</div><div class="stat-label">Total</div></div>';
+    var cards = el.querySelectorAll('.stat-card');
+    if (cards.length === 4) {
+      // Update existing stat cards in-place
+      updateText(cards[0].querySelector('.stat-value'), String(ov.activeProjects));
+      updateText(cards[1].querySelector('.stat-value'), String(ov.pausedProjects));
+      updateText(cards[2].querySelector('.stat-value'), String(ov.completeProjects));
+      updateText(cards[3].querySelector('.stat-value'), String(ov.totalProjects));
+    } else {
+      // First render — build from scratch
+      el.innerHTML =
+        '<div class="stat-card"><div class="stat-value active">' + ov.activeProjects + '</div><div class="stat-label">Active</div></div>' +
+        '<div class="stat-card"><div class="stat-value paused">' + ov.pausedProjects + '</div><div class="stat-label">Paused</div></div>' +
+        '<div class="stat-card"><div class="stat-value complete">' + ov.completeProjects + '</div><div class="stat-label">Complete</div></div>' +
+        '<div class="stat-card"><div class="stat-value total">' + ov.totalProjects + '</div><div class="stat-label">Total</div></div>';
+    }
   }
 
+  // Smart project list update — updates each row in-place if structure matches
   function renderProjects(projects, stateMap) {
     var el = document.getElementById('overview-projects');
-    var html = '';
+    var existingRows = el.querySelectorAll('.project-row');
+
+    // Build new row data
+    var rowData = [];
     for (var i = 0; i < projects.length; i++) {
       var p = projects[i];
       var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
       var state = stateMap[slug];
-      html += '<a class="project-row" href="#/projects/' + escHtml(slug) + '">';
-      html += '<span class="proj-status-dot ' + escHtml(p.status) + '"></span>';
-      html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
-      if (state) {
-        var done = (state.progress && state.progress.done) || 0;
-        var total = (state.progress && state.progress.total) || 0;
-        var pct = total > 0 ? Math.round((done / total) * 100) : 0;
-        html += '<span class="proj-bar-wrap">';
-        html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
-        html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
-        html += '</span>';
-      } else {
-        html += '<span class="proj-not-migrated">Not migrated</span>';
-      }
-      html += '</a>';
+      rowData.push({ project: p, slug: slug, state: state });
     }
-    el.innerHTML = html;
+
+    // If row count matches, update in-place
+    if (existingRows.length === rowData.length) {
+      for (var r = 0; r < rowData.length; r++) {
+        var row = existingRows[r];
+        var rd = rowData[r];
+        // Update href
+        row.setAttribute('href', '#/projects/' + rd.slug);
+        // Update status dot class
+        var dot = row.querySelector('.proj-status-dot');
+        if (dot) {
+          dot.className = 'proj-status-dot ' + (rd.project.status || '');
+        }
+        // Update name
+        updateText(row.querySelector('.proj-name'), rd.project.name);
+        // Update progress
+        if (rd.state) {
+          var done = (rd.state.progress && rd.state.progress.done) || 0;
+          var total = (rd.state.progress && rd.state.progress.total) || 0;
+          var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+          var barFill = row.querySelector('.proj-bar-fill');
+          var barLabel = row.querySelector('.proj-bar-label');
+          if (barFill && barLabel) {
+            updateStyleWidth(barFill, pct);
+            updateText(barLabel, done + '/' + total + ' tasks');
+          } else {
+            // Structure changed (e.g. was "not migrated" before) — rebuild row content
+            var barHtml = '<span class="proj-status-dot ' + escHtml(rd.project.status || '') + '"></span>';
+            barHtml += '<span class="proj-name">' + escHtml(rd.project.name) + '</span>';
+            barHtml += '<span class="proj-bar-wrap">';
+            barHtml += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
+            barHtml += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
+            barHtml += '</span>';
+            row.innerHTML = barHtml;
+          }
+        }
+      }
+    } else {
+      // Row count changed — full rebuild
+      var html = '';
+      for (var j = 0; j < rowData.length; j++) {
+        var rd2 = rowData[j];
+        html += '<a class="project-row" href="#/projects/' + escHtml(rd2.slug) + '">';
+        html += '<span class="proj-status-dot ' + escHtml(rd2.project.status || '') + '"></span>';
+        html += '<span class="proj-name">' + escHtml(rd2.project.name) + '</span>';
+        if (rd2.state) {
+          var done2 = (rd2.state.progress && rd2.state.progress.done) || 0;
+          var total2 = (rd2.state.progress && rd2.state.progress.total) || 0;
+          var pct2 = total2 > 0 ? Math.round((done2 / total2) * 100) : 0;
+          html += '<span class="proj-bar-wrap">';
+          html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct2 + '%"></span></span>';
+          html += '<span class="proj-bar-label">' + done2 + '/' + total2 + ' tasks</span>';
+          html += '</span>';
+        } else {
+          html += '<span class="proj-not-migrated">Not migrated</span>';
+        }
+        html += '</a>';
+      }
+      el.innerHTML = html;
+    }
   }
 
-  function renderAttention(items) {
-    var el = document.getElementById('overview-attention');
+  function renderAttentionHtml(items) {
     if (!items || items.length === 0) {
-      el.innerHTML = '<div class="attention-ok">Nothing needs attention 🎉</div>';
-      return;
+      return '<div class="attention-ok">Nothing needs attention 🎉</div>';
     }
     var sorted = items.slice().sort(function(a, b) {
       return (SEVERITY_ORDER[a.severity] || 9) - (SEVERITY_ORDER[b.severity] || 9);
@@ -1680,14 +1832,17 @@
       html += '</div>';
     }
     html += '</div>';
-    el.innerHTML = html;
+    return html;
   }
 
-  function renderActivity(items) {
-    var el = document.getElementById('overview-activity');
+  function renderAttention(items) {
+    var el = document.getElementById('overview-attention');
+    updateHtmlSmart(el, renderAttentionHtml(items));
+  }
+
+  function renderActivityHtml(items) {
     if (!items || items.length === 0) {
-      el.innerHTML = '<div class="activity-empty">No recent activity</div>';
-      return;
+      return '<div class="activity-empty">No recent activity</div>';
     }
     var sorted = items.slice().sort(function(a, b) {
       var ta = a.time ? new Date(a.time).getTime() : 0;
@@ -1709,10 +1864,19 @@
       html += '</div>';
     }
     html += '</div>';
-    el.innerHTML = html;
+    return html;
   }
 
-  function loadOverview() {
+  function renderActivity(items) {
+    var el = document.getElementById('overview-activity');
+    updateHtmlSmart(el, renderActivityHtml(items));
+  }
+
+  // Cache for last-fetched overview data (used for smart diffing)
+  var lastOverviewJSON = null;
+  var lastProjectsJSON = null;
+
+  function pollOverviewData() {
     var overviewData = null;
     var projectsData = null;
     var stateMap = {};
@@ -1770,16 +1934,12 @@
   }
 
   function startOverviewPolling() {
-    stopOverviewPolling();
-    loadOverview();
-    overviewTimer = setInterval(loadOverview, 10000);
+    clearPollTimer('overview');
+    startPollTimer('overview', pollOverviewData);
   }
 
   function stopOverviewPolling() {
-    if (overviewTimer) {
-      clearInterval(overviewTimer);
-      overviewTimer = null;
-    }
+    clearPollTimer('overview');
   }
 
   // ── Projects Tab Logic ──
@@ -1818,7 +1978,10 @@
       html += escHtml(p.name);
       html += '</button>';
     }
-    el.innerHTML = html;
+    // Only update if changed
+    if (el.innerHTML !== html) {
+      el.innerHTML = html;
+    }
 
     // Attach click handlers
     var btns = el.querySelectorAll('.project-subtab');
@@ -1832,7 +1995,11 @@
 
   function selectProject(slug) {
     if (!projectsCache) return;
+    var prevSlug = selectedSlug;
     selectedSlug = slug;
+
+    // Stop previous project polling
+    clearPollTimer('project');
 
     // Update sub-tab active state
     var btns = document.querySelectorAll('.project-subtab');
@@ -1854,7 +2021,11 @@
     var dataEl = document.getElementById('projects-data');
     var emptyEl = document.getElementById('projects-empty');
     emptyEl.style.display = 'none';
-    dataEl.innerHTML = '<div class="project-data-loading">Loading project data...</div>';
+
+    // Only show loading text if switching to a new project
+    if (prevSlug !== slug) {
+      dataEl.innerHTML = '<div class="project-data-loading">Loading project data...</div>';
+    }
 
     fetch('/api/project/' + encodeURIComponent(slug) + '/state')
       .then(function(r) {
@@ -1863,10 +2034,101 @@
       })
       .then(function(state) {
         renderProjectInfo(proj, state, dataEl);
+        // Start project state polling
+        startPollTimer('project', pollProjectState);
       })
       .catch(function() {
         renderProjectInfo(proj, null, dataEl);
       });
+  }
+
+  // Poll project state without full re-render — smart update
+  function pollProjectState() {
+    if (!selectedSlug || activeTab !== 'projects') return;
+    fetch('/api/project/' + encodeURIComponent(selectedSlug) + '/state')
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(state) {
+        if (!state) return;
+        var oldJSON = JSON.stringify(currentProjectState);
+        var newJSON = JSON.stringify(state);
+        if (oldJSON === newJSON) return; // No change, skip
+
+        currentProjectState = state;
+
+        // Smart update: preserve scroll position and expand/collapse state
+        var scrollable = document.querySelector('.content');
+        var scrollTop = scrollable ? scrollable.scrollTop : 0;
+
+        // Capture expanded milestone cards
+        var expandedMilestones = {};
+        var msCards = document.querySelectorAll('.milestone-card.expanded');
+        for (var i = 0; i < msCards.length; i++) {
+          var nameEl = msCards[i].querySelector('.milestone-name');
+          if (nameEl) expandedMilestones[nameEl.textContent] = true;
+        }
+
+        // Update progress bar in info card
+        var progressText = document.querySelector('.project-info-progress-text');
+        var progressFill = document.querySelector('.project-info-progress-fill');
+        if (state.progress && progressText && progressFill) {
+          var done = state.progress.done || 0;
+          var total = state.progress.total || 0;
+          var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+          var spans = progressText.querySelectorAll('span');
+          if (spans.length >= 2) {
+            updateText(spans[1], done + ' / ' + total + ' tasks (' + pct + '%)');
+          }
+          updateStyleWidth(progressFill, pct);
+        }
+
+        // Re-render the view container
+        var container = document.getElementById('project-view-container');
+        if (container) {
+          if (currentProjectView === 'kanban') {
+            updateHtmlSmart(container, renderKanban(state));
+          } else if (currentProjectView === 'progress') {
+            // Don't touch progress log during poll — it fetches separately
+          } else {
+            container.innerHTML = renderMilestones(state);
+            // Restore expanded state
+            var newCards = container.querySelectorAll('.milestone-card');
+            for (var m = 0; m < newCards.length; m++) {
+              var mName = newCards[m].querySelector('.milestone-name');
+              if (mName && expandedMilestones[mName.textContent]) {
+                newCards[m].classList.add('expanded');
+              }
+            }
+            // Re-attach milestone toggle handlers
+            var headers = container.querySelectorAll('.milestone-header');
+            for (var h = 0; h < headers.length; h++) {
+              headers[h].addEventListener('click', function(ev) {
+                var card = ev.currentTarget.closest('.milestone-card');
+                card.classList.toggle('expanded');
+              });
+            }
+          }
+        }
+
+        // Restore scroll position
+        if (scrollable) scrollable.scrollTop = scrollTop;
+      })
+      .catch(function() {});
+  }
+
+  // Poll registry (projects list) for the projects tab
+  function pollRegistry() {
+    if (activeTab !== 'projects') return;
+    fetch('/api/projects')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var newCache = d.projects || [];
+        var oldJSON = JSON.stringify(projectsCache);
+        var newJSON = JSON.stringify(newCache);
+        if (oldJSON === newJSON) return; // No change
+        projectsCache = newCache;
+        renderSubTabs(projectsCache);
+      })
+      .catch(function() {});
   }
 
   function renderProjectInfo(proj, state, el) {
@@ -2270,17 +2532,35 @@
       .catch(function() {});
   }
 
-  // Hook into tab activation to start/stop overview polling + load projects
+  // ── Unified tab activation with polling management ──
   var origActivateTab = activateTab;
   activateTab = function(tab) {
+    var prevTab = activeTab;
+    activeTab = tab;
     origActivateTab(tab);
+
+    // Clear all poll timers when switching tabs
+    clearAllPollTimers();
+
     if (tab === 'overview') {
       startOverviewPolling();
-    } else {
-      stopOverviewPolling();
     }
     if (tab === 'projects') {
       loadProjectsTab();
+      // Start registry polling (30s)
+      startPollTimer('registry', pollRegistry);
+    }
+    if (tab === 'content') {
+      loadContentTab();
+    }
+    if (tab === 'research') {
+      loadResearchTab();
+    }
+    if (tab === 'agents') {
+      loadAgentsTab();
+    }
+    if (tab === 'ideas') {
+      loadIdeasTab();
     }
   };
 
@@ -2411,17 +2691,6 @@
   document.getElementById('content-filter-type').addEventListener('change', renderContentTab);
   document.getElementById('content-hide-done').addEventListener('change', renderContentTab);
 
-  // Hook content tab into activation
-  var _prevActivateTab = activateTab;
-  activateTab = function(tab) {
-    _prevActivateTab(tab);
-    if (tab === 'content' && !contentLoaded) {
-      loadContentTab();
-    } else if (tab === 'content') {
-      loadContentTab(); // refresh data each time
-    }
-  };
-
   // ── Research Tab Logic ──
   var researchTasks = [];
   var researchLoaded = false;
@@ -2549,15 +2818,6 @@
   document.getElementById('research-filter-type').addEventListener('change', renderResearchTab);
   document.getElementById('research-hide-done').addEventListener('change', renderResearchTab);
 
-  // Hook research tab into activation
-  var _prevActivateTabR = activateTab;
-  activateTab = function(tab) {
-    _prevActivateTabR(tab);
-    if (tab === 'research') {
-      loadResearchTab(); // refresh data each time
-    }
-  };
-
   // ── Agents Tab Logic ──
   function loadAgentsTab() {
     var container = document.getElementById('agents-workers');
@@ -2628,15 +2888,6 @@
     html += '</div>';
     container.innerHTML = html;
   }
-
-  // Hook agents tab into activation
-  var _prevActivateTab2 = activateTab;
-  activateTab = function(tab) {
-    _prevActivateTab2(tab);
-    if (tab === 'agents') {
-      loadAgentsTab();
-    }
-  };
 
   // ── Ideas Tab Logic ──
   var ideasLoaded = false;
@@ -2746,36 +2997,10 @@
     panel.innerHTML = html;
   }
 
-  // Hook ideas tab into activation
-  var _prevActivateTab2 = activateTab;
-  activateTab = function(tab) {
-    _prevActivateTab2(tab);
-    if (tab === 'ideas') {
-      loadIdeasTab();
-    }
-  };
-
-  // Start polling if overview is the initial tab
+  // ── Initial tab activation (triggers polling setup) ──
   var initTab = getTabFromHash();
-  if (initTab === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
-    startOverviewPolling();
-  }
-  // Load projects tab if it's the initial tab (deep link)
-  if (initTab === 'projects') {
-    loadProjectsTab();
-  }
-  if (initTab === 'agents') {
-    loadAgentsTab();
-  }
-  // Load content tab if it's the initial tab (deep link)
-  if (initTab === 'content') {
-    loadContentTab();
-  }
-  if (initTab === 'ideas') {
-    loadIdeasTab();
-  }
-  if (initTab === 'research') {
-    loadResearchTab();
+  if (initTab && VALID_TABS.indexOf(initTab) !== -1) {
+    activateTab(initTab);
   }
 })();
 </script>
