@@ -538,3 +538,5 @@ Worker: worker-c004
 ================================================================================
 ---
 [2026-02-09T19:14:28Z] C-005: Content tab built — shows content/marketing tasks grouped by status (Todo→In Progress→Testing→Done), with project filter dropdown, type filter, hide-completed toggle. Project badges link to #/projects/<slug>. Empty state handled.
+---
+[2026-02-09 11:14] C-007: Agents tab built — 0xClaw orchestrator card, active workers aggregation from all project state.json workers arrays, department agents placeholder section with 4 cards (Engineering, Content, Research, QA). Status: testing.
