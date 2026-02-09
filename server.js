@@ -247,6 +247,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/' || pathname === '/index.html') return serveIndex(res);
     if (pathname === '/api/projects') return apiProjects(res);
     if (pathname === '/api/overview') return apiOverview(res);
+    if (pathname === '/api/ideas') return apiIdeas(res);
 
     const m = pathname.match(/^\/api\/project\/([^/]+)\/(state|progress|tasks)$/);
     if (m) {

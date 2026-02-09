@@ -540,3 +540,18 @@ Worker: worker-c004
 [2026-02-09T19:14:28Z] C-005: Content tab built — shows content/marketing tasks grouped by status (Todo→In Progress→Testing→Done), with project filter dropdown, type filter, hide-completed toggle. Project badges link to #/projects/<slug>. Empty state handled.
 ---
 [2026-02-09 11:14] C-007: Agents tab built — 0xClaw orchestrator card, active workers aggregation from all project state.json workers arrays, department agents placeholder section with 4 cards (Engineering, Content, Research, QA). Status: testing.
+
+================================================================================
+[C-008] Ideas System — 2026-02-09T11:15:00-08:00
+- Added GET /api/ideas endpoint to server.js
+  - Reads global IDEAS.md and per-project IDEAS.md files
+  - Parses markdown checkbox format with title, description, tags
+  - Handles #blocked:reason, #done:date, #ready, #project:name tags
+  - Returns JSON with status (open/blocked/done), source, blocker info
+- Added Ideas tab to index.html
+  - Groups ideas by source (Global first, then per-project)
+  - Blocked ideas show red left border + blocker reason
+  - Done ideas shown with reduced opacity + completion date
+  - Tags rendered as colored badges
+  - Empty state handled gracefully
+- Status: 🧪 testing

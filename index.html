@@ -1177,6 +1177,122 @@
     white-space: nowrap;
   }
 
+  /* ── Ideas Tab ── */
+  .ideas-group {
+    margin-bottom: 28px;
+  }
+
+  .ideas-group-header {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ideas-group-count {
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text-dim);
+    background: var(--surface2);
+    padding: 1px 8px;
+    border-radius: 10px;
+  }
+
+  .idea-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    transition: border-color 0.15s;
+  }
+
+  .idea-card + .idea-card {
+    margin-top: 6px;
+  }
+
+  .idea-card.blocked {
+    border-left: 3px solid var(--red);
+  }
+
+  .idea-card.done {
+    opacity: 0.6;
+  }
+
+  .idea-status-icon {
+    flex-shrink: 0;
+    font-size: 14px;
+    margin-top: 1px;
+  }
+
+  .idea-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .idea-title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .idea-desc {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .idea-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .idea-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .idea-tag.blocked {
+    color: var(--red);
+    border-color: var(--red);
+  }
+
+  .idea-tag.done-tag {
+    color: var(--green);
+    border-color: var(--green);
+  }
+
+  .idea-blocker {
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .idea-done-date {
+    font-size: 12px;
+    color: var(--green);
+    margin-top: 4px;
+  }
+
   /* ── Progress Log ── */
   .progress-log {
     display: flex;
@@ -2345,6 +2461,110 @@
     }
   };
 
+  // ── Ideas Tab Logic ──
+  var ideasLoaded = false;
+
+  function loadIdeasTab() {
+    fetch('/api/ideas')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        ideasLoaded = true;
+        renderIdeasTab(d.ideas || []);
+      })
+      .catch(function() {
+        ideasLoaded = true;
+        renderIdeasTab([]);
+      });
+  }
+
+  function renderIdeasTab(ideas) {
+    var panel = document.getElementById('panel-ideas');
+
+    if (ideas.length === 0) {
+      panel.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💡</div>' +
+        '<div class="empty-state-title">No ideas yet</div>' +
+        '<div class="empty-state-text">Add ideas to ~/.openclaw/workspace/IDEAS.md or any project\'s IDEAS.md</div></div>';
+      return;
+    }
+
+    // Group by source: global first, then by project name
+    var groups = {};
+    var order = [];
+    for (var i = 0; i < ideas.length; i++) {
+      var src = ideas[i].source || 'global';
+      if (!groups[src]) {
+        groups[src] = [];
+        order.push(src);
+      }
+      groups[src].push(ideas[i]);
+    }
+
+    // Sort: global first, then alphabetical
+    order.sort(function(a, b) {
+      if (a === 'global') return -1;
+      if (b === 'global') return 1;
+      return a.localeCompare(b);
+    });
+
+    var html = '';
+    for (var g = 0; g < order.length; g++) {
+      var src = order[g];
+      var items = groups[src];
+      var label = src === 'global' ? '🌐 Global' : src;
+      html += '<div class="ideas-group">';
+      html += '<div class="ideas-group-header"><span>' + escHtml(label) + '</span>';
+      html += '<span class="ideas-group-count">' + items.length + '</span></div>';
+
+      for (var j = 0; j < items.length; j++) {
+        var idea = items[j];
+        var cardClass = 'idea-card';
+        if (idea.status === 'blocked') cardClass += ' blocked';
+        if (idea.status === 'done') cardClass += ' done';
+
+        var icon = '💡';
+        if (idea.status === 'blocked') icon = '🚫';
+        if (idea.status === 'done') icon = '✅';
+
+        html += '<div class="' + cardClass + '">';
+        html += '<span class="idea-status-icon">' + icon + '</span>';
+        html += '<div class="idea-body">';
+        html += '<div class="idea-title">' + escHtml(idea.title) + '</div>';
+        if (idea.description) {
+          html += '<div class="idea-desc">' + escHtml(idea.description) + '</div>';
+        }
+        if (idea.blocker) {
+          html += '<div class="idea-blocker">⛔ Blocked: ' + escHtml(idea.blocker) + '</div>';
+        }
+        if (idea.doneDate) {
+          html += '<div class="idea-done-date">✓ Completed: ' + escHtml(idea.doneDate) + '</div>';
+        }
+        if (idea.tags && idea.tags.length > 0) {
+          html += '<div class="idea-tags">';
+          for (var t = 0; t < idea.tags.length; t++) {
+            var tagClass = 'idea-tag';
+            if (idea.tags[t].startsWith('blocked:')) tagClass += ' blocked';
+            if (idea.tags[t].startsWith('done:')) tagClass += ' done-tag';
+            html += '<span class="' + tagClass + '">#' + escHtml(idea.tags[t]) + '</span>';
+          }
+          html += '</div>';
+        }
+        html += '</div></div>';
+      }
+      html += '</div>';
+    }
+
+    panel.innerHTML = html;
+  }
+
+  // Hook ideas tab into activation
+  var _prevActivateTab2 = activateTab;
+  activateTab = function(tab) {
+    _prevActivateTab2(tab);
+    if (tab === 'ideas') {
+      loadIdeasTab();
+    }
+  };
+
   // Start polling if overview is the initial tab
   var initTab = getTabFromHash();
   if (initTab === 'overview' || !location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/overview') {
@@ -2360,6 +2580,9 @@
   // Load content tab if it's the initial tab (deep link)
   if (initTab === 'content') {
     loadContentTab();
+  }
+  if (initTab === 'ideas') {
+    loadIdeasTab();
   }
 })();
 </script>

@@ -510,7 +510,7 @@
 
 ### C-008: Ideas System — Global & Per-Project
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M4
 - **Depends:** A-004, A-006
 - **Pass criteria:**
