@@ -220,6 +220,14 @@ function apiIdeas(res) {
   withProjects(res, projects => {
     const result = [];
 
+    // Build lookup: lowercased project name/slug -> display name
+    const projLookup = {};
+    for (const p of projects) {
+      const name = p.name || 'unknown';
+      projLookup[name.toLowerCase()] = name;
+      projLookup[(p.slug || slugify(name))] = name;
+    }
+
     // Global IDEAS.md
     const globalRaw = readSafe(IDEAS_GLOBAL);
     const globalIdeas = parseIdeasMd(globalRaw, 'global');
@@ -232,6 +240,25 @@ function apiIdeas(res) {
       if (!raw) continue;
       const name = p.name || 'unknown';
       result.push(...parseIdeasMd(raw, name));
+    }
+
+    // Re-route ideas with #project:name tags to the named project
+    for (const idea of result) {
+      for (const tag of idea.tags) {
+        if (tag.toLowerCase().startsWith('project:')) {
+          const target = tag.slice(8);
+          const match = projLookup[target.toLowerCase()];
+          if (match) {
+            idea.source = match;
+          } else {
+            // Use the tag value as-is if no project match
+            idea.source = target;
+          }
+          // Remove #project:name from display tags
+          idea.tags = idea.tags.filter(t => t !== tag);
+          break;
+        }
+      }
     }
 
     json(res, 200, { ideas: result });

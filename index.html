@@ -2665,10 +2665,23 @@
     }
 
     // Group by source: global first, then by project name
+    // Also handle #project:name tags client-side as fallback
     var groups = {};
     var order = [];
     for (var i = 0; i < ideas.length; i++) {
       var src = ideas[i].source || 'global';
+      // Check for #project:name tag override (fallback if server didn't process)
+      if (ideas[i].tags) {
+        for (var ti = 0; ti < ideas[i].tags.length; ti++) {
+          var tag = ideas[i].tags[ti];
+          if (tag.toLowerCase().indexOf('project:') === 0) {
+            src = tag.slice(8);
+            // Remove the project tag from display
+            ideas[i].tags = ideas[i].tags.filter(function(t) { return t !== tag; });
+            break;
+          }
+        }
+      }
       if (!groups[src]) {
         groups[src] = [];
         order.push(src);

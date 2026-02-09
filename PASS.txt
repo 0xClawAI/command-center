@@ -1,0 +1,15 @@
+C-008 PASS
+
+All 7 criteria verified:
+1. GET /api/ideas endpoint exists and returns JSON with ideas array
+2. Ideas parsed from global ~/.openclaw/workspace/IDEAS.md and per-project IDEAS.md files
+3. Each idea has: text, title, description, status, tags, source fields
+4. Status supports: open, blocked (#blocked:reason), done (checkbox or #done:date)
+5. Ideas grouped by source (global vs project name) in UI
+6. UI shows status icons, tags, blocker info, done dates
+7. #project:name tags re-route ideas to the named project section (FIXED)
+
+Fix applied:
+- server.js: apiIdeas() now builds a project lookup map and re-routes ideas with
+  #project:name tags to the matching project's source, removing the tag from display
+- index.html: renderIdeasTab() adds client-side fallback for #project:name tag routing
