@@ -1388,6 +1388,110 @@
     border-color: var(--blue);
   }
 
+  /* ── Responsive: Tablet (769px–1024px) ── */
+  @media (min-width: 769px) and (max-width: 1024px) {
+
+    /* -- Navbar: show tab buttons but compact -- */
+    .navbar {
+      padding: 0 16px;
+    }
+
+    .navbar-left {
+      gap: 16px;
+    }
+
+    .tab-btn {
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+
+    /* -- Main content: moderate padding -- */
+    .content {
+      padding: 24px 16px;
+    }
+
+    /* -- Stats bar: 2x2 grid -- */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-card {
+      min-width: 0;
+      padding: 14px 16px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 24px;
+    }
+
+    /* -- Project rows: slightly tighter -- */
+    .project-row {
+      padding: 12px 14px;
+      gap: 10px;
+    }
+
+    .project-row .proj-name {
+      min-width: 100px;
+    }
+
+    .milestone-bar-wrap {
+      width: 120px;
+    }
+
+    /* -- Project sub-tabs: show buttons with wrapping -- */
+    .project-subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .project-subtab {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+
+    /* -- Project info card -- */
+    .project-info-card {
+      padding: 20px;
+    }
+
+    /* -- Kanban board: 2x2 grid -- */
+    .kanban-board {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* -- Cross-project tasks: slightly narrower -- */
+    .cross-tab-task {
+      padding: 10px 14px;
+    }
+
+    /* -- Workers grid: 2-column -- */
+    .workers-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .placeholder-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* -- Agent card -- */
+    .agent-card {
+      padding: 16px;
+    }
+
+    /* -- Prevent horizontal scroll -- */
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    .content {
+      overflow-x: hidden;
+    }
+  }
+
   /* ── Responsive: Mobile (max-width: 768px) ── */
   @media (max-width: 768px) {
 
