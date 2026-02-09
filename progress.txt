@@ -850,3 +850,13 @@ D-005 Kanban Mobile Adaptation: ✅ PASS
 
 32/34 tasks complete. D-007 (README) and D-008 (Final Review) remaining.
 ================================================================================
+
+================================================================================
+[2026-02-09 22:30 PST] D-007 README & Startup — ✅ PASS
+================================================================================
+- README.md created with: description, Node.js prereq, startup command,
+  PORT env var, Tailscale URL, feature list, architecture note
+- Tailscale URL: http://0xs-mac-mini.tailacc337.ts.net:3400/
+- Zero-dependency, 30-second setup documented
+- 33/34 tasks complete. Only D-008 (Final Review) remaining.
+================================================================================

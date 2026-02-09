@@ -5,12 +5,12 @@
   "lastUpdated": "2026-02-09T21:00:00.000Z",
   "progress": {
     "total": 34,
-    "done": 32,
+    "done": 33,
     "inProgress": 0,
     "testing": 0,
     "failed": 0,
     "blocked": 0,
-    "todo": 2
+    "todo": 1
   },
   "milestones": [
     {
@@ -90,7 +90,7 @@
       ],
       "progress": {
         "total": 7,
-        "done": 6
+        "done": 7
       }
     },
     {
@@ -457,7 +457,7 @@
       "id": "D-007",
       "title": "README & Startup",
       "type": "content",
-      "status": "todo",
+      "status": "done",
       "milestone": "M5",
       "assignee": null,
       "depends": []

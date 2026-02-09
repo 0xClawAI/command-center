@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T10:08:00-08:00
 > Status: Planning
-> Progress: 32/34 tasks complete
+> Progress: 33/34 tasks complete
 
 ---
 
@@ -666,14 +666,14 @@
 
 ### D-007: README & Startup
 - **Type:** content
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M5
 - **Depends:** D-002
 - **Pass criteria:**
-  - [ ] `~/projects/command-center/README.md` exists
-  - [ ] README contains: one-line description, prerequisites (Node.js version), startup command (`node server.js`), port configuration (`PORT` env var), Tailscale URL
-  - [ ] Following README instructions from scratch results in working dashboard (test: read README, follow steps, verify dashboard loads)
-  - [ ] README mentions the Tailscale URL format: `http://0xs-mac-mini.tailacc337.ts.net:3400/`
+  - [x] `~/projects/command-center/README.md` exists
+  - [x] README contains: one-line description, prerequisites (Node.js version), startup command (`node server.js`), port configuration (`PORT` env var), Tailscale URL
+  - [x] Following README instructions from scratch results in working dashboard (test: read README, follow steps, verify dashboard loads)
+  - [x] README mentions the Tailscale URL format: `http://0xs-mac-mini.tailacc337.ts.net:3400/`
 - **Fail criteria:**
   - README missing startup command
   - Following README doesn't result in working server
