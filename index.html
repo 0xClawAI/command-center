@@ -2270,30 +2270,24 @@
     </div>
     <div class="tab-nav" id="tabNav">
       <button class="tab-btn active" data-tab="overview">Overview</button>
-      <button class="tab-btn" data-tab="projects">Projects</button>
-      <button class="tab-btn" data-tab="content">Content</button>
-      <button class="tab-btn" data-tab="research">Research</button>
-      <button class="tab-btn" data-tab="ideas">Ideas</button>
-      <button class="tab-btn" data-tab="departments">Departments</button>
       <button class="tab-btn" data-tab="dept-engineering">⚙️ Eng</button>
       <button class="tab-btn" data-tab="dept-content">📝 Content</button>
       <button class="tab-btn" data-tab="dept-research">🔬 Research</button>
       <button class="tab-btn" data-tab="dept-engagement">💬 Engage</button>
       <button class="tab-btn" data-tab="dept-marketing">📈 Mktg</button>
+      <button class="tab-btn" data-tab="ideas">Ideas</button>
+      <button class="tab-btn" data-tab="departments">Departments</button>
       <button class="tab-btn" data-tab="agents">Agents</button>
     </div>
     <select class="mobile-tab-select" id="mobileTabSelect">
       <option value="overview">Overview</option>
-      <option value="projects">Projects</option>
-      <option value="content">Content</option>
-      <option value="research">Research</option>
-      <option value="ideas">Ideas</option>
-      <option value="departments">Departments</option>
       <option value="dept-engineering">⚙️ Engineering</option>
       <option value="dept-content">📝 Content</option>
       <option value="dept-research">🔬 Research</option>
       <option value="dept-engagement">💬 Engagement</option>
       <option value="dept-marketing">📈 Marketing</option>
+      <option value="ideas">Ideas</option>
+      <option value="departments">Departments</option>
       <option value="agents">Agents</option>
     </select>
   </div>
@@ -2326,72 +2320,6 @@
       <div id="overview-attention"></div>
       <div class="section-header">Recent Activity</div>
       <div id="overview-activity"></div>
-    </div>
-  </div>
-
-  <!-- Projects Tab -->
-  <div class="tab-panel" id="panel-projects">
-    <div id="projects-subtabs" class="project-subtabs"></div>
-    <select class="mobile-subtab-select" id="mobileSubtabSelect">
-      <option value="">Select a project...</option>
-    </select>
-    <div id="projects-data"></div>
-    <div id="projects-empty" class="empty-state">
-      <div class="empty-state-icon">📁</div>
-      <div class="empty-state-title">Select a project</div>
-      <div class="empty-state-text">Choose a project from the sub-tabs above to view milestones, tasks, and progress.</div>
-    </div>
-  </div>
-
-  <!-- Content Tab -->
-  <div class="tab-panel" id="panel-content">
-    <div id="content-loading" class="empty-state">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-title">Loading content tasks...</div>
-      <div class="empty-state-text">Cross-project content and marketing tasks will appear here.</div>
-    </div>
-    <div id="content-empty" class="empty-state" style="display:none">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-title">No content tasks found</div>
-      <div class="empty-state-text">No content or marketing tasks exist across your projects.</div>
-    </div>
-    <div id="content-main" style="display:none">
-      <div class="cross-tab-filters" id="content-filters">
-        <select class="cross-tab-select cross-tab-multiselect" id="content-filter-project" multiple><option value="">All Projects</option></select>
-        <select class="cross-tab-select" id="content-filter-type">
-          <option value="">All Types</option>
-          <option value="content">Content</option>
-          <option value="marketing">Marketing</option>
-        </select>
-        <label class="cross-tab-toggle-label"><input type="checkbox" id="content-hide-done"> Hide completed</label>
-      </div>
-      <div id="content-groups"></div>
-    </div>
-  </div>
-
-  <!-- Research Tab -->
-  <div class="tab-panel" id="panel-research">
-    <div id="research-loading" class="empty-state">
-      <div class="empty-state-icon">🔬</div>
-      <div class="empty-state-title">Loading research tasks...</div>
-      <div class="empty-state-text">Cross-project research and analysis tasks will appear here.</div>
-    </div>
-    <div id="research-empty" class="empty-state" style="display:none">
-      <div class="empty-state-icon">🔬</div>
-      <div class="empty-state-title">No research tasks found</div>
-      <div class="empty-state-text">No research or analysis tasks exist across your projects.</div>
-    </div>
-    <div id="research-main" style="display:none">
-      <div class="cross-tab-filters" id="research-filters">
-        <select class="cross-tab-select cross-tab-multiselect" id="research-filter-project" multiple><option value="">All Projects</option></select>
-        <select class="cross-tab-select" id="research-filter-type">
-          <option value="">All Types</option>
-          <option value="research">Research</option>
-          <option value="analysis">Analysis</option>
-        </select>
-        <label class="cross-tab-toggle-label"><input type="checkbox" id="research-hide-done"> Hide completed</label>
-      </div>
-      <div id="research-groups"></div>
     </div>
   </div>
 
@@ -2508,7 +2436,7 @@
   'use strict';
 
   // ── Valid tab routes ──
-  var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'departments', 'dept-engineering', 'dept-content', 'dept-research', 'dept-engagement', 'dept-marketing', 'agents'];
+  var VALID_TABS = ['overview', 'dept-engineering', 'dept-content', 'dept-research', 'dept-engagement', 'dept-marketing', 'ideas', 'departments', 'agents'];
 
   // ── Slug helper ──
   function slugify(name) {
@@ -2664,6 +2592,11 @@
       if (VALID_TABS.indexOf(deptTab) !== -1) return deptTab;
     }
 
+    // Redirect old tab routes to department tabs
+    if (/^#\/projects(\/|$)/.test(hash)) return 'dept-engineering';
+    if (hash === '#/content') return 'dept-content';
+    if (hash === '#/research') return 'dept-research';
+
     var match = hash.match(/^#\/([a-z][a-z0-9-]*)/);
     if (!match) return 'overview';
     var tab = match[1];
@@ -2714,12 +2647,6 @@
       return;
     }
     activateTab(tab);
-    if (tab === 'projects') {
-      var slug = getSlugFromHash();
-      if (slug) {
-        selectProject(slug);
-      }
-    }
   }
 
   // ── Tab button clicks ──
@@ -3733,17 +3660,6 @@
     if (tab === 'overview') {
       startOverviewPolling();
     }
-    if (tab === 'projects') {
-      loadProjectsTab();
-      // Start registry polling (30s)
-      startPollTimer('registry', pollRegistry);
-    }
-    if (tab === 'content') {
-      loadContentTab();
-    }
-    if (tab === 'research') {
-      loadResearchTab();
-    }
     if (tab === 'agents') {
       loadAgentsTab();
     }
@@ -3880,10 +3796,12 @@
     document.getElementById('content-groups').innerHTML = html;
   }
 
-  // Attach filter event listeners
-  document.getElementById('content-filter-project').addEventListener('change', renderContentTab);
-  document.getElementById('content-filter-type').addEventListener('change', renderContentTab);
-  document.getElementById('content-hide-done').addEventListener('change', renderContentTab);
+  // Attach filter event listeners (guarded — panels removed in F-001)
+  if (document.getElementById('content-filter-project')) {
+    document.getElementById('content-filter-project').addEventListener('change', renderContentTab);
+    document.getElementById('content-filter-type').addEventListener('change', renderContentTab);
+    document.getElementById('content-hide-done').addEventListener('change', renderContentTab);
+  }
 
   // ── Research Tab Logic ──
   var researchTasks = [];
@@ -4007,10 +3925,12 @@
     document.getElementById('research-groups').innerHTML = html;
   }
 
-  // Attach research filter event listeners
-  document.getElementById('research-filter-project').addEventListener('change', renderResearchTab);
-  document.getElementById('research-filter-type').addEventListener('change', renderResearchTab);
-  document.getElementById('research-hide-done').addEventListener('change', renderResearchTab);
+  // Attach research filter event listeners (guarded — panels removed in F-001)
+  if (document.getElementById('research-filter-project')) {
+    document.getElementById('research-filter-project').addEventListener('change', renderResearchTab);
+    document.getElementById('research-filter-type').addEventListener('change', renderResearchTab);
+    document.getElementById('research-hide-done').addEventListener('change', renderResearchTab);
+  }
 
   // ── Agents Tab Logic ──
   function loadAgentsTab() {
@@ -4701,36 +4621,38 @@
     mobileTabSelect.value = tab;
   };
 
-  // ── Mobile Project Sub-Tab Dropdown ──
+  // ── Mobile Project Sub-Tab Dropdown (guarded — panel removed in F-001) ──
   var mobileSubtabSelect = document.getElementById('mobileSubtabSelect');
 
-  mobileSubtabSelect.addEventListener('change', function() {
-    var slug = mobileSubtabSelect.value;
-    if (slug) {
-      location.hash = '#/projects/' + slug;
-    }
-  });
+  if (mobileSubtabSelect) {
+    mobileSubtabSelect.addEventListener('change', function() {
+      var slug = mobileSubtabSelect.value;
+      if (slug) {
+        location.hash = '#/projects/' + slug;
+      }
+    });
 
-  // Patch renderSubTabs to also populate mobile dropdown
-  var _origRenderSubTabs = renderSubTabs;
-  renderSubTabs = function(projects) {
-    _origRenderSubTabs(projects);
-    var sorted = sortProjects(projects);
-    var html = '<option value="">Select a project...</option>';
-    for (var i = 0; i < sorted.length; i++) {
-      var p = sorted[i];
-      var slug = p.slug || slugify(p.name);
-      var sel = slug === selectedSlug ? ' selected' : '';
-      html += '<option value="' + escHtml(slug) + '"' + sel + '>' + escHtml(p.name) + '</option>';
-    }
-    mobileSubtabSelect.innerHTML = html;
-  };
+    // Patch renderSubTabs to also populate mobile dropdown
+    var _origRenderSubTabs = renderSubTabs;
+    renderSubTabs = function(projects) {
+      _origRenderSubTabs(projects);
+      var sorted = sortProjects(projects);
+      var html = '<option value="">Select a project...</option>';
+      for (var i = 0; i < sorted.length; i++) {
+        var p = sorted[i];
+        var slug = p.slug || slugify(p.name);
+        var sel = slug === selectedSlug ? ' selected' : '';
+        html += '<option value="' + escHtml(slug) + '"' + sel + '>' + escHtml(p.name) + '</option>';
+      }
+      mobileSubtabSelect.innerHTML = html;
+    };
+  }
 
-  // Patch selectProject to sync mobile dropdown
+  // Patch selectProject to sync mobile dropdown (guarded — panel removed in F-001)
   var _origSelectProject = selectProject;
   selectProject = function(slug) {
     _origSelectProject(slug);
-    mobileSubtabSelect.value = slug;
+    if (mobileSubtabSelect) { mobileSubtabSelect.value = slug; }
   };
 })();
 </script>

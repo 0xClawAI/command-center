@@ -873,7 +873,7 @@
 
 ### F-001: Tab Bar Cleanup & Reorder
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M12
 - **Depends:** E-008
 - **Pass criteria:**
