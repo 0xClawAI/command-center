@@ -2,7 +2,7 @@
 
 > Last updated: 2026-02-09T20:00:00-08:00
 > Status: Phase 6 Active
-> Progress: 42/44 tasks complete
+> Progress: 44/44 tasks complete
 
 ---
 
@@ -873,20 +873,21 @@
 
 ### F-001: Tab Bar Cleanup & Reorder
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M12
 - **Depends:** E-008
+- **Commit:** a6bec50
 - **Pass criteria:**
-  - [ ] Old generic "Projects", "Content", "Research" tabs REMOVED from tab bar (both desktop buttons and mobile select)
-  - [ ] Department tabs with icons remain: ⚙️ Eng, 📝 Content, 🔬 Research, 💬 Engage, 📈 Mktg
-  - [ ] Tab order is exactly: Overview → ⚙️ Eng → 📝 Content → 🔬 Research → 💬 Engage → 📈 Mktg → Ideas → Departments → Agents
-  - [ ] VALID_TABS array updated to remove 'projects', 'content', 'research' and match new order
-  - [ ] Hash routing for #/projects/*, #/content, #/research redirect to appropriate department tabs (⚙️ Eng for projects, 📝 Content dept for content, 🔬 Research dept for research)
-  - [ ] Tab panels for old projects/content/research tabs removed from HTML
-  - [ ] All JS functions referencing old tabs cleaned up or redirected
-  - [ ] Mobile select dropdown matches new tab order
-  - [ ] No JS console errors when navigating all tabs
-  - [ ] Browser back/forward still works correctly
+  - [x] Old generic "Projects", "Content", "Research" tabs REMOVED from tab bar (both desktop buttons and mobile select)
+  - [x] Department tabs with icons remain: ⚙️ Eng, 📝 Content, 🔬 Research, 💬 Engage, 📈 Mktg
+  - [x] Tab order is exactly: Overview → ⚙️ Eng → 📝 Content → 🔬 Research → 💬 Engage → 📈 Mktg → Ideas → Departments → Agents
+  - [x] VALID_TABS array updated to remove 'projects', 'content', 'research' and match new order
+  - [x] Hash routing for #/projects/*, #/content, #/research redirect to appropriate department tabs (⚙️ Eng for projects, 📝 Content dept for content, 🔬 Research dept for research)
+  - [x] Tab panels for old projects/content/research tabs removed from HTML
+  - [x] All JS functions referencing old tabs cleaned up or redirected
+  - [x] Mobile select dropdown matches new tab order
+  - [x] No JS console errors when navigating all tabs
+  - [x] Browser back/forward still works correctly
 - **Fail criteria:**
   - Old "Projects", "Content", "Research" generic tabs still visible
   - Tab order doesn't match spec
@@ -898,20 +899,21 @@
 
 ### F-002: Project View Migration to Engineering Tab
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M12
 - **Depends:** F-001
+- **Commit:** a6bec50
 - **Pass criteria:**
-  - [ ] Engineering department tab (⚙️ Eng) now includes a "Projects" section with the grouped project list (Active/Paused/Complete/Archived with collapsible sections)
-  - [ ] Project list in Engineering tab uses the same renderProjects() logic (or equivalent) as was in Overview
-  - [ ] Each project row shows: status dot, name, progress bar (done/total), last activity time
-  - [ ] Clicking a project in Engineering tab navigates to `#/departments/engineering` with project detail expanded (or opens project detail inline)
-  - [ ] Overview tab NO LONGER shows the project list — only summary stats (stat cards), Needs Attention, and Recent Activity remain
-  - [ ] The "Projects" section header removed from Overview
-  - [ ] Overview `#overview-projects` div removed or hidden
-  - [ ] Engineering tab fetches project state data (stateMap) to render progress bars
-  - [ ] Responsive on mobile (375px) — project list stacks properly in Engineering tab
-  - [ ] No JS console errors
+  - [x] Engineering department tab (⚙️ Eng) now includes a "Projects" section with the grouped project list (Active/Paused/Complete/Archived with collapsible sections)
+  - [x] Project list in Engineering tab uses the same renderProjects() logic (or equivalent) as was in Overview
+  - [x] Each project row shows: status dot, name, progress bar (done/total), last activity time
+  - [x] Clicking a project in Engineering tab navigates to `#/departments/engineering` with project detail expanded (or opens project detail inline)
+  - [x] Overview tab NO LONGER shows the project list — only summary stats (stat cards), Needs Attention, and Recent Activity remain
+  - [x] The "Projects" section header removed from Overview
+  - [x] Overview `#overview-projects` div removed or hidden
+  - [x] Engineering tab fetches project state data (stateMap) to render progress bars
+  - [x] Responsive on mobile (375px) — project list stacks properly in Engineering tab
+  - [x] No JS console errors
 - **Fail criteria:**
   - Project list still appears in Overview tab
   - Engineering tab missing project list
