@@ -556,16 +556,85 @@ function apiDepartmentDetail(res, name) {
       lastUpdated: getFileMtime(path.join(KNOWLEDGE_DIR, f)),
       exists: !!readSafe(path.join(KNOWLEDGE_DIR, f)),
     }));
+
+    // Parse key trends from status
+    if (statusRaw) {
+      const trendsSection = statusRaw.match(/## Key Trends\n([\s\S]*?)(?=\n##|\n$|$)/);
+      if (trendsSection) {
+        const trends = trendsSection[1].split(/^### /m).slice(1).map(t => {
+          const lines = t.split('\n');
+          return { name: lines[0].trim(), detail: lines.slice(1).join(' ').trim().substring(0, 200) };
+        });
+        result.trends = trends;
+      }
+    }
   }
 
   if (name === 'engineering') {
     // Include projects data
     result.projects = loadProjects();
+
+    // Parse active leads table from status.md
+    if (statusRaw) {
+      const leadsSection = statusRaw.match(/## Active Leads\n([\s\S]*?)(?=\n##|\n$|$)/);
+      if (leadsSection) {
+        const rows = leadsSection[1].split('\n').filter(l => l.match(/^\|/) && !l.match(/^[\|\s-]+$/));
+        if (rows.length > 1) {
+          result.activeLeads = rows.slice(1).map(row => {
+            const cols = row.split('|').map(c => c.trim()).filter(Boolean);
+            return { project: cols[0] || '', task: cols[1] || '', priority: cols[2] || '', status: cols[3] || '' };
+          });
+        }
+      }
+
+      // Parse capacity
+      const capacityMatch = statusRaw.match(/(\d+)\/(\d+)\s*lead\s*slots/i);
+      if (capacityMatch) {
+        result.capacity = { used: parseInt(capacityMatch[1]), total: parseInt(capacityMatch[2]) };
+      }
+    }
   }
 
   if (name === 'engagement') {
     result.engagementTracker = readSafe(path.join(CONTENT_DIR, 'engagement-tracker.md'));
     result.pendingReplies = readSafe(path.join(CONTENT_DIR, 'pending-replies.md'));
+
+    // Parse engagement tracker stats
+    const etRaw = readSafe(path.join(CONTENT_DIR, 'engagement-tracker.md'));
+    if (etRaw) {
+      const followersMatch = etRaw.match(/Followers:\s*(\d+)/i);
+      const followingMatch = etRaw.match(/Following:\s*(\d+)/i);
+      const tweetsMatch = etRaw.match(/Tweets:\s*(\d+)/i);
+      result.accountStats = {
+        followers: followersMatch ? parseInt(followersMatch[1]) : 0,
+        following: followingMatch ? parseInt(followingMatch[1]) : 0,
+        tweets: tweetsMatch ? parseInt(tweetsMatch[1]) : 0,
+      };
+
+      // Count mentions
+      const mentionRows = etRaw.match(/^\|[^|]+\|[^|]+\|[^|]+\|/gm);
+      result.mentionsCount = mentionRows ? Math.max(0, mentionRows.length - 2) : 0;
+
+      // Count draft replies from outbox
+      const draftCount = (outboxRaw && outboxRaw.match(/Draft \d+/g)) || [];
+      result.draftRepliesCount = draftCount.length;
+    }
+  }
+
+  if (name === 'marketing') {
+    const timingRaw = readSafe(path.join(base, 'timing-data.json'));
+    if (timingRaw) {
+      try { result.timingData = JSON.parse(timingRaw); } catch {}
+    }
+    const playbookRaw = readSafe(path.join(base, 'distribution-playbook.md'));
+    if (playbookRaw) {
+      const insights = [];
+      const bulletMatches = playbookRaw.match(/^[-*]\s+\*\*[^*]+\*\*/gm) || [];
+      for (var b of bulletMatches.slice(0, 5)) {
+        insights.push(b.replace(/^[-*]\s+/, '').replace(/\*\*/g, ''));
+      }
+      result.playbookInsights = insights;
+    }
   }
 
   json(res, 200, result);

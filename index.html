@@ -2133,6 +2133,130 @@
     text-align: center; padding: 32px; color: var(--text-dim);
     font-size: 14px; font-style: italic;
   }
+
+  /* E-004: Content Pipeline */
+  .dept-pipeline { grid-column: 1 / -1; }
+  .dept-pipeline-cols {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+  }
+  @media (max-width: 768px) {
+    .dept-pipeline-cols { grid-template-columns: 1fr; }
+  }
+  .dept-pipeline-col {
+    background: var(--surface2); border-radius: 8px; padding: 12px;
+  }
+  .dept-pipeline-col h4 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .pipeline-dot {
+    width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0;
+  }
+  .pipeline-dot.green { background: var(--green); }
+  .pipeline-dot.yellow { background: var(--yellow); }
+  .pipeline-dot.gray { background: var(--text-dim); }
+  .pipeline-item {
+    font-size: 13px; padding: 6px 8px; margin-bottom: 4px;
+    border-left: 3px solid var(--border); background: var(--surface);
+    border-radius: 0 4px 4px 0; line-height: 1.4;
+  }
+  .pipeline-item.published { border-left-color: var(--green); }
+  .pipeline-item.queued { border-left-color: var(--yellow); }
+  .pipeline-item.draft { border-left-color: var(--text-dim); }
+  .pipeline-item .pipeline-date {
+    font-size: 11px; color: var(--text-dim); display: block;
+  }
+
+  /* E-005: Engagement Stats */
+  .dept-stat-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .dept-mini-stat {
+    flex: 1; min-width: 80px; text-align: center;
+    background: var(--surface2); border-radius: 8px; padding: 12px 8px;
+  }
+  .dept-mini-stat .stat-val {
+    font-size: 20px; font-weight: 700; color: var(--text);
+  }
+  .dept-mini-stat .stat-label {
+    font-size: 11px; color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 4px;
+  }
+
+  /* E-006: Timing windows */
+  .dept-timing-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+    font-size: 13px;
+  }
+  .dept-timing-item:last-child { border-bottom: none; }
+  .dept-timing-rank {
+    font-size: 11px; font-weight: 700; color: var(--yellow);
+    background: rgba(210,153,34,0.15); border-radius: 4px;
+    width: 22px; height: 22px; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .dept-insight-item {
+    font-size: 13px; padding: 6px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+    line-height: 1.4;
+  }
+  .dept-insight-item:last-child { border-bottom: none; }
+
+  /* E-007: Research cards */
+  .dept-research-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 18px; margin-bottom: 8px;
+  }
+  .dept-research-card .research-title { font-weight: 600; font-size: 14px; }
+  .dept-research-badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;
+    display: inline-block; margin-left: 8px;
+  }
+  .dept-research-badge.quick { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .dept-research-badge.deep { background: rgba(188,140,255,0.15); color: var(--purple); }
+  .dept-research-preview {
+    font-size: 13px; color: var(--text-dim); margin-top: 6px;
+    line-height: 1.4; max-height: 60px; overflow: hidden;
+  }
+  .dept-trend-item {
+    padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+  }
+  .dept-trend-item:last-child { border-bottom: none; }
+  .dept-trend-name { font-weight: 600; font-size: 14px; color: var(--text); }
+  .dept-trend-detail { font-size: 13px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+  /* E-008: Capacity bar */
+  .dept-capacity-bar-wrap {
+    background: var(--surface2); border-radius: 6px; height: 24px;
+    overflow: hidden; position: relative; margin-top: 8px;
+  }
+  .dept-capacity-bar-fill {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+    transition: width 0.3s;
+  }
+  .dept-capacity-label {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+  }
+  .dept-lead-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.3);
+  }
+  .dept-lead-card:last-child { border-bottom: none; }
+  .dept-lead-project { font-weight: 600; font-size: 14px; flex: 1; }
+  .dept-lead-priority {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;
+  }
+  .dept-lead-priority.high { background: rgba(248,81,73,0.15); color: var(--red); }
+  .dept-lead-priority.medium { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .dept-lead-priority.low { background: rgba(63,185,80,0.15); color: var(--green); }
+  .dept-lead-status {
+    font-size: 12px; color: var(--text-dim);
+  }
 </style>
 </head>
 <body>
@@ -4233,6 +4357,37 @@
     var html = '<div class="dept-detail-grid">';
     html += renderStatusCards(data.status);
 
+    // Active Leads (E-008)
+    html += '<div class="dept-detail-card"><h3>👷 Active Leads</h3>';
+    if (data.activeLeads && data.activeLeads.length) {
+      for (var i = 0; i < data.activeLeads.length; i++) {
+        var lead = data.activeLeads[i];
+        var pClass = lead.priority.toLowerCase().indexOf('high') !== -1 ? 'high' : lead.priority.toLowerCase().indexOf('medium') !== -1 ? 'medium' : 'low';
+        html += '<div class="dept-lead-card">';
+        html += '<span class="dept-lead-project">' + escHtml(lead.project) + '</span>';
+        html += '<span class="dept-lead-priority ' + pClass + '">' + escHtml(lead.priority) + '</span>';
+        html += '<span class="dept-lead-status">' + escHtml(lead.status) + '</span>';
+        html += '</div>';
+      }
+    } else {
+      html += '<div class="dept-placeholder">No active leads</div>';
+    }
+    html += '</div>';
+
+    // Capacity (E-008)
+    html += '<div class="dept-detail-card"><h3>⚡ Capacity</h3>';
+    if (data.capacity) {
+      var pct = data.capacity.total > 0 ? Math.round((data.capacity.used / data.capacity.total) * 100) : 0;
+      html += '<div style="font-size:14px;margin-bottom:8px;">' + data.capacity.used + ' / ' + data.capacity.total + ' lead slots in use</div>';
+      html += '<div class="dept-capacity-bar-wrap">';
+      html += '<div class="dept-capacity-bar-fill" style="width:' + pct + '%"></div>';
+      html += '<div class="dept-capacity-label">' + pct + '%</div>';
+      html += '</div>';
+    } else {
+      html += '<div class="dept-placeholder">Capacity data unavailable</div>';
+    }
+    html += '</div>';
+
     // Projects
     if (data.projects && data.projects.length) {
       html += '<div class="dept-detail-card"><h3>📁 Projects</h3>';
@@ -4261,7 +4416,64 @@
     var html = '<div class="dept-detail-grid">';
     html += renderStatusCards(data.status);
 
-    // Posted tweets
+    // Content Pipeline (E-004)
+    var publishedCount = (data.postedLog && data.postedLog.length) || 0;
+    var queueCount = (data.status.queue && data.status.queue.length) || 0;
+    var draftCount = 0;
+    if (data.tweetIdeas) {
+      for (var d = 0; d < data.tweetIdeas.length; d++) {
+        if (!data.tweetIdeas[d].posted) draftCount++;
+      }
+    }
+    html += '<div class="dept-detail-card dept-pipeline"><h3>📅 Content Pipeline</h3>';
+    html += '<div class="dept-pipeline-cols">';
+
+    // Published column
+    html += '<div class="dept-pipeline-col">';
+    html += '<h4><span class="pipeline-dot green"></span>Published (' + publishedCount + ')</h4>';
+    if (data.postedLog && data.postedLog.length) {
+      for (var i = 0; i < Math.min(data.postedLog.length, 8); i++) {
+        var t = data.postedLog[i];
+        html += '<div class="pipeline-item published">' + escHtml(t.title);
+        if (t.pillar) html += '<span class="pipeline-date">' + escHtml(t.pillar) + '</span>';
+        html += '</div>';
+      }
+    } else {
+      html += '<div style="font-size:13px;color:var(--text-dim);padding:8px 0;">No posts yet</div>';
+    }
+    html += '</div>';
+
+    // Scheduled/Queue column
+    html += '<div class="dept-pipeline-col">';
+    html += '<h4><span class="pipeline-dot yellow"></span>Queued (' + queueCount + ')</h4>';
+    if (data.status.queue && data.status.queue.length) {
+      for (var i = 0; i < data.status.queue.length; i++) {
+        html += '<div class="pipeline-item queued">' + escHtml(data.status.queue[i]) + '</div>';
+      }
+    } else {
+      html += '<div style="font-size:13px;color:var(--text-dim);padding:8px 0;">Queue empty</div>';
+    }
+    html += '</div>';
+
+    // Ideas/Drafts column
+    html += '<div class="dept-pipeline-col">';
+    html += '<h4><span class="pipeline-dot gray"></span>Ideas/Drafts (' + draftCount + ')</h4>';
+    if (data.tweetIdeas && data.tweetIdeas.length) {
+      var shown = 0;
+      for (var i = 0; i < data.tweetIdeas.length && shown < 8; i++) {
+        if (!data.tweetIdeas[i].posted) {
+          html += '<div class="pipeline-item draft">' + escHtml(data.tweetIdeas[i].title) + '</div>';
+          shown++;
+        }
+      }
+    } else {
+      html += '<div style="font-size:13px;color:var(--text-dim);padding:8px 0;">No ideas yet</div>';
+    }
+    html += '</div>';
+
+    html += '</div></div>'; // close pipeline-cols and card
+
+    // Posted tweets (existing detail view)
     if (data.postedLog && data.postedLog.length) {
       html += '<div class="dept-detail-card dept-full-width"><h3>🐦 Posted Tweets</h3>';
       for (var i = 0; i < data.postedLog.length; i++) {
@@ -4309,6 +4521,19 @@
     var html = '<div class="dept-detail-grid">';
     html += renderStatusCards(data.status);
 
+    // Key Trends (E-007)
+    if (data.trends && data.trends.length) {
+      html += '<div class="dept-detail-card dept-full-width"><h3>📈 Key Trends</h3>';
+      for (var i = 0; i < data.trends.length; i++) {
+        var trend = data.trends[i];
+        html += '<div class="dept-trend-item">';
+        html += '<div class="dept-trend-name">' + escHtml(trend.name) + '</div>';
+        if (trend.detail) html += '<div class="dept-trend-detail">' + escHtml(trend.detail) + '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
     // Knowledge base status
     if (data.knowledgeBase && data.knowledgeBase.length) {
       html += '<div class="dept-detail-card"><h3>📚 Knowledge Base</h3>';
@@ -4324,8 +4549,23 @@
 
     html += '</div>';
 
-    html += '<div class="section-header">📤 Recent Findings</div>';
-    html += renderEntries(data.outbox, 'outbox');
+    // Research Findings browser (E-007)
+    html += '<div class="section-header">🔬 Research Findings</div>';
+    if (data.outbox && data.outbox.length) {
+      for (var i = 0; i < data.outbox.length; i++) {
+        var entry = data.outbox[i];
+        var isDeep = entry.title && (entry.title.toLowerCase().indexOf('deep') !== -1 || entry.title.toLowerCase().indexOf('analysis') !== -1 || entry.title.toLowerCase().indexOf('report') !== -1);
+        html += '<div class="dept-research-card">';
+        html += '<span class="research-title">' + escHtml(entry.title || 'Untitled') + '</span>';
+        html += '<span class="dept-research-badge ' + (isDeep ? 'deep' : 'quick') + '">' + (isDeep ? 'Deep Dive' : 'Quick Finding') + '</span>';
+        if (entry.timestamp) html += '<span style="font-size:11px;color:var(--text-dim);margin-left:8px;">' + escHtml(entry.timestamp) + '</span>';
+        if (entry.body) html += '<div class="dept-research-preview">' + escHtml(entry.body.substring(0, 200)) + '</div>';
+        html += '</div>';
+      }
+    } else {
+      html += '<div class="dept-placeholder">No research findings yet</div>';
+    }
+
     html += '<div class="section-header">📥 Inbox</div>';
     html += renderEntries(data.inbox, 'inbox');
     return html;
@@ -4335,12 +4575,37 @@
     var html = '<div class="dept-detail-grid">';
     html += renderStatusCards(data.status);
 
-    // Placeholder sections
-    html += '<div class="dept-detail-card"><h3>🤝 Relationship Tracker</h3>';
-    html += '<div class="dept-placeholder">Coming soon — will track key accounts and interactions</div></div>';
+    // Account Stats (E-005)
+    html += '<div class="dept-detail-card"><h3>📊 Account Stats</h3>';
+    if (data.accountStats) {
+      html += '<div class="dept-stat-row">';
+      html += '<div class="dept-mini-stat"><div class="stat-val">' + escHtml(String(data.accountStats.followers)) + '</div><div class="stat-label">Followers</div></div>';
+      html += '<div class="dept-mini-stat"><div class="stat-val">' + escHtml(String(data.accountStats.following)) + '</div><div class="stat-label">Following</div></div>';
+      html += '<div class="dept-mini-stat"><div class="stat-val">' + escHtml(String(data.accountStats.tweets)) + '</div><div class="stat-label">Tweets</div></div>';
+      html += '</div>';
+    } else {
+      html += '<div class="dept-placeholder">No account stats available</div>';
+    }
+    html += '</div>';
 
-    html += '<div class="dept-detail-card"><h3>📊 Reply Metrics</h3>';
-    html += '<div class="dept-placeholder">Coming soon — replies sent, responses received</div></div>';
+    // Activity Summary (E-005)
+    html += '<div class="dept-detail-card"><h3>🤝 Activity Summary</h3>';
+    var mentionsCount = data.mentionsCount || 0;
+    var draftReplies = data.draftRepliesCount || 0;
+    html += '<div class="dept-stat-row">';
+    html += '<div class="dept-mini-stat"><div class="stat-val">' + mentionsCount + '</div><div class="stat-label">Mentions</div></div>';
+    html += '<div class="dept-mini-stat"><div class="stat-val">' + draftReplies + '</div><div class="stat-label">Draft Replies</div></div>';
+    html += '</div>';
+    // Engagement approaches from status
+    if (data.status.workingItems && data.status.workingItems.length) {
+      html += '<div style="margin-top:12px;font-size:12px;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-dim);margin-bottom:8px;">Current Approaches</div>';
+      html += '<ul>';
+      for (var i = 0; i < Math.min(data.status.workingItems.length, 5); i++) {
+        html += '<li>' + escHtml(data.status.workingItems[i]) + '</li>';
+      }
+      html += '</ul>';
+    }
+    html += '</div>';
 
     html += '</div>';
 
@@ -4355,11 +4620,45 @@
     var html = '<div class="dept-detail-grid">';
     html += renderStatusCards(data.status);
 
-    html += '<div class="dept-detail-card"><h3>📊 Audience Analytics</h3>';
-    html += '<div class="dept-placeholder">Coming soon — follower growth, engagement rates</div></div>';
+    // Campaign Status (E-006) — from status cards already shown above
+    // Optimal Posting Times
+    html += '<div class="dept-detail-card"><h3>🕐 Optimal Posting Times</h3>';
+    if (data.timingData && data.timingData.bestTimes && data.timingData.bestTimes.length) {
+      for (var i = 0; i < Math.min(data.timingData.bestTimes.length, 3); i++) {
+        html += '<div class="dept-timing-item">';
+        html += '<span class="dept-timing-rank">' + (i + 1) + '</span>';
+        html += '<span>' + escHtml(data.timingData.bestTimes[i]) + '</span>';
+        html += '</div>';
+      }
+      if (data.timingData.avgEngagementRate) {
+        html += '<div style="margin-top:10px;font-size:12px;color:var(--text-dim);">Avg engagement rate: <span style="color:var(--green);font-weight:600;">' + escHtml(String((data.timingData.avgEngagementRate * 100).toFixed(1))) + '%</span></div>';
+      }
+    } else {
+      html += '<div class="dept-placeholder">No timing data available</div>';
+    }
+    html += '</div>';
 
-    html += '<div class="dept-detail-card"><h3>🧪 Growth Experiments</h3>';
-    html += '<div class="dept-placeholder">Coming soon — A/B tests, timing optimization</div></div>';
+    // Playbook Insights
+    html += '<div class="dept-detail-card"><h3>📖 Playbook Insights</h3>';
+    if (data.playbookInsights && data.playbookInsights.length) {
+      for (var i = 0; i < data.playbookInsights.length; i++) {
+        html += '<div class="dept-insight-item">' + escHtml(data.playbookInsights[i]) + '</div>';
+      }
+    } else {
+      html += '<div class="dept-placeholder">No playbook insights available</div>';
+    }
+    html += '</div>';
+
+    // Worst Times to Post (if available)
+    if (data.timingData && data.timingData.worstTimes && data.timingData.worstTimes.length) {
+      html += '<div class="dept-detail-card"><h3>🚫 Avoid Posting At</h3>';
+      for (var i = 0; i < Math.min(data.timingData.worstTimes.length, 3); i++) {
+        html += '<div class="dept-timing-item">';
+        html += '<span style="font-size:13px;">' + escHtml(data.timingData.worstTimes[i]) + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
 
     html += '</div>';
 

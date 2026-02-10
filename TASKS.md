@@ -781,7 +781,7 @@
 
 ### E-004: Content Department — Content Calendar View
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M11
 - **Depends:** E-003
 - **Pass criteria:**
@@ -797,7 +797,7 @@
 
 ### E-005: Engagement Department — Engagement Tracker
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M11
 - **Depends:** E-003
 - **Pass criteria:**
@@ -813,7 +813,7 @@
 
 ### E-006: Marketing Department — Marketing Analytics
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M11
 - **Depends:** E-003
 - **Pass criteria:**
@@ -829,7 +829,7 @@
 
 ### E-007: Research Department — Research Browser
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M11
 - **Depends:** E-003
 - **Pass criteria:**
@@ -845,7 +845,7 @@
 
 ### E-008: Engineering Department — Lead/Worker Status
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M11
 - **Depends:** E-003
 - **Pass criteria:**
