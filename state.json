@@ -2,15 +2,15 @@
   "project": "Command Center",
   "type": "product",
   "status": "active",
-  "lastUpdated": "2026-02-09T23:20:00.000Z",
+  "lastUpdated": "2026-02-10T00:15:00.000Z",
   "progress": {
     "total": 42,
-    "done": 34,
+    "done": 37,
     "inProgress": 0,
-    "testing": 2,
+    "testing": 0,
     "failed": 0,
     "blocked": 0,
-    "todo": 6
+    "todo": 5
   },
   "milestones": [
     {
@@ -71,7 +71,7 @@
       "id": "M10",
       "name": "Departments Overview",
       "tasks": ["E-001", "E-002", "E-003"],
-      "progress": { "total": 3, "done": 0 }
+      "progress": { "total": 3, "done": 3 }
     },
     {
       "id": "M11",
@@ -85,7 +85,7 @@
     { "name": "Project Migration", "status": "complete", "tasks": 7, "done": 7 },
     { "name": "Full Dashboard", "status": "complete", "tasks": 9, "done": 9 },
     { "name": "Polish & Ship", "status": "complete", "tasks": 8, "done": 8 },
-    { "name": "Organization Dashboard", "status": "active", "tasks": 8, "done": 0 }
+    { "name": "Organization Dashboard", "status": "active", "tasks": 8, "done": 3 }
   ],
   "tasks": [
     { "id": "A-001", "title": "API Server — Core HTTP + Static Serving", "type": "code", "status": "done", "milestone": "M1", "assignee": null, "depends": [] },
@@ -122,9 +122,9 @@
     { "id": "D-006", "title": "Edge Case Handling", "type": "code", "status": "done", "milestone": "M5", "assignee": null, "depends": [] },
     { "id": "D-007", "title": "README & Startup", "type": "content", "status": "done", "milestone": "M5", "assignee": null, "depends": [] },
     { "id": "D-008", "title": "Final Review & Ship", "type": "ops", "status": "done", "milestone": "M9", "assignee": null, "depends": [] },
-    { "id": "E-001", "title": "Departments Overview Tab", "type": "code", "status": "testing", "milestone": "M10", "assignee": null, "depends": [] },
-    { "id": "E-002", "title": "Per-Department Detail Tabs", "type": "code", "status": "testing", "milestone": "M10", "assignee": null, "depends": ["E-001"] },
-    { "id": "E-003", "title": "Supervisor Review of E-001 + E-002", "type": "review", "status": "todo", "milestone": "M10", "assignee": null, "depends": ["E-001", "E-002"] },
+    { "id": "E-001", "title": "Departments Overview Tab", "type": "code", "status": "done", "milestone": "M10", "assignee": null, "depends": [] },
+    { "id": "E-002", "title": "Per-Department Detail Tabs", "type": "code", "status": "done", "milestone": "M10", "assignee": null, "depends": ["E-001"] },
+    { "id": "E-003", "title": "Supervisor Review of E-001 + E-002", "type": "review", "status": "done", "milestone": "M10", "assignee": null, "depends": ["E-001", "E-002"] },
     { "id": "E-004", "title": "Content Department — Content Calendar View", "type": "code", "status": "todo", "milestone": "M11", "assignee": null, "depends": ["E-003"] },
     { "id": "E-005", "title": "Engagement Department — Engagement Tracker", "type": "code", "status": "todo", "milestone": "M11", "assignee": null, "depends": ["E-003"] },
     { "id": "E-006", "title": "Marketing Department — Marketing Analytics", "type": "code", "status": "todo", "milestone": "M11", "assignee": null, "depends": ["E-003"] },

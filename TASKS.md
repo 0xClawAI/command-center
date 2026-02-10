@@ -1,8 +1,8 @@
 # TASKS.md — Command Center
 
-> Last updated: 2026-02-09T15:20:00-08:00
+> Last updated: 2026-02-09T16:15:00-08:00
 > Status: Phase 5 Active
-> Progress: 36/42 tasks complete
+> Progress: 39/42 tasks complete
 
 ---
 
@@ -718,19 +718,19 @@
 
 ### E-001: Departments Overview Tab
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M10
 - **Depends:** A-005, A-006
-- **Commit:** b47d80d
+- **Commit:** 713db6b
 - **Pass criteria:**
-  - [ ] Departments tab appears in main navigation alongside existing tabs
-  - [ ] Each department (Content, Engagement, Marketing, Research, Engineering) rendered as a card
-  - [ ] Each card shows department name, lead name, worker count
-  - [ ] Activity feed section shows recent department activity
-  - [ ] Cards use design system colors and dark theme consistently
-  - [ ] Responsive layout on mobile (375px) — cards stack vertically
-  - [ ] No JS console errors when navigating to Departments tab
-  - [ ] Hash routing works: `#/departments` loads the tab
+  - [x] Departments tab appears in main navigation alongside existing tabs
+  - [x] Each department (Content, Engagement, Marketing, Research, Engineering) rendered as a card
+  - [x] Each card shows department name, lead name, worker count
+  - [x] Activity feed section shows recent department activity
+  - [x] Cards use design system colors and dark theme consistently
+  - [x] Responsive layout on mobile (375px) — cards stack vertically
+  - [x] No JS console errors when navigating to Departments tab
+  - [x] Hash routing works: `#/departments` loads the tab
 - **Fail criteria:**
   - Departments tab missing from navigation
   - Cards don't render or show broken/placeholder data
@@ -738,46 +738,46 @@
   - Not responsive on mobile
   - Breaks existing tabs' functionality
 - **Files:** `~/projects/command-center/index.html`
-- **Notes:** Already built in commit b47d80d. Needs supervisor review.
+- **Notes:** Supervisor verified (3 iterations, 2 hotfixes). All criteria pass.
 
 ### E-002: Per-Department Detail Tabs
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M10
 - **Depends:** E-001
-- **Commit:** d683975
+- **Commit:** 713db6b
 - **Pass criteria:**
-  - [ ] Clicking a department card opens a detail view for that department
-  - [ ] Detail view shows department-specific information (org files, status, members)
-  - [ ] Back navigation returns to departments overview
-  - [ ] URL updates to `#/departments/<dept-name>` when viewing a department
-  - [ ] Deep linking works: pasting URL with `#/departments/engineering` loads that department
-  - [ ] Responsive on mobile
-  - [ ] No JS console errors
+  - [x] Clicking a department card opens a detail view for that department
+  - [x] Detail view shows department-specific information (org files, status, members)
+  - [x] Back navigation returns to departments overview
+  - [x] URL updates to `#/departments/<dept-name>` when viewing a department
+  - [x] Deep linking works: pasting URL with `#/departments/engineering` loads that department
+  - [x] Responsive on mobile
+  - [x] No JS console errors
 - **Fail criteria:**
   - Click on department card does nothing
   - No back navigation
   - Hash routing broken for department detail views
   - Breaks existing functionality
 - **Files:** `~/projects/command-center/index.html`
-- **Notes:** Already built in commit d683975. Needs supervisor review.
+- **Notes:** Supervisor verified. Fixed dept.slug→dept.name and routing priority.
 
 ### E-003: Supervisor Review of E-001 + E-002
 - **Type:** review
-- **Status:** ⬜ todo
+- **Status:** ✅ done
 - **Milestone:** M10
 - **Depends:** E-001, E-002
 - **Pass criteria:**
-  - [ ] All E-001 pass criteria verified with evidence
-  - [ ] All E-002 pass criteria verified with evidence
-  - [ ] No regressions in existing tabs (Overview, Projects, Content, Research, Agents)
-  - [ ] Code quality acceptable (no dead code, consistent style)
+  - [x] All E-001 pass criteria verified with evidence
+  - [x] All E-002 pass criteria verified with evidence
+  - [x] No regressions in existing tabs (Overview, Projects, Content, Research, Agents)
+  - [x] Code quality acceptable (no dead code, consistent style)
 - **Fail criteria:**
   - Any E-001 or E-002 pass criterion not met
   - Regressions in existing functionality
   - Console errors present
 - **Files:** `~/projects/command-center/index.html`
-- **Notes:** Supervisor must test both commits together on current HEAD
+- **Notes:** 3 supervisor iterations. v1 found dept.slug bug, v2 found routing priority bug, v3 PASSED all criteria.
 
 ### E-004: Content Department — Content Calendar View
 - **Type:** code
