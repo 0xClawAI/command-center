@@ -2,10 +2,10 @@
   "project": "Command Center",
   "type": "product",
   "status": "active",
-  "lastUpdated": "2026-02-10T00:35:00.000Z",
+  "lastUpdated": "2026-02-10T01:35:00.000Z",
   "progress": {
-    "total": 42,
-    "done": 42,
+    "total": 44,
+    "done": 44,
     "inProgress": 0,
     "testing": 0,
     "failed": 0,
@@ -78,6 +78,12 @@
       "name": "Department Enhancements",
       "tasks": ["E-004", "E-005", "E-006", "E-007", "E-008"],
       "progress": { "total": 5, "done": 5 }
+    },
+    {
+      "id": "M12",
+      "name": "Tab Cleanup & Project View Migration",
+      "tasks": ["F-001", "F-002"],
+      "progress": { "total": 2, "done": 2 }
     }
   ],
   "phases": [
@@ -85,7 +91,8 @@
     { "name": "Project Migration", "status": "complete", "tasks": 7, "done": 7 },
     { "name": "Full Dashboard", "status": "complete", "tasks": 9, "done": 9 },
     { "name": "Polish & Ship", "status": "complete", "tasks": 8, "done": 8 },
-    { "name": "Organization Dashboard", "status": "complete", "tasks": 8, "done": 8 }
+    { "name": "Organization Dashboard", "status": "complete", "tasks": 8, "done": 8 },
+    { "name": "Tab Cleanup & Project View Migration", "status": "complete", "tasks": 2, "done": 2 }
   ],
   "tasks": [
     { "id": "A-001", "title": "API Server — Core HTTP + Static Serving", "type": "code", "status": "done", "milestone": "M1", "assignee": null, "depends": [] },
@@ -129,12 +136,15 @@
     { "id": "E-005", "title": "Engagement Department — Engagement Tracker", "type": "code", "status": "done", "milestone": "M11", "assignee": null, "depends": ["E-003"] },
     { "id": "E-006", "title": "Marketing Department — Marketing Analytics", "type": "code", "status": "done", "milestone": "M11", "assignee": null, "depends": ["E-003"] },
     { "id": "E-007", "title": "Research Department — Research Browser", "type": "code", "status": "done", "milestone": "M11", "assignee": null, "depends": ["E-003"] },
-    { "id": "E-008", "title": "Engineering Department — Lead/Worker Status", "type": "code", "status": "done", "milestone": "M11", "assignee": null, "depends": ["E-003"] }
+    { "id": "E-008", "title": "Engineering Department — Lead/Worker Status", "type": "code", "status": "done", "milestone": "M11", "assignee": null, "depends": ["E-003"] },
+    { "id": "F-001", "title": "Tab Bar Cleanup & Reorder", "type": "code", "status": "done", "milestone": "M12", "assignee": null, "depends": ["E-008"] },
+    { "id": "F-002", "title": "Project View Migration to Engineering Tab", "type": "code", "status": "done", "milestone": "M12", "assignee": null, "depends": ["F-001"] }
   ],
   "workers": [],
   "activity": [
     { "type": "start", "message": "Sprint 1 started. Phase 1 in progress.", "time": "2026-02-09T10:15:00-08:00" },
     { "type": "phase", "message": "Phase 5 (Organization Dashboard) tasks added. E-001, E-002 in testing.", "time": "2026-02-09T15:20:00-08:00" },
-    { "type": "complete", "message": "Phase 5 complete! All 42/42 tasks done. Departments tab live with 5 department detail views.", "time": "2026-02-09T16:35:00-08:00" }
+    { "type": "complete", "message": "Phase 5 complete! All 42/42 tasks done. Departments tab live with 5 department detail views.", "time": "2026-02-09T16:35:00-08:00" },
+    { "type": "complete", "message": "Phase 6 complete! Tab cleanup done. Old generic tabs removed, department tabs reordered, project list migrated to Engineering tab. 44/44 tasks done.", "time": "2026-02-09T17:35:00-08:00" }
   ]
 }

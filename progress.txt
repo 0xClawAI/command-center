@@ -949,3 +949,63 @@ All milestones complete:
 Full project status: 42/42 tasks done across 5 phases.
 Dashboard: http://0xs-mac-mini.tailacc337.ts.net:3400/
 ================================================================================
+
+================================================================================
+[2026-02-09 17:25 PST] F-001 (Tab Bar Cleanup & Reorder) — COMPLETED
+Worker: Code Worker (Opus 4.6, worktree wt-F-001)
+Commit: 9a19cc7 "[F-001] Tab bar cleanup — remove old Projects/Content/Research tabs, reorder to spec"
+Files: index.html, TASKS.md
+--------------------------------------------------------------------------------
+Removed old generic "Projects", "Content", "Research" tab buttons from both
+desktop nav and mobile select. Reordered tabs to:
+Overview → ⚙️ Eng → 📝 Content → 🔬 Research → 💬 Engage → 📈 Mktg → Ideas → Departments → Agents
+
+Updated VALID_TABS array. Added hash redirects: #/projects/* → dept-engineering,
+#/content → dept-content, #/research → dept-research. Removed old tab panel HTML.
+Cleaned up activateTab overrides. Added null guards for removed DOM elements.
+Left dead JS functions in place (loadContentTab, loadResearchTab, selectProject etc.)
+for safety — they're unreachable but deleting risks breaking references.
+================================================================================
+
+================================================================================
+[2026-02-09 17:25 PST] F-001 — VERIFIED ✅
+Supervisor: All 10 pass criteria met with evidence. No fail criteria triggered.
+Notes: Dead code noted as cosmetic tech debt, not a correctness issue.
+================================================================================
+
+================================================================================
+[2026-02-09 17:30 PST] F-002 (Project View Migration to Engineering Tab) — COMPLETED
+Worker: Code Worker (Opus 4.6, worktree wt-F-002)
+Commit: 66187c8 "[F-002] Project view migration — move grouped project list from Overview to Engineering tab"
+Files: index.html, TASKS.md
+--------------------------------------------------------------------------------
+Moved the grouped project list (Active/Paused/Complete/Archived with collapsible
+sections and progress bars) from Overview into the Engineering department tab.
+
+Changes:
+1. Removed project list HTML and section header from Overview panel
+2. Removed renderProjects() call from finishRender()
+3. Added targetEl parameter to renderProjects() with null guard
+4. Replaced simple mini project list in renderEngineering() with full grouped list
+5. Added loadEngProjectList() function that fetches /api/projects + per-project
+   state data to build stateMap, then calls renderProjects() targeting #eng-projects
+6. Connected loadEngProjectList() to loadDeptDetailTab('engineering') flow
+
+Overview now shows only: stats cards, Needs Attention, Recent Activity.
+Engineering tab now has the full project portfolio with progress bars.
+================================================================================
+
+================================================================================
+[2026-02-09 17:32 PST] F-002 — VERIFIED ✅
+Supervisor: All 10 pass criteria met with evidence. No fail criteria triggered.
+Notes: Dead fallback to overview-projects in renderProjects() protected by null guard.
+================================================================================
+
+================================================================================
+[2026-02-09 17:35 PST] PHASE COMPLETE — Tab Cleanup & Project View Migration
+Tasks: 2/2 verified ✅
+Duration: ~25 minutes
+Key deliverables: Clean tab bar with 9 tabs, project list in Engineering dept tab
+Learnings: Keeping dead code with null guards is safer than aggressive cleanup
+when multiple functions reference each other.
+================================================================================
