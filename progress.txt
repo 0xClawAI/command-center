@@ -949,3 +949,47 @@ All milestones complete:
 Full project status: 42/42 tasks done across 5 phases.
 Dashboard: http://0xs-mac-mini.tailacc337.ts.net:3400/
 ================================================================================
+
+================================================================================
+[2026-02-09 23:00 PST] F-001/F-002: Tab Cleanup & Project View Migration
+Lead: code-worker (Opus 4.6)
+--------------------------------------------------------------------------------
+Phase 6 implementation — cleaned up tab bar and migrated project list to
+Engineering tab.
+
+F-001 (Tab Bar Cleanup & Reorder):
+- Removed old generic tabs: Projects, Content, Research (desktop buttons + mobile select)
+- Reordered tabs: Overview > Eng > Content > Research > Engage > Mktg > Ideas > Departments > Agents
+- Updated VALID_TABS array to match new order (removed 'projects', 'content', 'research')
+- Removed old tab panels (panel-projects, panel-content, panel-research) from HTML
+- Added hash redirects in getTabFromHash(): #/projects/* -> dept-engineering,
+  #/content -> dept-content, #/research -> dept-research
+- Removed JS functions: loadProjectsTab(), loadContentTab(), renderContentTab(),
+  loadResearchTab(), renderResearchTab(), pollRegistry(), getSlugFromHash()
+- Removed variables: contentTasks, contentLoaded, researchTasks, researchLoaded
+- Removed mobile subtab select (mobileSubtabSelect) and its patches
+- Removed content/research filter event listeners
+- Removed CSS for .mobile-subtab-select
+- Cleaned up rescheduleTimers() and POLL_INTERVALS (removed registry timer)
+- Kept: renderSubTabs, selectProject, renderProjectInfo, renderMilestones,
+  renderKanban, renderTaskRow, renderProgressLog, loadProgressLog, sortProjects,
+  pollProjectState, projectsCache, selectedSlug, STATUS_ORDER, STATUS_COLORS
+
+F-002 (Project View Migration to Engineering Tab):
+- Created renderProjectListForEng(projects, stateMap) — generates grouped/collapsible
+  project list HTML (Active/Paused/Complete/Archived with chevrons)
+- Each project row shows: status dot, name, progress bar (done/total), last activity
+- Modified loadDeptDetailTab() to fetch /api/projects and per-project stateMap
+  when deptName === 'engineering' (parallel fetch pattern)
+- Replaced minimal dept-project-mini list in renderEngineering() with full
+  project list via renderProjectListForEng()
+- Removed project list from Overview tab: removed #overview-projects div,
+  "Projects" section header, and renderProjects() function
+- Simplified pollOverviewData() to only fetch /api/overview (removed /api/projects
+  fetch and stateMap building since renderProjects no longer called from Overview)
+- toggleProjectGroup() still works via event delegation (document click handler)
+- Mobile responsive: project rows use existing .project-row CSS which stacks on 375px
+
+Lines removed: ~458 (from 4738 to 4280)
+Status: 🧪 testing
+================================================================================

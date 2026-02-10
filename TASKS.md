@@ -873,7 +873,7 @@
 
 ### F-001: Tab Bar Cleanup & Reorder
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M12
 - **Depends:** E-008
 - **Pass criteria:**
@@ -898,7 +898,7 @@
 
 ### F-002: Project View Migration to Engineering Tab
 - **Type:** code
-- **Status:** ⬜ todo
+- **Status:** 🧪 testing
 - **Milestone:** M12
 - **Depends:** F-001
 - **Pass criteria:**

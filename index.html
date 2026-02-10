@@ -1415,8 +1415,7 @@
   }
 
   /* ── Mobile Navigation Dropdown ── */
-  .mobile-tab-select,
-  .mobile-subtab-select {
+  .mobile-tab-select {
     display: none;
     width: 100%;
     background: var(--surface);
@@ -1436,8 +1435,7 @@
     min-height: 44px;
   }
 
-  .mobile-tab-select:focus,
-  .mobile-subtab-select:focus {
+  .mobile-tab-select:focus {
     outline: none;
     border-color: var(--blue);
   }
@@ -1814,16 +1812,6 @@
 
     .project-row .proj-bar-wrap {
       width: 100%;
-    }
-
-    /* -- Project sub-tabs: hide buttons, show dropdown -- */
-    .project-subtabs {
-      display: none;
-    }
-
-    .mobile-subtab-select {
-      display: block;
-      margin-bottom: 16px;
     }
 
     /* -- Project info card -- */
@@ -2270,30 +2258,24 @@
     </div>
     <div class="tab-nav" id="tabNav">
       <button class="tab-btn active" data-tab="overview">Overview</button>
-      <button class="tab-btn" data-tab="projects">Projects</button>
-      <button class="tab-btn" data-tab="content">Content</button>
-      <button class="tab-btn" data-tab="research">Research</button>
-      <button class="tab-btn" data-tab="ideas">Ideas</button>
-      <button class="tab-btn" data-tab="departments">Departments</button>
       <button class="tab-btn" data-tab="dept-engineering">⚙️ Eng</button>
       <button class="tab-btn" data-tab="dept-content">📝 Content</button>
       <button class="tab-btn" data-tab="dept-research">🔬 Research</button>
       <button class="tab-btn" data-tab="dept-engagement">💬 Engage</button>
       <button class="tab-btn" data-tab="dept-marketing">📈 Mktg</button>
+      <button class="tab-btn" data-tab="ideas">Ideas</button>
+      <button class="tab-btn" data-tab="departments">Departments</button>
       <button class="tab-btn" data-tab="agents">Agents</button>
     </div>
     <select class="mobile-tab-select" id="mobileTabSelect">
       <option value="overview">Overview</option>
-      <option value="projects">Projects</option>
-      <option value="content">Content</option>
-      <option value="research">Research</option>
-      <option value="ideas">Ideas</option>
-      <option value="departments">Departments</option>
       <option value="dept-engineering">⚙️ Engineering</option>
       <option value="dept-content">📝 Content</option>
       <option value="dept-research">🔬 Research</option>
       <option value="dept-engagement">💬 Engagement</option>
       <option value="dept-marketing">📈 Marketing</option>
+      <option value="ideas">Ideas</option>
+      <option value="departments">Departments</option>
       <option value="agents">Agents</option>
     </select>
   </div>
@@ -2320,78 +2302,10 @@
     </div>
     <div id="overview-content" style="display:none">
       <div id="overview-stats" class="stats-bar"></div>
-      <div class="section-header">Projects</div>
-      <div id="overview-projects" class="project-list"></div>
       <div class="section-header">Needs Attention</div>
       <div id="overview-attention"></div>
       <div class="section-header">Recent Activity</div>
       <div id="overview-activity"></div>
-    </div>
-  </div>
-
-  <!-- Projects Tab -->
-  <div class="tab-panel" id="panel-projects">
-    <div id="projects-subtabs" class="project-subtabs"></div>
-    <select class="mobile-subtab-select" id="mobileSubtabSelect">
-      <option value="">Select a project...</option>
-    </select>
-    <div id="projects-data"></div>
-    <div id="projects-empty" class="empty-state">
-      <div class="empty-state-icon">📁</div>
-      <div class="empty-state-title">Select a project</div>
-      <div class="empty-state-text">Choose a project from the sub-tabs above to view milestones, tasks, and progress.</div>
-    </div>
-  </div>
-
-  <!-- Content Tab -->
-  <div class="tab-panel" id="panel-content">
-    <div id="content-loading" class="empty-state">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-title">Loading content tasks...</div>
-      <div class="empty-state-text">Cross-project content and marketing tasks will appear here.</div>
-    </div>
-    <div id="content-empty" class="empty-state" style="display:none">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-title">No content tasks found</div>
-      <div class="empty-state-text">No content or marketing tasks exist across your projects.</div>
-    </div>
-    <div id="content-main" style="display:none">
-      <div class="cross-tab-filters" id="content-filters">
-        <select class="cross-tab-select cross-tab-multiselect" id="content-filter-project" multiple><option value="">All Projects</option></select>
-        <select class="cross-tab-select" id="content-filter-type">
-          <option value="">All Types</option>
-          <option value="content">Content</option>
-          <option value="marketing">Marketing</option>
-        </select>
-        <label class="cross-tab-toggle-label"><input type="checkbox" id="content-hide-done"> Hide completed</label>
-      </div>
-      <div id="content-groups"></div>
-    </div>
-  </div>
-
-  <!-- Research Tab -->
-  <div class="tab-panel" id="panel-research">
-    <div id="research-loading" class="empty-state">
-      <div class="empty-state-icon">🔬</div>
-      <div class="empty-state-title">Loading research tasks...</div>
-      <div class="empty-state-text">Cross-project research and analysis tasks will appear here.</div>
-    </div>
-    <div id="research-empty" class="empty-state" style="display:none">
-      <div class="empty-state-icon">🔬</div>
-      <div class="empty-state-title">No research tasks found</div>
-      <div class="empty-state-text">No research or analysis tasks exist across your projects.</div>
-    </div>
-    <div id="research-main" style="display:none">
-      <div class="cross-tab-filters" id="research-filters">
-        <select class="cross-tab-select cross-tab-multiselect" id="research-filter-project" multiple><option value="">All Projects</option></select>
-        <select class="cross-tab-select" id="research-filter-type">
-          <option value="">All Types</option>
-          <option value="research">Research</option>
-          <option value="analysis">Analysis</option>
-        </select>
-        <label class="cross-tab-toggle-label"><input type="checkbox" id="research-hide-done"> Hide completed</label>
-      </div>
-      <div id="research-groups"></div>
     </div>
   </div>
 
@@ -2508,7 +2422,7 @@
   'use strict';
 
   // ── Valid tab routes ──
-  var VALID_TABS = ['overview', 'projects', 'content', 'research', 'ideas', 'departments', 'dept-engineering', 'dept-content', 'dept-research', 'dept-engagement', 'dept-marketing', 'agents'];
+  var VALID_TABS = ['overview', 'dept-engineering', 'dept-content', 'dept-research', 'dept-engagement', 'dept-marketing', 'ideas', 'departments', 'agents'];
 
   // ── Slug helper ──
   function slugify(name) {
@@ -2564,8 +2478,7 @@
   // Polling intervals (ms) — normal and backgrounded
   var POLL_INTERVALS = {
     overview:  { normal: 10000, background: 60000 },
-    project:   { normal: 5000,  background: 60000 },
-    registry:  { normal: 30000, background: 60000 }
+    project:   { normal: 5000,  background: 60000 }
   };
 
   // Active timers keyed by type
@@ -2604,15 +2517,6 @@
     if (activeTab === 'overview') {
       clearPollTimer('overview');
       pollTimers['overview'] = setInterval(pollOverviewData, getInterval('overview'));
-    }
-    if (activeTab === 'projects' && selectedSlug) {
-      clearPollTimer('project');
-      pollTimers['project'] = setInterval(pollProjectState, getInterval('project'));
-    }
-    // Registry timer runs whenever projects tab is active
-    if (activeTab === 'projects') {
-      clearPollTimer('registry');
-      pollTimers['registry'] = setInterval(pollRegistry, getInterval('registry'));
     }
   }
 
@@ -2664,17 +2568,17 @@
       if (VALID_TABS.indexOf(deptTab) !== -1) return deptTab;
     }
 
+    // Redirect old generic tab routes to department tabs
+    if (hash === '#/content') return 'dept-content';
+    if (hash === '#/research') return 'dept-research';
+    if (hash.indexOf('#/projects') === 0) return 'dept-engineering';
+
     var match = hash.match(/^#\/([a-z][a-z0-9-]*)/);
     if (!match) return 'overview';
     var tab = match[1];
     if (VALID_TABS.indexOf(tab) !== -1) return tab;
 
     return null;
-  }
-
-  function getSlugFromHash() {
-    var match = location.hash.match(/^#\/projects\/([a-z0-9-]+)$/);
-    return match ? match[1] : null;
   }
 
   function activateTab(tab) {
@@ -2714,12 +2618,6 @@
       return;
     }
     activateTab(tab);
-    if (tab === 'projects') {
-      var slug = getSlugFromHash();
-      if (slug) {
-        selectProject(slug);
-      }
-    }
   }
 
   // ── Tab button clicks ──
@@ -2816,104 +2714,6 @@
     }
   }
 
-  // Smart project list update — groups projects by status with collapsible headers
-  function renderProjects(projects, stateMap) {
-    var el = document.getElementById('overview-projects');
-    if (!projects || projects.length === 0) {
-      el.innerHTML = '<div class="attention-ok">No projects registered</div>';
-      return;
-    }
-
-    // Group projects by status
-    var statusGroups = {
-      active: { name: 'Active', projects: [] },
-      paused: { name: 'Paused', projects: [] },
-      complete: { name: 'Complete', projects: [] },
-      archived: { name: 'Archived', projects: [] }
-    };
-
-    for (var i = 0; i < projects.length; i++) {
-      var p = projects[i];
-      var status = p.status || 'active';
-      if (statusGroups[status]) {
-        statusGroups[status].projects.push(p);
-      }
-    }
-
-    var html = '';
-    var statusOrder = ['active', 'paused', 'complete', 'archived'];
-
-    for (var j = 0; j < statusOrder.length; j++) {
-      var statusKey = statusOrder[j];
-      var group = statusGroups[statusKey];
-
-      if (group.projects.length === 0) continue; // Hide empty groups
-
-      // Determine if group should be expanded by default (active = expanded, others = collapsed)
-      var isExpanded = statusKey === 'active';
-      var chevron = isExpanded ? '▼' : '▶';
-      var collapsedClass = isExpanded ? '' : ' collapsed';
-
-      // Group header
-      html += '<div class="project-group-header' + collapsedClass + '">';
-      html += '<span class="project-group-chevron">' + chevron + '</span>';
-      html += '<span>' + group.name + ' (' + group.projects.length + ')</span>';
-      html += '</div>';
-
-      // Group content
-      html += '<div class="project-group-content' + collapsedClass + '">';
-
-      for (var k = 0; k < group.projects.length; k++) {
-        try {
-          var p = group.projects[k];
-          var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-          var state = stateMap[slug];
-
-          // Get last activity timestamp
-          var lastActivity = '';
-          if (state && state.lastUpdated) {
-            lastActivity = formatRelativeTime(state.lastUpdated);
-          } else if (p.lastActive) {
-            lastActivity = formatRelativeTime(p.lastActive);
-          }
-
-          html += '<a class="project-row" href="#/projects/' + escHtml(slug) + '">';
-          html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
-          html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
-
-          if (state && state._error === 'dir_not_found') {
-            html += '<span class="proj-dir-warning">\u26A0\uFE0F Directory not found</span>';
-          } else if (state && state._error === 'malformed') {
-            html += '<span class="proj-error">Error loading project data</span>';
-          } else if (state && !state._error) {
-            var done = (state.progress && state.progress.done) || 0;
-            var total = (state.progress && state.progress.total) || 0;
-            var pct = total > 0 ? Math.round((done / total) * 100) : 0;
-            html += '<span class="proj-bar-wrap">';
-            html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
-            html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
-            html += '</span>';
-          } else {
-            html += '<span class="proj-not-migrated">Not migrated</span>';
-          }
-
-          // Add last activity timestamp
-          if (lastActivity) {
-            html += '<span class="project-last-activity">Last activity: ' + lastActivity + '</span>';
-          }
-
-          html += '</a>';
-        } catch (e) {
-          html += '<div class="project-row"><span class="proj-error">Error loading project data</span></div>';
-        }
-      }
-
-      html += '</div>'; // Close project-group-content
-    }
-
-    updateHtmlSmart(el, html);
-  }
-
   // Toggle project group visibility
   function toggleProjectGroup(headerEl) {
     var contentEl = headerEl.nextElementSibling;
@@ -2988,77 +2788,18 @@
     updateHtmlSmart(el, renderActivityHtml(items));
   }
 
-  // Cache for last-fetched overview data (used for smart diffing)
-  var lastOverviewJSON = null;
-  var lastProjectsJSON = null;
-
   function pollOverviewData() {
-    var overviewData = null;
-    var projectsData = null;
-    var stateMap = {};
-    var pending = 2;
-
-    function checkDone() {
-      if (pending > 0) return;
-      // Default to empty if fetch failed
-      if (!overviewData) overviewData = { activeProjects: 0, pausedProjects: 0, completeProjects: 0, totalProjects: 0, needsAttention: [], recentActivity: [], crossProjectTasks: { content: [], research: [] } };
-      if (!projectsData) projectsData = [];
-      // Fetch state for each project
-      var slugs = [];
-      for (var i = 0; i < projectsData.length; i++) {
-        var p = projectsData[i];
-        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        slugs.push(slug);
-      }
-      var statePending = slugs.length;
-      if (statePending === 0) {
-        finishRender();
-        return;
-      }
-      for (var j = 0; j < slugs.length; j++) {
-        (function(s) {
-          fetch('/api/project/' + encodeURIComponent(s) + '/state')
-            .then(function(r) {
-              return r.json().then(function(d) {
-                if (r.ok) {
-                  stateMap[s] = d;
-                } else if (d && d.code === 'DIR_NOT_FOUND') {
-                  stateMap[s] = { _error: 'dir_not_found' };
-                } else if (d && d.code === 'MALFORMED') {
-                  stateMap[s] = { _error: 'malformed' };
-                }
-                // NO_STATE → stateMap[s] stays undefined → "Not migrated"
-              });
-            })
-            .catch(function() {})
-            .finally(function() {
-              statePending--;
-              if (statePending === 0) finishRender();
-            });
-        })(slugs[j]);
-      }
-    }
-
-    function finishRender() {
-      renderStats(overviewData);
-      renderProjects(projectsData, stateMap);
-      renderAttention(overviewData.needsAttention);
-      renderActivity(overviewData.recentActivity);
-      document.getElementById('overview-loading').style.display = 'none';
-      document.getElementById('overview-content').style.display = 'block';
-    }
-
     fetch('/api/overview')
       .then(function(r) { return r.json(); })
-      .then(function(d) { overviewData = d; })
-      .catch(function() {})
-      .finally(function() { pending--; checkDone(); });
-
-    fetch('/api/projects')
-      .then(function(r) { return r.json(); })
-      .then(function(d) { projectsData = d.projects || []; })
-      .catch(function() {})
-      .finally(function() { pending--; checkDone(); });
+      .then(function(d) {
+        if (!d) d = { activeProjects: 0, pausedProjects: 0, completeProjects: 0, totalProjects: 0, needsAttention: [], recentActivity: [] };
+        renderStats(d);
+        renderAttention(d.needsAttention);
+        renderActivity(d.recentActivity);
+        document.getElementById('overview-loading').style.display = 'none';
+        document.getElementById('overview-content').style.display = 'block';
+      })
+      .catch(function() {});
   }
 
   function startOverviewPolling() {
@@ -3245,22 +2986,6 @@
 
         // Restore scroll position
         if (scrollable) scrollable.scrollTop = scrollTop;
-      })
-      .catch(function() {});
-  }
-
-  // Poll registry (projects list) for the projects tab
-  function pollRegistry() {
-    if (activeTab !== 'projects') return;
-    fetch('/api/projects')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        var newCache = d.projects || [];
-        var oldJSON = JSON.stringify(projectsCache);
-        var newJSON = JSON.stringify(newCache);
-        if (oldJSON === newJSON) return; // No change
-        projectsCache = newCache;
-        renderSubTabs(projectsCache);
       })
       .catch(function() {});
   }
@@ -3688,38 +3413,6 @@
     return html;
   }
 
-  function loadProjectsTab() {
-    fetch('/api/projects')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        projectsCache = d.projects || [];
-
-        if (projectsCache.length === 0) {
-          document.getElementById('projects-subtabs').innerHTML = '';
-          document.getElementById('projects-data').innerHTML = '';
-          var emptyEl = document.getElementById('projects-empty');
-          emptyEl.querySelector('.empty-state-icon').textContent = '📁';
-          emptyEl.querySelector('.empty-state-title').textContent = 'No projects registered';
-          emptyEl.querySelector('.empty-state-text').textContent = 'Add projects to ~/.openclaw/workspace/projects.json to get started.';
-          emptyEl.style.display = '';
-          return;
-        }
-
-        renderSubTabs(projectsCache);
-
-        // If a slug is in the URL, auto-select it
-        var slug = getSlugFromHash();
-        if (slug) {
-          selectProject(slug);
-        } else {
-          // Show empty state
-          document.getElementById('projects-data').innerHTML = '';
-          document.getElementById('projects-empty').style.display = '';
-        }
-      })
-      .catch(function() {});
-  }
-
   // ── Unified tab activation with polling management ──
   var origActivateTab = activateTab;
   activateTab = function(tab) {
@@ -3732,17 +3425,6 @@
 
     if (tab === 'overview') {
       startOverviewPolling();
-    }
-    if (tab === 'projects') {
-      loadProjectsTab();
-      // Start registry polling (30s)
-      startPollTimer('registry', pollRegistry);
-    }
-    if (tab === 'content') {
-      loadContentTab();
-    }
-    if (tab === 'research') {
-      loadResearchTab();
     }
     if (tab === 'agents') {
       loadAgentsTab();
@@ -3757,260 +3439,6 @@
       loadDeptDetailTab(tab.replace('dept-', ''));
     }
   };
-
-  // ── Content Tab Logic ──
-  var contentTasks = [];
-  var contentLoaded = false;
-
-  function loadContentTab() {
-    fetch('/api/overview')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        contentTasks = (d.crossProjectTasks && d.crossProjectTasks.content) || [];
-        contentLoaded = true;
-        renderContentTab();
-      })
-      .catch(function() {
-        contentTasks = [];
-        contentLoaded = true;
-        renderContentTab();
-      });
-  }
-
-  function renderContentTab() {
-    var loadingEl = document.getElementById('content-loading');
-    var emptyEl = document.getElementById('content-empty');
-    var mainEl = document.getElementById('content-main');
-
-    loadingEl.style.display = 'none';
-
-    if (contentTasks.length === 0) {
-      emptyEl.style.display = '';
-      mainEl.style.display = 'none';
-      return;
-    }
-
-    emptyEl.style.display = 'none';
-    mainEl.style.display = 'block';
-
-    // Populate project filter dropdown
-    var projectSelect = document.getElementById('content-filter-project');
-    var projects = {};
-    for (var i = 0; i < contentTasks.length; i++) {
-      var t = contentTasks[i];
-      if (t.project && !projects[t.slug]) {
-        projects[t.slug] = t.project;
-      }
-    }
-    var currentVals = [];
-    for (var cv = 0; cv < projectSelect.options.length; cv++) {
-      if (projectSelect.options[cv].selected) currentVals.push(projectSelect.options[cv].value);
-    }
-    projectSelect.innerHTML = '<option value="">All Projects</option>';
-    var slugs = Object.keys(projects).sort();
-    for (var s = 0; s < slugs.length; s++) {
-      var opt = document.createElement('option');
-      opt.value = slugs[s];
-      opt.textContent = projects[slugs[s]];
-      projectSelect.appendChild(opt);
-    }
-    for (var rv = 0; rv < projectSelect.options.length; rv++) {
-      if (currentVals.indexOf(projectSelect.options[rv].value) !== -1) projectSelect.options[rv].selected = true;
-    }
-
-    // Apply filters
-    var selectedProjects = [];
-    for (var sp = 0; sp < projectSelect.options.length; sp++) {
-      if (projectSelect.options[sp].selected && projectSelect.options[sp].value) selectedProjects.push(projectSelect.options[sp].value);
-    }
-    var filterType = document.getElementById('content-filter-type').value;
-    var hideDone = document.getElementById('content-hide-done').checked;
-
-    var filtered = [];
-    for (var f = 0; f < contentTasks.length; f++) {
-      var task = contentTasks[f];
-      if (selectedProjects.length > 0 && selectedProjects.indexOf(task.slug) === -1) continue;
-      if (filterType && task.type !== filterType) continue;
-      if (hideDone && task.status === 'done') continue;
-      filtered.push(task);
-    }
-
-    // Group by status
-    var statusOrder = ['todo', 'in_progress', 'testing', 'done'];
-    var statusLabels = { todo: 'Todo', in_progress: 'In Progress', testing: 'Testing', done: 'Done' };
-    var groups = {};
-    for (var g = 0; g < statusOrder.length; g++) {
-      groups[statusOrder[g]] = [];
-    }
-    for (var j = 0; j < filtered.length; j++) {
-      var st = filtered[j].status || 'todo';
-      // Map failed/blocked to todo
-      if (st === 'failed' || st === 'blocked') st = 'todo';
-      if (!groups[st]) groups[st] = [];
-      groups[st].push(filtered[j]);
-    }
-
-    var html = '';
-    var anyVisible = false;
-    for (var k = 0; k < statusOrder.length; k++) {
-      var key = statusOrder[k];
-      var tasks = groups[key];
-      if (tasks.length === 0) continue;
-      anyVisible = true;
-      html += '<div class="cross-tab-group">';
-      html += '<div class="cross-tab-group-header">';
-      html += '<span>' + escHtml(statusLabels[key]) + '</span>';
-      html += '<span class="cross-tab-group-count">' + tasks.length + '</span>';
-      html += '</div>';
-      for (var m = 0; m < tasks.length; m++) {
-        var tk = tasks[m];
-        html += '<div class="cross-tab-task">';
-        html += '<a class="cross-tab-project-badge" href="#/projects/' + escHtml(tk.slug) + '">' + escHtml(tk.project) + '</a>';
-        html += '<span class="cross-tab-task-title">' + escHtml(tk.title) + '</span>';
-        html += '<span class="cross-tab-type-badge">' + escHtml(tk.type) + '</span>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    if (!anyVisible) {
-      html = '<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-title">No content tasks found</div><div class="empty-state-text">No tasks match the current filters.</div></div>';
-    }
-
-    document.getElementById('content-groups').innerHTML = html;
-  }
-
-  // Attach filter event listeners
-  document.getElementById('content-filter-project').addEventListener('change', renderContentTab);
-  document.getElementById('content-filter-type').addEventListener('change', renderContentTab);
-  document.getElementById('content-hide-done').addEventListener('change', renderContentTab);
-
-  // ── Research Tab Logic ──
-  var researchTasks = [];
-  var researchLoaded = false;
-
-  function loadResearchTab() {
-    fetch('/api/overview')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        researchTasks = (d.crossProjectTasks && d.crossProjectTasks.research) || [];
-        researchLoaded = true;
-        renderResearchTab();
-      })
-      .catch(function() {
-        researchTasks = [];
-        researchLoaded = true;
-        renderResearchTab();
-      });
-  }
-
-  function renderResearchTab() {
-    var loadingEl = document.getElementById('research-loading');
-    var emptyEl = document.getElementById('research-empty');
-    var mainEl = document.getElementById('research-main');
-
-    loadingEl.style.display = 'none';
-
-    if (researchTasks.length === 0) {
-      emptyEl.style.display = '';
-      mainEl.style.display = 'none';
-      return;
-    }
-
-    emptyEl.style.display = 'none';
-    mainEl.style.display = 'block';
-
-    // Populate project filter dropdown
-    var projectSelect = document.getElementById('research-filter-project');
-    var projects = {};
-    for (var i = 0; i < researchTasks.length; i++) {
-      var t = researchTasks[i];
-      if (t.project && !projects[t.slug]) {
-        projects[t.slug] = t.project;
-      }
-    }
-    var currentVals = [];
-    for (var cv = 0; cv < projectSelect.options.length; cv++) {
-      if (projectSelect.options[cv].selected) currentVals.push(projectSelect.options[cv].value);
-    }
-    projectSelect.innerHTML = '<option value="">All Projects</option>';
-    var slugs = Object.keys(projects).sort();
-    for (var s = 0; s < slugs.length; s++) {
-      var opt = document.createElement('option');
-      opt.value = slugs[s];
-      opt.textContent = projects[slugs[s]];
-      projectSelect.appendChild(opt);
-    }
-    for (var rv = 0; rv < projectSelect.options.length; rv++) {
-      if (currentVals.indexOf(projectSelect.options[rv].value) !== -1) projectSelect.options[rv].selected = true;
-    }
-
-    // Apply filters
-    var selectedProjects = [];
-    for (var sp = 0; sp < projectSelect.options.length; sp++) {
-      if (projectSelect.options[sp].selected && projectSelect.options[sp].value) selectedProjects.push(projectSelect.options[sp].value);
-    }
-    var filterType = document.getElementById('research-filter-type').value;
-    var hideDone = document.getElementById('research-hide-done').checked;
-
-    var filtered = [];
-    for (var f = 0; f < researchTasks.length; f++) {
-      var task = researchTasks[f];
-      if (selectedProjects.length > 0 && selectedProjects.indexOf(task.slug) === -1) continue;
-      if (filterType && task.type !== filterType) continue;
-      if (hideDone && task.status === 'done') continue;
-      filtered.push(task);
-    }
-
-    // Group by status
-    var statusOrder = ['todo', 'in_progress', 'testing', 'done'];
-    var statusLabels = { todo: 'Todo', in_progress: 'In Progress', testing: 'Testing', done: 'Done' };
-    var groups = {};
-    for (var g = 0; g < statusOrder.length; g++) {
-      groups[statusOrder[g]] = [];
-    }
-    for (var j = 0; j < filtered.length; j++) {
-      var st = filtered[j].status || 'todo';
-      // Map failed/blocked to todo
-      if (st === 'failed' || st === 'blocked') st = 'todo';
-      if (!groups[st]) groups[st] = [];
-      groups[st].push(filtered[j]);
-    }
-
-    var html = '';
-    var anyVisible = false;
-    for (var k = 0; k < statusOrder.length; k++) {
-      var key = statusOrder[k];
-      var tasks = groups[key];
-      if (tasks.length === 0) continue;
-      anyVisible = true;
-      html += '<div class="cross-tab-group">';
-      html += '<div class="cross-tab-group-header">';
-      html += '<span>' + escHtml(statusLabels[key]) + '</span>';
-      html += '<span class="cross-tab-group-count">' + tasks.length + '</span>';
-      html += '</div>';
-      for (var m = 0; m < tasks.length; m++) {
-        var tk = tasks[m];
-        html += '<div class="cross-tab-task">';
-        html += '<a class="cross-tab-project-badge" href="#/projects/' + escHtml(tk.slug) + '">' + escHtml(tk.project) + '</a>';
-        html += '<span class="cross-tab-task-title">' + escHtml(tk.title) + '</span>';
-        html += '<span class="cross-tab-type-badge">' + escHtml(tk.type) + '</span>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    if (!anyVisible) {
-      html = '<div class="empty-state"><div class="empty-state-icon">🔬</div><div class="empty-state-title">No research tasks found</div><div class="empty-state-text">No tasks match the current filters.</div></div>';
-    }
-
-    document.getElementById('research-groups').innerHTML = html;
-  }
-
-  // Attach research filter event listeners
-  document.getElementById('research-filter-project').addEventListener('change', renderResearchTab);
-  document.getElementById('research-filter-type').addEventListener('change', renderResearchTab);
-  document.getElementById('research-hide-done').addEventListener('change', renderResearchTab);
 
   // ── Agents Tab Logic ──
   function loadAgentsTab() {
@@ -4274,15 +3702,80 @@
     if (loadingEl) loadingEl.style.display = '';
     if (contentEl) contentEl.style.display = 'none';
 
-    fetch('/api/departments/' + encodeURIComponent(deptName))
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
+    if (deptName === 'engineering') {
+      // Engineering tab also needs project data + stateMap for the full project list
+      var deptData = null;
+      var projectsData = [];
+      var stateMap = {};
+      var pending = 2;
+
+      function checkEngDone() {
+        if (pending > 0) return;
+        if (!deptData) deptData = { status: {}, activeLeads: [], capacity: null, projects: [], outbox: [], inbox: [] };
+        // Fetch state for each project
+        var slugs = [];
+        for (var i = 0; i < projectsData.length; i++) {
+          var p = projectsData[i];
+          slugs.push(p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''));
+        }
+        var statePending = slugs.length;
+        if (statePending === 0) {
+          finishEngRender();
+          return;
+        }
+        for (var j = 0; j < slugs.length; j++) {
+          (function(s) {
+            fetch('/api/project/' + encodeURIComponent(s) + '/state')
+              .then(function(r) {
+                return r.json().then(function(d) {
+                  if (r.ok) {
+                    stateMap[s] = d;
+                  } else if (d && d.code === 'DIR_NOT_FOUND') {
+                    stateMap[s] = { _error: 'dir_not_found' };
+                  } else if (d && d.code === 'MALFORMED') {
+                    stateMap[s] = { _error: 'malformed' };
+                  }
+                });
+              })
+              .catch(function() {})
+              .finally(function() {
+                statePending--;
+                if (statePending === 0) finishEngRender();
+              });
+          })(slugs[j]);
+        }
+      }
+
+      function finishEngRender() {
+        deptData._projects = projectsData;
+        deptData._stateMap = stateMap;
         if (loadingEl) loadingEl.style.display = 'none';
-        if (contentEl) { contentEl.style.display = 'block'; contentEl.innerHTML = renderDeptDetail(deptName, d); }
-      })
-      .catch(function() {
-        if (loadingEl) { loadingEl.querySelector('.empty-state-title').textContent = 'Failed to load'; }
-      });
+        if (contentEl) { contentEl.style.display = 'block'; contentEl.innerHTML = renderDeptDetail(deptName, deptData); }
+      }
+
+      fetch('/api/departments/' + encodeURIComponent(deptName))
+        .then(function(r) { return r.json(); })
+        .then(function(d) { deptData = d; })
+        .catch(function() {})
+        .finally(function() { pending--; checkEngDone(); });
+
+      fetch('/api/projects')
+        .then(function(r) { return r.json(); })
+        .then(function(d) { projectsData = d.projects || []; })
+        .catch(function() {})
+        .finally(function() { pending--; checkEngDone(); });
+
+    } else {
+      fetch('/api/departments/' + encodeURIComponent(deptName))
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (loadingEl) loadingEl.style.display = 'none';
+          if (contentEl) { contentEl.style.display = 'block'; contentEl.innerHTML = renderDeptDetail(deptName, d); }
+        })
+        .catch(function() {
+          if (loadingEl) { loadingEl.querySelector('.empty-state-title').textContent = 'Failed to load'; }
+        });
+    }
   }
 
   function renderDeptDetail(deptName, data) {
@@ -4353,6 +3846,96 @@
     return html;
   }
 
+  function renderProjectListForEng(projects, stateMap) {
+    if (!projects || projects.length === 0) {
+      return '<div class="project-list"><div class="attention-ok">No projects registered</div></div>';
+    }
+
+    var statusGroups = {
+      active: { name: 'Active', projects: [] },
+      paused: { name: 'Paused', projects: [] },
+      complete: { name: 'Complete', projects: [] },
+      archived: { name: 'Archived', projects: [] }
+    };
+
+    for (var i = 0; i < projects.length; i++) {
+      var p = projects[i];
+      var status = p.status || 'active';
+      if (statusGroups[status]) {
+        statusGroups[status].projects.push(p);
+      }
+    }
+
+    var html = '<div class="project-list">';
+    var statusOrder = ['active', 'paused', 'complete', 'archived'];
+
+    for (var j = 0; j < statusOrder.length; j++) {
+      var statusKey = statusOrder[j];
+      var group = statusGroups[statusKey];
+
+      if (group.projects.length === 0) continue;
+
+      var isExpanded = statusKey === 'active';
+      var chevron = isExpanded ? '▼' : '▶';
+      var collapsedClass = isExpanded ? '' : ' collapsed';
+
+      html += '<div class="project-group-header' + collapsedClass + '">';
+      html += '<span class="project-group-chevron">' + chevron + '</span>';
+      html += '<span>' + group.name + ' (' + group.projects.length + ')</span>';
+      html += '</div>';
+
+      html += '<div class="project-group-content' + collapsedClass + '">';
+
+      for (var k = 0; k < group.projects.length; k++) {
+        try {
+          var p = group.projects[k];
+          var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          var state = stateMap[slug];
+
+          var lastActivity = '';
+          if (state && state.lastUpdated) {
+            lastActivity = formatRelativeTime(state.lastUpdated);
+          } else if (p.lastActive) {
+            lastActivity = formatRelativeTime(p.lastActive);
+          }
+
+          html += '<div class="project-row">';
+          html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
+          html += '<span class="proj-name">' + escHtml(p.name) + '</span>';
+
+          if (state && state._error === 'dir_not_found') {
+            html += '<span class="proj-dir-warning">\u26A0\uFE0F Directory not found</span>';
+          } else if (state && state._error === 'malformed') {
+            html += '<span class="proj-error">Error loading project data</span>';
+          } else if (state && !state._error) {
+            var done = (state.progress && state.progress.done) || 0;
+            var total = (state.progress && state.progress.total) || 0;
+            var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            html += '<span class="proj-bar-wrap">';
+            html += '<span class="proj-bar-track"><span class="proj-bar-fill" style="width:' + pct + '%"></span></span>';
+            html += '<span class="proj-bar-label">' + done + '/' + total + ' tasks</span>';
+            html += '</span>';
+          } else {
+            html += '<span class="proj-not-migrated">Not migrated</span>';
+          }
+
+          if (lastActivity) {
+            html += '<span class="project-last-activity">Last activity: ' + lastActivity + '</span>';
+          }
+
+          html += '</div>';
+        } catch (e) {
+          html += '<div class="project-row"><span class="proj-error">Error loading project data</span></div>';
+        }
+      }
+
+      html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
   function renderEngineering(data) {
     var html = '<div class="dept-detail-grid">';
     html += renderStatusCards(data.status);
@@ -4388,21 +3971,11 @@
     }
     html += '</div>';
 
-    // Projects
-    if (data.projects && data.projects.length) {
-      html += '<div class="dept-detail-card"><h3>📁 Projects</h3>';
-      for (var i = 0; i < data.projects.length; i++) {
-        var p = data.projects[i];
-        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        html += '<div class="dept-project-mini">';
-        html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
-        html += '<a href="#/projects/' + escHtml(slug) + '">' + escHtml(p.name) + '</a>';
-        html += '<span style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">' + escHtml(p.status || '') + '</span>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
     html += '</div>';
+
+    // Full project list with grouped/collapsible sections
+    html += '<div class="section-header">📁 Projects</div>';
+    html += renderProjectListForEng(data._projects || [], data._stateMap || {});
 
     // Inbox & Outbox
     html += '<div class="section-header">📤 Recent Output</div>';
@@ -4701,37 +4274,6 @@
     mobileTabSelect.value = tab;
   };
 
-  // ── Mobile Project Sub-Tab Dropdown ──
-  var mobileSubtabSelect = document.getElementById('mobileSubtabSelect');
-
-  mobileSubtabSelect.addEventListener('change', function() {
-    var slug = mobileSubtabSelect.value;
-    if (slug) {
-      location.hash = '#/projects/' + slug;
-    }
-  });
-
-  // Patch renderSubTabs to also populate mobile dropdown
-  var _origRenderSubTabs = renderSubTabs;
-  renderSubTabs = function(projects) {
-    _origRenderSubTabs(projects);
-    var sorted = sortProjects(projects);
-    var html = '<option value="">Select a project...</option>';
-    for (var i = 0; i < sorted.length; i++) {
-      var p = sorted[i];
-      var slug = p.slug || slugify(p.name);
-      var sel = slug === selectedSlug ? ' selected' : '';
-      html += '<option value="' + escHtml(slug) + '"' + sel + '>' + escHtml(p.name) + '</option>';
-    }
-    mobileSubtabSelect.innerHTML = html;
-  };
-
-  // Patch selectProject to sync mobile dropdown
-  var _origSelectProject = selectProject;
-  selectProject = function(slug) {
-    _origSelectProject(slug);
-    mobileSubtabSelect.value = slug;
-  };
 })();
 </script>
 </body>
