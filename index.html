@@ -2314,8 +2314,6 @@
     </div>
     <div id="overview-content" style="display:none">
       <div id="overview-stats" class="stats-bar"></div>
-      <div class="section-header">Projects</div>
-      <div id="overview-projects" class="project-list"></div>
       <div class="section-header">Needs Attention</div>
       <div id="overview-attention"></div>
       <div class="section-header">Recent Activity</div>
@@ -2744,8 +2742,9 @@
   }
 
   // Smart project list update — groups projects by status with collapsible headers
-  function renderProjects(projects, stateMap) {
-    var el = document.getElementById('overview-projects');
+  function renderProjects(projects, stateMap, targetEl) {
+    var el = targetEl || document.getElementById('overview-projects');
+    if (!el) return;
     if (!projects || projects.length === 0) {
       el.innerHTML = '<div class="attention-ok">No projects registered</div>';
       return;
@@ -2968,7 +2967,6 @@
 
     function finishRender() {
       renderStats(overviewData);
-      renderProjects(projectsData, stateMap);
       renderAttention(overviewData.needsAttention);
       renderActivity(overviewData.recentActivity);
       document.getElementById('overview-loading').style.display = 'none';
@@ -4199,9 +4197,56 @@
       .then(function(d) {
         if (loadingEl) loadingEl.style.display = 'none';
         if (contentEl) { contentEl.style.display = 'block'; contentEl.innerHTML = renderDeptDetail(deptName, d); }
+        if (deptName === 'engineering') loadEngProjectList();
       })
       .catch(function() {
         if (loadingEl) { loadingEl.querySelector('.empty-state-title').textContent = 'Failed to load'; }
+      });
+  }
+
+  // Fetch full project data + state for Engineering tab's grouped project list
+  function loadEngProjectList() {
+    fetch('/api/projects')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var projects = d.projects || [];
+        if (projects.length === 0) {
+          var el = document.getElementById('eng-projects');
+          if (el) el.innerHTML = '<div class="attention-ok">No projects registered</div>';
+          return;
+        }
+        var stateMap = {};
+        var pending = 0;
+        var slugs = [];
+        for (var i = 0; i < projects.length; i++) {
+          var slug = projects[i].slug || projects[i].name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          slugs.push(slug);
+        }
+        if (slugs.length === 0) {
+          var el = document.getElementById('eng-projects');
+          if (el) renderProjects(projects, stateMap, el);
+          return;
+        }
+        pending = slugs.length;
+        for (var j = 0; j < slugs.length; j++) {
+          (function(s) {
+            fetch('/api/project/' + encodeURIComponent(s) + '/state')
+              .then(function(r) { return r.ok ? r.json() : null; })
+              .then(function(state) { if (state) stateMap[s] = state; })
+              .catch(function() {})
+              .finally(function() {
+                pending--;
+                if (pending === 0) {
+                  var el = document.getElementById('eng-projects');
+                  if (el) renderProjects(projects, stateMap, el);
+                }
+              });
+          })(slugs[j]);
+        }
+      })
+      .catch(function() {
+        var el = document.getElementById('eng-projects');
+        if (el) el.innerHTML = '<div class="dept-placeholder">Failed to load projects</div>';
       });
   }
 
@@ -4308,21 +4353,11 @@
     }
     html += '</div>';
 
-    // Projects
-    if (data.projects && data.projects.length) {
-      html += '<div class="dept-detail-card"><h3>📁 Projects</h3>';
-      for (var i = 0; i < data.projects.length; i++) {
-        var p = data.projects[i];
-        var slug = p.slug || p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        html += '<div class="dept-project-mini">';
-        html += '<span class="proj-status-dot ' + escHtml(p.status || '') + '"></span>';
-        html += '<a href="#/projects/' + escHtml(slug) + '">' + escHtml(p.name) + '</a>';
-        html += '<span style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">' + escHtml(p.status || '') + '</span>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
     html += '</div>';
+
+    // Full grouped project list (fetched separately with stateMap)
+    html += '<div class="section-header">📁 Projects</div>';
+    html += '<div id="eng-projects" class="project-list"><div class="dept-placeholder">Loading projects...</div></div>';
 
     // Inbox & Outbox
     html += '<div class="section-header">📤 Recent Output</div>';
