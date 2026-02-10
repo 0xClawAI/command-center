@@ -2532,17 +2532,18 @@
   function getTabFromHash() {
     var hash = location.hash;
     if (!hash || hash === '#' || hash === '#/') return 'overview';
-    var match = hash.match(/^#\/([a-z][a-z0-9-]*)/);
-    if (!match) return 'overview';
-    var tab = match[1];
-    if (VALID_TABS.indexOf(tab) !== -1) return tab;
 
-    // Support #/departments/<name> → dept-<name>
+    // Check #/departments/<name> FIRST (before generic match eats "departments")
     var deptMatch = hash.match(/^#\/departments\/([a-z][a-z0-9-]*)$/);
     if (deptMatch) {
       var deptTab = 'dept-' + deptMatch[1];
       if (VALID_TABS.indexOf(deptTab) !== -1) return deptTab;
     }
+
+    var match = hash.match(/^#\/([a-z][a-z0-9-]*)/);
+    if (!match) return 'overview';
+    var tab = match[1];
+    if (VALID_TABS.indexOf(tab) !== -1) return tab;
 
     return null;
   }
