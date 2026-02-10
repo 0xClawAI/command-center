@@ -1,8 +1,8 @@
 # TASKS.md — Command Center
 
-> Last updated: 2026-02-09T16:35:00-08:00
-> Status: Phase 5 Complete
-> Progress: 42/42 tasks complete
+> Last updated: 2026-02-09T20:00:00-08:00
+> Status: Phase 6 Active
+> Progress: 42/44 tasks complete
 
 ---
 
@@ -19,6 +19,7 @@
 - **M9: Final Review** — Tasks: D-008
 - **M10: Departments Overview** — Tasks: E-001, E-002, E-003
 - **M11: Department Enhancements** — Tasks: E-004, E-005, E-006, E-007, E-008
+- **M12: Tab Cleanup & Project View Migration** — Tasks: F-001, F-002
 
 ---
 
@@ -863,3 +864,60 @@
   - Data not sourced from org files
 - **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
 - **Notes:** Active leads table with priority badges + capacity bar. Supervisor verified.
+
+---
+
+## Phase 6: Tab Cleanup & Project View Migration
+**Goal:** Clean up tab bar — remove old generic tabs, reorder department tabs, move project list from Overview to Engineering
+**Exit when:** All Phase 6 tasks pass supervisor verification
+
+### F-001: Tab Bar Cleanup & Reorder
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M12
+- **Depends:** E-008
+- **Pass criteria:**
+  - [ ] Old generic "Projects", "Content", "Research" tabs REMOVED from tab bar (both desktop buttons and mobile select)
+  - [ ] Department tabs with icons remain: ⚙️ Eng, 📝 Content, 🔬 Research, 💬 Engage, 📈 Mktg
+  - [ ] Tab order is exactly: Overview → ⚙️ Eng → 📝 Content → 🔬 Research → 💬 Engage → 📈 Mktg → Ideas → Departments → Agents
+  - [ ] VALID_TABS array updated to remove 'projects', 'content', 'research' and match new order
+  - [ ] Hash routing for #/projects/*, #/content, #/research redirect to appropriate department tabs (⚙️ Eng for projects, 📝 Content dept for content, 🔬 Research dept for research)
+  - [ ] Tab panels for old projects/content/research tabs removed from HTML
+  - [ ] All JS functions referencing old tabs cleaned up or redirected
+  - [ ] Mobile select dropdown matches new tab order
+  - [ ] No JS console errors when navigating all tabs
+  - [ ] Browser back/forward still works correctly
+- **Fail criteria:**
+  - Old "Projects", "Content", "Research" generic tabs still visible
+  - Tab order doesn't match spec
+  - Hash routing broken — old URLs cause errors instead of redirecting
+  - JS console errors
+  - Mobile dropdown out of sync with desktop tabs
+- **Files:** `~/projects/command-center/index.html`
+- **Notes:** The old Projects tab had sub-tabs for per-project views — that functionality moves to Engineering tab in F-002. Content/Research cross-project task views are superseded by department detail tabs.
+
+### F-002: Project View Migration to Engineering Tab
+- **Type:** code
+- **Status:** ⬜ todo
+- **Milestone:** M12
+- **Depends:** F-001
+- **Pass criteria:**
+  - [ ] Engineering department tab (⚙️ Eng) now includes a "Projects" section with the grouped project list (Active/Paused/Complete/Archived with collapsible sections)
+  - [ ] Project list in Engineering tab uses the same renderProjects() logic (or equivalent) as was in Overview
+  - [ ] Each project row shows: status dot, name, progress bar (done/total), last activity time
+  - [ ] Clicking a project in Engineering tab navigates to `#/departments/engineering` with project detail expanded (or opens project detail inline)
+  - [ ] Overview tab NO LONGER shows the project list — only summary stats (stat cards), Needs Attention, and Recent Activity remain
+  - [ ] The "Projects" section header removed from Overview
+  - [ ] Overview `#overview-projects` div removed or hidden
+  - [ ] Engineering tab fetches project state data (stateMap) to render progress bars
+  - [ ] Responsive on mobile (375px) — project list stacks properly in Engineering tab
+  - [ ] No JS console errors
+- **Fail criteria:**
+  - Project list still appears in Overview tab
+  - Engineering tab missing project list
+  - Progress bars missing or broken in Engineering tab's project list
+  - Click on project does nothing
+  - JS console errors
+  - Not responsive on mobile
+- **Files:** `~/projects/command-center/index.html`
+- **Notes:** The Engineering department already has a simple project list (dept-project-mini items). Replace/enhance that with the full grouped collapsible project list from Overview.
