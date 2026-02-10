@@ -36,34 +36,78 @@ function parseAgentHealth() {
   const raw = readSafe(PATHS.deptHealth);
   if (!raw) return [];
   const agents = [];
-  const tableRows = raw.match(/^\|[^|]+\|[^|]+\|[^|]+\|[^|]+\|$/gm) || [];
-  for (const row of tableRows) {
-    if (row.includes('Dept') || row.includes('---')) continue;
-    const cols = row.split('|').map(c => c.trim()).filter(Boolean);
-    if (cols.length < 4) continue;
+
+  // Match department headers: ## DeptName — 🟢/🟡/🔴 StatusText
+  const deptSections = raw.split(/^## /m).slice(1); // Skip the first empty part
+
+  for (const section of deptSections) {
+    const lines = section.split('\n');
+    const header = lines[0].trim();
+
+    // Parse header: "DeptName — 🟢/🟡/🔴 StatusText"
+    const headerMatch = header.match(/^(.+?)\s+—\s+(🟢|🟡|🔴)\s+(.+)$/);
+    if (!headerMatch) continue;
+
+    const [, name, emoji, statusText] = headerMatch;
     let status = 'unknown';
-    if (cols[1].includes('🟢')) status = 'green';
-    else if (cols[1].includes('🟡')) status = 'yellow';
-    else if (cols[1].includes('🔴')) status = 'red';
+    if (emoji === '🟢') status = 'green';
+    else if (emoji === '🟡') status = 'yellow';
+    else if (emoji === '🔴') status = 'red';
+
+    // Parse bullet points for lastAction and issue
+    let lastAction = null;
+    let issue = null;
+
+    for (const line of lines) {
+      const lastActionMatch = line.match(/^- Last action:\s*(.+)$/);
+      if (lastActionMatch) {
+        lastAction = lastActionMatch[1].trim();
+      }
+
+      const issueMatch = line.match(/^- Issue:\s*(.+)$/);
+      if (issueMatch) {
+        issue = issueMatch[1].trim();
+      }
+    }
+
     agents.push({
-      name: cols[0],
+      name,
       status,
-      statusText: cols[1].replace(/🟢|🟡|🔴/g, '').trim(),
-      lastAction: cols[2],
-      issue: cols[3],
+      statusText,
+      lastAction,
+      issue,
     });
   }
+
   return agents;
 }
 
 function parseKeyIssues() {
   const raw = readSafe(PATHS.deptHealth);
   if (!raw) return [];
-  const section = raw.match(/## Key Issues\n([\s\S]*?)(?=\n## |$)/);
-  if (!section) return [];
-  return section[1].split('\n')
-    .filter(l => l.match(/^\d+\./))
-    .map(l => l.replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim());
+  const issues = [];
+
+  // Split by department sections
+  const deptSections = raw.split(/^## /m).slice(1); // Skip the first empty part
+
+  for (const section of deptSections) {
+    const lines = section.split('\n');
+    const header = lines[0].trim();
+
+    // Extract department name from header
+    const headerMatch = header.match(/^(.+?)\s+—/);
+    const deptName = headerMatch ? headerMatch[1] : header;
+
+    // Find Issue: bullet points in this section
+    for (const line of lines) {
+      const issueMatch = line.match(/^- Issue:\s*(.+)$/);
+      if (issueMatch) {
+        issues.push(`${deptName}: ${issueMatch[1].trim()}`);
+      }
+    }
+  }
+
+  return issues;
 }
 
 // ─── Feed Parser ───
@@ -161,7 +205,7 @@ function getProjectStats() {
 
     const summary = {
       name: p.name,
-      slug: p.slug,
+      slug: p.slug || p.name.toLowerCase().replace(/\s+/g, '-'),
       status: p.status,
       path: p.path,
     };

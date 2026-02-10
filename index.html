@@ -497,8 +497,9 @@ function render() {
     <div class="metric"><div class="val">${(engData.projects || []).filter(p => p.status === 'active').length}</div><div class="lbl">Active Projects</div></div>
   `;
   
-  // Project list
-  const projs = engData.projects || [];
+  // Project list — grouped: active first, then paused, then complete
+  const statusOrder = { active: 0, paused: 1, complete: 2 };
+  const projs = (engData.projects || []).sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9));
   document.getElementById('projectList').innerHTML = projs.length ?
     projs.map(p => {
       const pct = p.total ? Math.round((p.done || 0) / p.total * 100) : 0;
