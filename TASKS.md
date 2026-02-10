@@ -15,25 +15,25 @@
 
 ## Phase 2: External Integrations (P1)
 
-- [ ] T11: Token cost ticker
+- [x] T11: Token cost ticker ✅ PASS
   - Description: Add /api/metrics endpoint and running cost counter showing total tokens used today across all agents
   - Files: server.js (OpenClaw sessions integration), index.html (prominent ticker display)
   - Acceptance: Shows real-time token usage counter, costs today/week, per-agent breakdown
   - Depends: T1, T2
 
-- [ ] T12: GitHub activity panel
+- [x] T12: GitHub activity panel ✅ PASS
   - Description: Implement /api/github endpoint using gh CLI for recent commits and repo metrics
   - Files: server.js (gh CLI integration), index.html (GitHub metrics card)
   - Acceptance: Shows recent commits, push count, active repos updated via polling
   - Depends: T1
 
-- [ ] T13: Twitter metrics panel
+- [x] T13: Twitter metrics panel ✅ PASS
   - Description: Add /api/twitter endpoint and display follower count, engagement metrics
   - Files: server.js (Twitter API integration), index.html (Twitter metrics card)
   - Acceptance: Shows follower count, recent engagement, top tweets in compact panel
   - Depends: T1
 
-- [ ] T14: Edge heat map and enhanced flows
+- [x] T14: Edge heat map and enhanced flows ✅ PASS
   - Description: Edge thickness/color intensity based on message volume between agents
   - Files: index.html (enhance D3 graph with dynamic edge styling)
   - Acceptance: Edge thickness varies by activity, flowing particles scale with volume
@@ -41,13 +41,13 @@
 
 ## Phase 3: UX Enhancement (P1)
 
-- [ ] T15: Keyboard shortcuts
+- [x] T15: Keyboard shortcuts ✅ PASS
   - Description: Add keyboard navigation - 1-6 for agents, Esc to close, R to refresh, ? for help
   - Files: index.html (keyboard event handlers + help overlay)
   - Acceptance: All shortcuts work, help overlay shows available keys, smooth navigation
   - Depends: T8
 
-- [ ] T16: Alert banner system
+- [x] T16: Alert banner system ✅ PASS
   - Description: Critical alerts banner at top for agent failures, build errors, system issues
   - Files: index.html (alert banner component + detection logic)
   - Acceptance: Shows critical alerts in prominent banner, auto-dismiss, color-coded by severity
