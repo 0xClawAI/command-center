@@ -1,8 +1,8 @@
 # TASKS.md — Command Center
 
-> Last updated: 2026-02-09T16:15:00-08:00
-> Status: Phase 5 Active
-> Progress: 39/42 tasks complete
+> Last updated: 2026-02-09T16:35:00-08:00
+> Status: Phase 5 Complete
+> Progress: 42/42 tasks complete
 
 ---
 
@@ -781,80 +781,85 @@
 
 ### E-004: Content Department — Content Calendar View
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M11
 - **Depends:** E-003
+- **Commit:** 0337ab8
 - **Pass criteria:**
-  - [ ] Content department detail tab shows a content calendar view
-  - [ ] Calendar displays scheduled posts, drafts, and published content
-  - [ ] Items sourced from org/departments/content/ files
-  - [ ] Responsive on mobile
+  - [x] Content department detail tab shows a content calendar view
+  - [x] Calendar displays scheduled posts, drafts, and published content
+  - [x] Items sourced from org/departments/content/ files
+  - [x] Responsive on mobile
 - **Fail criteria:**
   - No calendar view in Content department tab
   - Data not sourced from org files
 - **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
-- **Notes:** Requires new API endpoint for department-specific data
+- **Notes:** 3-column pipeline view (Published/Queued/Drafts). Supervisor verified.
 
 ### E-005: Engagement Department — Engagement Tracker
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M11
 - **Depends:** E-003
+- **Commit:** 0337ab8
 - **Pass criteria:**
-  - [ ] Engagement department detail tab shows engagement tracker
-  - [ ] Tracks community interactions, response times
-  - [ ] Data sourced from org/departments/engagement/ files
-  - [ ] Responsive on mobile
+  - [x] Engagement department detail tab shows engagement tracker
+  - [x] Tracks community interactions, response times
+  - [x] Data sourced from org/departments/engagement/ files
+  - [x] Responsive on mobile
 - **Fail criteria:**
   - No tracker in Engagement department tab
   - Data not sourced from org files
 - **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
-- **Notes:** Requires new API endpoint
+- **Notes:** Account stats, mentions count, draft replies from real data. Supervisor verified.
 
 ### E-006: Marketing Department — Marketing Analytics
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M11
 - **Depends:** E-003
+- **Commit:** 0337ab8
 - **Pass criteria:**
-  - [ ] Marketing department detail tab shows analytics dashboard
-  - [ ] Displays campaign performance, reach metrics
-  - [ ] Data sourced from org/departments/marketing/ files
-  - [ ] Responsive on mobile
+  - [x] Marketing department detail tab shows analytics dashboard
+  - [x] Displays campaign performance, reach metrics
+  - [x] Data sourced from org/departments/marketing/ files
+  - [x] Responsive on mobile
 - **Fail criteria:**
   - No analytics in Marketing department tab
   - Data not sourced from org files
 - **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
-- **Notes:** Requires new API endpoint
+- **Notes:** Timing data from timing-data.json, playbook insights. Supervisor verified.
 
 ### E-007: Research Department — Research Browser
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M11
 - **Depends:** E-003
+- **Commit:** 0337ab8
 - **Pass criteria:**
-  - [ ] Research department detail tab shows research browser
-  - [ ] Browse research outputs, papers, analyses
-  - [ ] Data sourced from org/departments/research/ files
-  - [ ] Responsive on mobile
+  - [x] Research department detail tab shows research browser
+  - [x] Browse research outputs, papers, analyses
+  - [x] Data sourced from org/departments/research/ files
+  - [x] Responsive on mobile
 - **Fail criteria:**
   - No browser in Research department tab
   - Data not sourced from org files
 - **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
-- **Notes:** Requires new API endpoint
+- **Notes:** Key trends + browseable findings with Deep Dive/Quick Finding badges. Supervisor verified.
 
 ### E-008: Engineering Department — Lead/Worker Status
 - **Type:** code
-- **Status:** 🧪 testing
+- **Status:** ✅ done
 - **Milestone:** M11
 - **Depends:** E-003
+- **Commit:** 0337ab8
 - **Pass criteria:**
-  - [ ] Engineering department detail tab shows lead/worker status
-  - [ ] Displays active workers, task assignments, build status
-  - [ ] Data sourced from org/departments/engineering/ files and project state.json files
-  - [ ] Responsive on mobile
+  - [x] Engineering department detail tab shows lead/worker status
+  - [x] Displays active workers, task assignments, build status
+  - [x] Data sourced from org/departments/engineering/ files and project state.json files
+  - [x] Responsive on mobile
 - **Fail criteria:**
   - No status display in Engineering department tab
   - Data not sourced from org files
 - **Files:** `~/projects/command-center/index.html`, `~/projects/command-center/server.js`
-- **Notes:** Requires new API endpoint, cross-references project worker data
+- **Notes:** Active leads table with priority badges + capacity bar. Supervisor verified.
