@@ -886,3 +886,66 @@ Phase 2 (Migration): 7/7 ✅
 Phase 3 (Full Dashboard): 9/9 ✅
 Phase 4 (Polish & Ship): 8/8 ✅
 ================================================================================
+
+================================================================================
+[2026-02-09 16:35 PST] PHASE 5 COMPLETE — Organization Dashboard
+Lead: Engineering Lead (cc-lead)
+Tasks: 8/8 verified ✅
+Duration: ~1.5 hours
+Commits: 0e534be, 713db6b, 9f38723, 0337ab8, 19df885
+--------------------------------------------------------------------------------
+Phase 5 adds the Departments tab to the Command Center dashboard with full 
+organization visibility across Content, Engagement, Marketing, Research, and 
+Engineering departments.
+
+E-001 (Departments Overview Tab) — ✅ DONE
+  Department cards with status dots, focus area, inbox/outbox counts, activity feed.
+  3 supervisor iterations required — found regex bug in getTabFromHash() not 
+  matching hyphens, dept.slug vs dept.name property mismatch, and routing 
+  priority bug (specific route check after generic match).
+
+E-002 (Per-Department Detail Tabs) — ✅ DONE
+  Click-to-navigate from cards, back navigation, deep linking via 
+  #/departments/<name> URL format, per-department renderers.
+
+E-003 (Supervisor Review) — ✅ DONE
+  3 rounds: v1 found dept.slug bug, v2 found routing priority bug, v3 PASSED.
+
+E-004 (Content Calendar) — ✅ DONE
+  3-column pipeline: Published (green), Queued (yellow), Drafts (gray).
+  Data from posted-log.md, tweet-ideas.md, and status.md queue.
+
+E-005 (Engagement Tracker) — ✅ DONE
+  Account stats (13 followers, 16 following, 21 tweets), mentions count, 
+  draft replies, approach tracking. Replaced all "Coming soon" placeholders.
+
+E-006 (Marketing Analytics) — ✅ DONE
+  Optimal posting times from timing-data.json, playbook insights from 
+  distribution-playbook.md, worst-time avoidance. Replaced placeholders.
+
+E-007 (Research Browser) — ✅ DONE
+  Key trends display (ERC-8004, x402, MegaETH, ai.com, orchestration), 
+  browseable research findings with Deep Dive/Quick Finding type badges.
+
+E-008 (Engineering Leads) — ✅ DONE
+  Active leads table with priority badges, capacity bar (2/3 slots used),
+  project list with status dots and navigation links.
+
+Lessons learned:
+- Supervisor caught 3 bugs across 3 iterations for E-001/E-002. The orchestrator 
+  pattern (separate worker + separate supervisor) works — would have shipped broken 
+  code without it.
+- Regex bugs in hash routing are subtle: non-end-anchored patterns match prefixes 
+  of longer paths. Always check route specificity ordering.
+- API property names must match between server response and frontend consumption.
+  dept.slug vs dept.name cost an extra iteration.
+- E-004 through E-008 passed first try — the detailed worker prompt with specific 
+  server changes and frontend code patterns produced correct output immediately.
+
+All milestones complete:
+  M10 (Departments Overview): 3/3 ✅
+  M11 (Department Enhancements): 5/5 ✅
+
+Full project status: 42/42 tasks done across 5 phases.
+Dashboard: http://0xs-mac-mini.tailacc337.ts.net:3400/
+================================================================================
